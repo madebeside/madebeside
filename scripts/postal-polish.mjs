@@ -1,0 +1,3 @@
+import fs from 'node:fs/promises';
+for(const page of ['portfolio','studio','privacy','terms','cookies','refunds','accessibility']){const path='web/'+page+'/index.html';let s=await fs.readFile(path,'utf8');s=s.replace('<body>','<body class="postal-site">').replace('</head>','<link rel="stylesheet" href="/enhancements.css?v=postal2"><link rel="stylesheet" href="/postal.css?v=5"><script src="/enhancements.js?v=postal2" defer></script></head>');s=s.replaceAll('?v=9','?v=postal2');await fs.writeFile(path,s);}
+let h=await fs.readFile('web/index.html','utf8');h=h.replaceAll('/postal.css?v=4','/postal.css?v=5').replaceAll('/postal.js?v=3','/postal.js?v=5');await fs.writeFile('web/index.html',h);

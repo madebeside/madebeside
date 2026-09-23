@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1789752788982,
+      "tag": "0000_wooden_cassandra_nova",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1789763717033,
+      "tag": "0001_petite_psynapse",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1789771843143,
+      "tag": "0002_lush_king_cobra",
+      "breakpoints": true
+    }
+  ]
+}

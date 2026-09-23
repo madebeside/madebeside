@@ -1,0 +1,1 @@
+CREATE INDEX `idx_inquiries_email_received_at` ON `inquiries` (`email`,`received_at`);

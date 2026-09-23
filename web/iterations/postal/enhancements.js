@@ -1,0 +1,5 @@
+if(matchMedia('(pointer:fine) and (hover:hover)').matches){
+ const nib=document.createElement('span');nib.className='postal-cursor';nib.textContent='✒';nib.setAttribute('aria-hidden','true');document.body.append(nib);let pending=false,x=0,y=0;
+ document.addEventListener('pointermove',event=>{if(event.pointerType!=='mouse')return;const editing=event.target.closest('input,textarea,select');document.body.classList.toggle('has-postal-cursor',!editing);x=event.clientX;y=event.clientY;if(!pending){pending=true;requestAnimationFrame(()=>{nib.style.transform=`translate(${x-3}px,${y-4}px) rotate(-22deg)`;pending=false;});}},{passive:true});
+ document.addEventListener('pointerdown',()=>nib.classList.add('pressing'));document.addEventListener('pointerup',()=>nib.classList.remove('pressing'));document.documentElement.addEventListener('pointerleave',()=>document.body.classList.remove('has-postal-cursor'));document.addEventListener('keydown',event=>{if(event.key==='Tab')document.body.classList.remove('has-postal-cursor');});
+}

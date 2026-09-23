@@ -1,0 +1,16 @@
+import fs from 'node:fs/promises';
+let html=await fs.readFile('web/index.html','utf8');
+const envelope=html.match(/<div class="envelope" aria-hidden="true">[\s\S]*?<\/div><\/div>(?=<p class="stage-caption")/)[0];
+html=html.replace(/<section class="hero">[\s\S]*?<section class="intro paper"/,`<section class="hero"><div class="hero-copy"><p class="eyebrow">A little something from Spencer.</p><h1>Good ideas.<br>Personal<br><em>delivery.</em></h1><p class="hero-description">Content & marketing.<br>With a little more you in it.</p><a class="journey-link" href="#services">Open for good ideas <span aria-hidden="true">↓</span></a></div><div class="hero-envelope">${envelope}<span class="delivery-stamp" aria-hidden="true">MADE WITH<br><b>A PERSONAL<br>TOUCH</b><small>SPENCER B MEDIA</small></span></div><div class="hero-foot"><span>From Ontario. With imagination.</span><span>Scroll to unpack ↓</span></div></section><section class="intro paper"`);
+html=html.replace(/<div class="intro-letter reveal">[\s\S]*?<\/div><\/section>/,`<div class="intro-letter reveal"><p>I’m Spencer. I turn what makes you interesting into content worth spending time with.</p><span class="signature">Yours creatively,<strong>Spencer</strong></span></div></section>`);
+html=html.replace('Films, photographs and content that put a little more of you into every frame. From the first thought to the final edit.','Films. Photos. Content with a pulse.');
+html=html.replace('The idea behind the image. I help find the words, visual direction and creative thread that make everything belong together.','The idea, the words, the look. All telling your story.');
+html=html.replace('Good work needs somewhere to go. I bring content and marketing together with a plan for how your story shows up.','A plan to get your story out into the world.');
+html=html.replace(/<section class="approach">[\s\S]*?<section class="contact-section"/,`<section class="contact-section"`);
+html=html.replace('Every good thing<br>starts with<br><em>“Hey, Spencer.”</em>','Got a<br>good <em>feeling?</em>');
+html=html.replace('Tell me what you have in mind.<br>A rough idea is a lovely place to start.','Let’s make something of it.');
+await fs.writeFile('web/index.html',html);
+let js=await fs.readFile('web/script.js','utf8');
+js=js.replace("document.querySelector('.envelope')","document.querySelector('.mail-stage .envelope')");
+js=js.replace("envelope.style.setProperty('--open',opening.toFixed(3));","envelope.style.setProperty('--open',opening.toFixed(3)); envelope.classList.toggle('opened',opening>.52);");
+await fs.writeFile('web/script.js',js);
