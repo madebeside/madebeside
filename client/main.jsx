@@ -54,7 +54,7 @@ function App(){
 
   const Page=({'/portfolio':PortfolioPage,'/capabilities':CapabilitiesPage,'/approach':ApproachPage,'/contact':ContactPage})[route];
 
-  return <><LoadingIntro onReady={()=>setIntroReady(true)}/><a className="skip" href="#main">Skip to content</a><Nav/><main id="main" tabIndex="-1">{Page?<Page paused={paused} pieces={pieces} collectionError={collectionError}/>:<><TextTransfer paused={paused} ready={introReady}/><Chapters paused={paused} pieces={pieces.slice(0,6)} collectionError={collectionError} onNavigate={navigate}/></>}</main><ScrollController paused={paused}/><button className="motion-button" aria-pressed={paused} onClick={()=>setPaused(!paused)}>{paused?'Resume motion':'Pause motion'}</button></>;
+  return <><LoadingIntro onReady={()=>setIntroReady(true)}/><a className="skip" href="#main">Skip to content</a><Nav/><main id="main" tabIndex="-1">{Page?<Page paused={paused} pieces={pieces} collectionError={collectionError}/>:<><TextTransfer paused={paused} ready={introReady}/><Chapters paused={paused} pieces={pieces.some(p=>!p.placeholder)?(pieces.filter(p=>p.featured).length?pieces.filter(p=>p.featured).slice(0,6):config.workPlaceholders):pieces} collectionError={collectionError} onNavigate={navigate}/></>}</main><ScrollController paused={paused}/><button className="motion-button" aria-pressed={paused} onClick={()=>setPaused(!paused)}>{paused?'Resume motion':'Pause motion'}</button></>;
 
 
 
