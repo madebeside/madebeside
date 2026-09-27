@@ -4,5 +4,12 @@
   "compatibility_date": "2026-09-19",
   "observability": {
     "enabled": true
-  }
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_id": "7acb268a-3384-4385-97ef-70e3a9322ad2",
+      "migrations_dir": "drizzle"
+    }
+  ]
 }
