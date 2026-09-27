@@ -33,7 +33,7 @@ Section copy is in `client/components/Chapters.jsx`, hero copy in `Hero.jsx`, de
 
 Open `/studio/` on the hosted site while signed in as owner. Upload, describe and publish media. Published work appears in `/portfolio/` and the homepage (up to six pieces); drafts and archived pieces stay private. The hero uses original brand artwork, separate from the portfolio. Photos require alt text; speech videos require WebVTT captions. Upload limit: 20 MB per piece. For fast loading, optimise images to WebP under 150 KB and keep videos short and compressed. Production media is in R2 and metadata in D1, not in source archives. Do not reuse the archived rescue demonstration.
 
-The contact form stores inquiries in D1. Call requests are marked in the message. They do not reserve an appointment, and the form does not email notifications. The existing studio manages portfolio media; inquiry review currently requires database access. A direct email link is also provided. Set bookingUrl when a scheduler is available.
+The contact form stores inquiries in D1. Call requests are marked in the message. They do not reserve an appointment, and the form sends email notifications through Resend when RESEND_API_KEY is configured. The existing studio manages portfolio media; inquiry review currently requires database access. A direct email link is also provided. Set bookingUrl when a scheduler is available.
 
 ## Motion decisions
 

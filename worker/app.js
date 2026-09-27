@@ -5,6 +5,30 @@ const RETENTION_MS=90*24*60*60*1000;
 const SECURITY={'Content-Security-Policy':"default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob:; font-src 'self'; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'; frame-ancestors 'self' https://chatgpt.com https://*.chatgpt.site",'X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer','Permissions-Policy':'camera=(), microphone=(), geolocation=(), payment=()'};
 function json(status,body){return new Response(JSON.stringify(body),{status,headers:{...SECURITY,'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store'}});}
 function validUUID(value){return typeof value==='string'&&/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);}
+async function notifyInquiry(env, entry) {
+  if (!env.RESEND_API_KEY) { console.error('Inquiry email not configured; brief remains saved'); return; }
+  const body = JSON.stringify({
+    from: 'Made Beside <briefs@notifications.madebeside.com>', to: ['hello@madebeside.com'],
+    reply_to: entry.email, subject: 'New website brief | Made Beside',
+    text: ['A new brief was saved on madebeside.com.', 'Name: '+(entry.name || 'Not provided'), 'Email: '+entry.email, 'Reference: '+entry.id, '', entry.message].join('\n'),
+  });
+  for (let attempt=0; attempt<3; attempt++) {
+    let status=0;
+    try {
+      const response=await fetch('https://api.resend.com/emails', {
+        method:'POST', headers:{Authorization:'Bearer '+env.RESEND_API_KEY, 'Content-Type':'application/json', 'Idempotency-Key':'brief/'+entry.id},
+        body, signal:AbortSignal.timeout(5000),
+      });
+      status=response.status;
+      await response.body?.cancel();
+      if(response.ok)return;
+      if(status!==429 && status<500){console.error('Inquiry email rejected; brief remains saved',{status});return;}
+    } catch { /* Retry without logging private message contents or credentials. */ }
+    if(attempt<2)await new Promise(resolve=>setTimeout(resolve,500*(attempt+1)));
+    else console.error('Inquiry email failed after retries; brief remains saved',{status});
+  }
+}
+
 export function createWorker(assets){
   let lastCleanup=0;let submissions=[];
   return {async fetch(request,env,ctx){
@@ -24,7 +48,7 @@ export function createWorker(assets){
       const name=typeof data.name==='string'?data.name.trim():'';
       if(!validUUID(data.id)||!email||email.length>254||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||message.length<10||message.length>2500||name.length>100||data.consent!==true)return json(422,{message:'Enter a valid email, a message of 10–2,500 characters, and agree to the use of your details for this inquiry.'});
       submissions=submissions.filter(time=>now-time<60000);if(submissions.length>=30)return json(429,{message:'We are receiving a lot of notes. Please try again in a few minutes, or email us directly.'});
-      try{const store=inquiryStore(env);const existing=await store.find(data.id);if(existing){if(existing.email!==email||existing.message!==message||existing.name!==(name||null))return json(409,{message:'Please refresh the page before starting a different inquiry.'});return json(200,{ok:true});}const recent=await store.recent(email,now-600000);if(Number(recent?.count)>=3)return json(429,{message:'You have sent several notes recently. Please wait a few minutes before sending another.'});await store.save({id:data.id,name,email,message,receivedAt:now,expiresAt:now+RETENTION_MS,consentVersion:CONSENT_VERSION});submissions.push(now);return json(201,{ok:true});}catch{console.error('Contact form storage unavailable');return json(503,{message:'Your note was not saved. Please try again later or email hello@madebeside.com. Your text is still here.'});}
+      try{const store=inquiryStore(env);const existing=await store.find(data.id);if(existing){if(existing.email!==email||existing.message!==message||existing.name!==(name||null))return json(409,{message:'Please refresh the page before starting a different inquiry.'});return json(200,{ok:true});}const recent=await store.recent(email,now-600000);if(Number(recent?.count)>=3)return json(429,{message:'You have sent several notes recently. Please wait a few minutes before sending another.'});const saved=await store.save({id:data.id,name,email,message,receivedAt:now,expiresAt:now+RETENTION_MS,consentVersion:CONSENT_VERSION});submissions.push(now);if(saved.meta?.changes>0){const notification=notifyInquiry(env,{id:data.id,name,email,message}).catch(()=>console.error("Inquiry email failed; brief remains saved"));if(ctx?.waitUntil)ctx.waitUntil(notification);else await notification;}return json(201,{ok:true});}catch{console.error('Contact form storage unavailable');return json(503,{message:'Your note was not saved. Please try again later or email hello@madebeside.com. Your text is still here.'});}
     }
     if(!['GET','HEAD'].includes(request.method))return new Response('Method not allowed',{status:405,headers:SECURITY});
     let pathname;try{pathname=decodeURIComponent(url.pathname);}catch{return new Response('Invalid URL',{status:400,headers:SECURITY});}
