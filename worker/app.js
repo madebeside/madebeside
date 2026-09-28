@@ -53,10 +53,11 @@ export function createWorker(assets){
     if(!['GET','HEAD'].includes(request.method))return new Response('Method not allowed',{status:405,headers:SECURITY});
     let pathname;try{pathname=decodeURIComponent(url.pathname);}catch{return new Response('Invalid URL',{status:400,headers:SECURITY});}
     if(!pathname.endsWith('/')&&assets[pathname+'/index.html'])return new Response(null,{status:308,headers:{...SECURITY,Location:pathname+'/'}});
+    if(pathname.endsWith('/index.html')&&assets[pathname])return new Response(null,{status:308,headers:{...SECURITY,Location:pathname.slice(0,-10)}});
     const key=pathname.endsWith('/')?pathname+'index.html':pathname;
     const asset=assets[key]||assets['/404.html'];const status=assets[key]?200:404;
     if(!asset)return new Response('Not found',{status:404,headers:SECURITY});
     const body=request.method==='HEAD'?null:Uint8Array.from(atob(asset.body),c=>c.charCodeAt(0));
-    return new Response(body,{status,headers:{...SECURITY,'Content-Type':asset.type,'Cache-Control':(asset.type.startsWith('text/html')||asset.type.startsWith('text/css'))?'no-cache':'public, max-age=3600'}});
+    return new Response(body,{status,headers:{...SECURITY,...((status===404||/^\/(studio|iterations|postal|market)(\/|$)/.test(pathname))?{'X-Robots-Tag':'noindex, follow'}:{}),'Content-Type':asset.type,'Cache-Control':(asset.type.startsWith('text/html')||asset.type.startsWith('text/css'))?'no-cache':'public, max-age=3600'}});
   }};
 }
