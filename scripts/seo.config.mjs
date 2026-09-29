@@ -1,11 +1,11 @@
 export const origin="https://madebeside.com";
 export const pages={
   "/": [
-    "Creative Marketing & Content Agency | Made Beside",
-    "Made Beside is an Ontario creative marketing agency for videography, photography, social media content and campaigns. A creative team working beside yours."
+    "Made Beside | Creative Media Agency in Ontario",
+    "Made Beside is a creative media agency in Ontario. Videography, photography, social media content and campaigns, made with a team working beside yours."
   ],
   "/capabilities/": [
-    "Content Creation & Social Media Services | Made Beside",
+    "Creative Media & Content Creation Services | Made Beside",
     "Explore videography, brand photography, social media content, creative strategy and campaign services. Plan and create your next project with Made Beside."
   ],
   "/portfolio/": [
