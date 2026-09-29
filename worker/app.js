@@ -29,10 +29,11 @@ async function notifyInquiry(env, entry) {
   }
 }
 
-export function createWorker(assets){
+export function createWorker(assets,renderPage){
   let lastCleanup=0;let submissions=[];
   return {async fetch(request,env,ctx){
     const url=new URL(request.url);const now=Date.now();
+    if(['madebeside.com','www.madebeside.com'].includes(url.hostname)&&(url.protocol!=='https:'||url.hostname!=='madebeside.com')){url.protocol='https:';url.hostname='madebeside.com';url.port='';return new Response(null,{status:308,headers:{...SECURITY,Location:url.href}});}
     const portfolioResponse=await portfolioRoute(request,env);if(portfolioResponse)return portfolioResponse;
     if(env.DB&&now-lastCleanup>3600000){lastCleanup=now;const cleanup=inquiryStore(env).purge(now).catch(()=>{lastCleanup=0;console.error('Inquiry retention cleanup failed');});if(ctx?.waitUntil)ctx.waitUntil(cleanup);else await cleanup;}
     if(url.pathname==='/api/contact'){
@@ -52,12 +53,17 @@ export function createWorker(assets){
     }
     if(!['GET','HEAD'].includes(request.method))return new Response('Method not allowed',{status:405,headers:SECURITY});
     let pathname;try{pathname=decodeURIComponent(url.pathname);}catch{return new Response('Invalid URL',{status:400,headers:SECURITY});}
-    if(!pathname.endsWith('/')&&assets[pathname+'/index.html'])return new Response(null,{status:308,headers:{...SECURITY,Location:pathname+'/'}});
-    if(pathname.endsWith('/index.html')&&assets[pathname])return new Response(null,{status:308,headers:{...SECURITY,Location:pathname.slice(0,-10)}});
+    if(!pathname.endsWith('/')&&assets[pathname+'/index.html'])return new Response(null,{status:308,headers:{...SECURITY,Location:pathname+'/'+url.search}});
+    if(pathname.endsWith('/index.html')&&assets[pathname])return new Response(null,{status:308,headers:{...SECURITY,Location:pathname.slice(0,-10)+url.search}});
     const key=pathname.endsWith('/')?pathname+'index.html':pathname;
     const asset=assets[key]||assets['/404.html'];const status=assets[key]?200:404;
     if(!asset)return new Response('Not found',{status:404,headers:SECURITY});
-    const body=request.method==='HEAD'?null:Uint8Array.from(atob(asset.body),c=>c.charCodeAt(0));
+    let bytes=Uint8Array.from(atob(asset.body),c=>c.charCodeAt(0));
+    // Current published work is rendered for every visitor, not just crawlers.
+    if(renderPage&&env.DB&&['/','/portfolio/'].includes(pathname)&&request.method==='GET'){
+      try{const result=await portfolioRoute(new Request(url.origin+'/api/portfolio'),env);if(result.ok){const {items}=await result.json();if(items?.length){const html=new TextDecoder().decode(bytes);const data=JSON.stringify(items).replaceAll('<','\\u003c');const updated=html.replace(/<!--app-start-->[\s\S]*?<!--app-end-->/,()=>'<!--app-start-->'+renderPage(pathname,items)+'<!--app-end-->').replace('</body>',()=>'<script type="application/json" id="initial-portfolio">'+data+'</script></body>');bytes=new TextEncoder().encode(updated);}}}catch{console.error('Initial portfolio rendering unavailable');}
+    }
+    const body=request.method==='HEAD'?null:bytes;
     return new Response(body,{status,headers:{...SECURITY,...((status===404||/^\/(studio|iterations|postal|market)(\/|$)/.test(pathname))?{'X-Robots-Tag':'noindex, follow'}:{}),'Content-Type':asset.type,'Cache-Control':(asset.type.startsWith('text/html')||asset.type.startsWith('text/css'))?'no-cache':'public, max-age=3600'}});
   }};
 }

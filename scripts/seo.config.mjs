@@ -1,12 +1,12 @@
 export const origin="https://madebeside.com";
 export const pages={
   "/": [
-    "Made Beside | Creative Media Agency in Ontario",
-    "Made Beside is a creative media agency in Ontario. Videography, photography, social media content and campaigns, made with a team working beside yours."
+    "Made Beside | Creative Media Agency in Toronto",
+    "Made Beside is a Toronto creative media agency serving the GTA with social media management, content strategy and digital marketing creative, made beside your team."
   ],
   "/capabilities/": [
     "Creative Media & Content Creation Services | Made Beside",
-    "Explore videography, brand photography, social media content, creative strategy and campaign services. Plan and create your next project with Made Beside."
+    "Explore social media management, content strategy, digital marketing creative, videography and photography with Made Beside in Toronto and the GTA."
   ],
   "/portfolio/": [
     "Videography & Photography Portfolio | Made Beside",
@@ -18,7 +18,7 @@ export const pages={
   ],
   "/contact/": [
     "Contact Made Beside | Discuss Your Marketing Project",
-    "Start a conversation about videography, photography, social media content or a campaign. Send Made Beside your brief or request a call with our Ontario team."
+    "Start a conversation about videography, photography, social media content or a campaign. Send Made Beside your brief or request a call with our Toronto team."
   ],
   "/privacy/": [
     "Privacy Policy | Made Beside",
@@ -41,3 +41,7 @@ export const pages={
     "Read about accessibility on the Made Beside website, available motion controls and how to contact our team if you encounter a barrier."
   ]
 };
+
+pages["/services/social-media-management/"]=["Social Media Management in Toronto | Made Beside","Social media management for Toronto and GTA brands. Made Beside handles strategy, content, scheduling, publishing, community management and reporting."];
+pages["/services/content-strategy/"]=["Content Strategy Services in Toronto | Made Beside","Content strategy for Toronto and GTA businesses. Shape your messaging, content themes, formats and channel plan with a creative team working beside yours."];
+pages["/services/digital-marketing/"]=["Digital Marketing Strategy & Creative in Toronto | Made Beside","Digital marketing strategy and creative for Toronto and GTA businesses. Connect your messaging, channel plan and campaign assets with Made Beside."];
