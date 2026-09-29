@@ -1,4 +1,75 @@
 export const services=[
+{
+  "slug": "content-production",
+  "name": "Content Production",
+  "lines": [
+    "Your story.",
+    "Made to connect."
+  ],
+  "title": "Content Production in Toronto | Made Beside",
+  "description": "Videography, brand photography and social content production in Toronto and the GTA. Plan, capture and shape your story with Made Beside.",
+  "intro": "Your business has a story worth sharing. Made Beside works alongside Toronto and GTA teams to turn that story into videography, photography and social content, from the shared brief to the final edit.",
+  "audience": "For businesses looking for brand stories, product features, photographs of people and spaces, or short-form content. We start with where the work will be seen and what your audience needs to understand.",
+  "deliverables": [
+    [
+      "Videography",
+      "Brand stories, product features and short-form videos shaped around your message and the channels in your brief."
+    ],
+    [
+      "Brand photography",
+      "Images of your people, products and spaces, guided by a shared visual direction."
+    ],
+    [
+      "Editing and cutdowns",
+      "Pacing, sound, captions and alternate formats agreed for the places your content will appear."
+    ],
+    [
+      "Social and campaign assets",
+      "A connected collection of images and videos that can support your social presence, launch or campaign."
+    ]
+  ],
+  "steps": [
+    [
+      "Find the story together",
+      "We discuss your audience, priorities and existing material, then agree the creative direction and deliverables."
+    ],
+    [
+      "Plan and capture",
+      "Together we plan the shoot, the people or products involved and the material needed to bring the idea to life."
+    ],
+    [
+      "Shape and deliver",
+      "We edit, review feedback with you and deliver the agreed files and formats."
+    ]
+  ],
+  "faqs": [
+    [
+      "What should we prepare?",
+      "Bring your objectives, existing brand material, intended channels and any references that help explain the direction. We will work through what is needed for the shoot together."
+    ],
+    [
+      "Can we book photography or videography separately?",
+      "Yes. We can discuss a single production need or a connected collection of content. The agreed scope defines what is included."
+    ],
+    [
+      "Do you help plan the content?",
+      "We develop the creative direction with you before capturing anything. A broader content strategy can be discussed separately if you need a plan across channels."
+    ],
+    [
+      "How long does production take?",
+      "Timing depends on the scope, preparation, shoot requirements and feedback. We agree a schedule for your project before work begins."
+    ],
+    [
+      "What files will we receive?",
+      "We agree deliverables, formats and intended uses in your project scope. Tell us where you plan to publish so the output can be planned for those placements."
+    ],
+    [
+      "Can we see examples?",
+      "Visit our portfolio to explore available work. If the collection does not yet show a relevant example, ask us about your project rather than treating a placeholder as client work."
+    ]
+  ]
+},
+
   {
     "slug": "social-media-management",
     "name": "Social Media Management",

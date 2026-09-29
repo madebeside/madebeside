@@ -45,3 +45,5 @@ export const pages={
 pages["/services/social-media-management/"]=["Social Media Management in Toronto | Made Beside","Social media management for Toronto and GTA brands. Made Beside handles strategy, content, scheduling, publishing, community management and reporting."];
 pages["/services/content-strategy/"]=["Content Strategy Services in Toronto | Made Beside","Content strategy for Toronto and GTA businesses. Shape your messaging, content themes, formats and channel plan with a creative team working beside yours."];
 pages["/services/digital-marketing/"]=["Digital Marketing Strategy & Creative in Toronto | Made Beside","Digital marketing strategy and creative for Toronto and GTA businesses. Connect your messaging, channel plan and campaign assets with Made Beside."];
+
+pages["/services/content-production/"]=["Content Production in Toronto | Made Beside","Videography, brand photography and social content production in Toronto and the GTA. Plan, capture and shape your story with Made Beside."];
