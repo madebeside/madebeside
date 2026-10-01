@@ -14,7 +14,7 @@ pnpm dev
 
 Open http://127.0.0.1:4173. For live frontend editing, keep that backend running and run `pnpm dev:client` in another terminal (port 5173). Keep the local server private. Run `pnpm test` for backend checks.
 
-Build compiles React into `web/market`, writes its entry to the home, portfolio, capabilities, approach and contact routes, then bundles all routes into `dist/server/index.js`. Deploy the complete `dist` including hidden `.openai`. This is a Worker application, not a GitHub Pages-only static site.
+Build compiles React into `web/market`, writes its entry to the home, portfolio, capabilities, approach and contact routes, then copies static files to `dist/assets` and creates the lean Worker entry at `dist/server/index.js`. Cloudflare serves these files through the ASSETS binding configured in `wrangler.jsonc`; the Worker retains routing, security headers and published portfolio rendering. Deploy the complete `dist` including hidden `.openai`. This is a Worker application, not a GitHub Pages-only static site.
 
 ## Edit content
 

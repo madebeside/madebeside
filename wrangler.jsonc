@@ -11,5 +11,12 @@
       "database_id": "7acb268a-3384-4385-97ef-70e3a9322ad2",
       "migrations_dir": "drizzle"
     }
-  ]
+  ],
+  "assets": {
+    "directory": "dist/assets",
+    "binding": "ASSETS",
+    "run_worker_first": true,
+    "html_handling": "none",
+    "not_found_handling": "none"
+  }
 }

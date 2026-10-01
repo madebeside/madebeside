@@ -58,12 +58,15 @@ export function createWorker(assets,renderPage){
     const key=pathname.endsWith('/')?pathname+'index.html':pathname;
     const asset=assets[key]||assets['/404.html'];const status=assets[key]?200:404;
     if(!asset)return new Response('Not found',{status:404,headers:SECURITY});
-    let bytes=Uint8Array.from(atob(asset.body),c=>c.charCodeAt(0));
+    let body=null;
+    if(request.method!=='HEAD'){
+      if(asset.body!==undefined)body=Uint8Array.from(atob(asset.body),c=>c.charCodeAt(0));
+      else {const source=await env.ASSETS.fetch(new Request(new URL(assets[key]?key:'/404.html',url.origin)));if(!source.ok)return new Response('Asset unavailable',{status:503,headers:SECURITY});body=source.body;}
+    }
     // Current published work is rendered for every visitor, not just crawlers.
     if(renderPage&&env.DB&&['/','/portfolio/'].includes(pathname)&&request.method==='GET'){
-      try{const result=await portfolioRoute(new Request(url.origin+'/api/portfolio'),env);if(result.ok){const {items}=await result.json();if(items?.length){const html=new TextDecoder().decode(bytes);const data=JSON.stringify(items).replaceAll('<','\\u003c');const updated=html.replace(/<!--app-start-->[\s\S]*?<!--app-end-->/,()=>'<!--app-start-->'+renderPage(pathname,items)+'<!--app-end-->').replace('</body>',()=>'<script type="application/json" id="initial-portfolio">'+data+'</script></body>');bytes=new TextEncoder().encode(updated);}}}catch{console.error('Initial portfolio rendering unavailable');}
+      try{const result=await portfolioRoute(new Request(url.origin+'/api/portfolio'),env);if(result.ok){const {items}=await result.json();if(items?.length){const html=await new Response(body).text();body=html;const data=JSON.stringify(items).replaceAll('<','\\u003c');const updated=html.replace(/<!--app-start-->[\s\S]*?<!--app-end-->/,()=>'<!--app-start-->'+renderPage(pathname,items)+'<!--app-end-->').replace('</body>',()=>'<script type="application/json" id="initial-portfolio">'+data+'</script></body>');body=updated;}}}catch{console.error('Initial portfolio rendering unavailable');}
     }
-    const body=request.method==='HEAD'?null:bytes;
     return new Response(body,{status,headers:{...SECURITY,...((status===404||/^\/(studio|iterations|postal|market)(\/|$)/.test(pathname))?{'X-Robots-Tag':'noindex, follow'}:{}),'Content-Type':asset.type,'Cache-Control':(asset.type.startsWith('text/html')||asset.type.startsWith('text/css'))?'no-cache':'public, max-age=3600'}});
   }};
 }

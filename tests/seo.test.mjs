@@ -2,7 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {pages,origin} from '../scripts/seo.config.mjs';
-import worker from '../dist/server/index.js';
+import builtWorker from '../dist/server/index.js';
+import {localAssets} from '../worker/local-assets.js';
+const ASSETS=localAssets('dist/assets');
+const worker={fetch:(request,env)=>builtWorker.fetch(request,{ASSETS,...env})};
 test('public pages have unique server-delivered metadata and valid structured data',async()=>{
  const titles=new Set(), descriptions=new Set();
  for(const [route,[title,description]] of Object.entries(pages)){
@@ -57,4 +60,17 @@ test('published project content is rendered safely; private drafts stay private'
    assert.equal(JSON.parse(data)[0].title,title);assert.ok(!data.includes('</script>'));
   }
  }finally{db.close();}
+});
+
+test('native static asset delivery preserves bytes and HEAD avoids reading assets',async()=>{
+ const route='/identity/creative-hands.webp';
+ const response=await worker.fetch(new Request(origin+route),{});
+ assert.equal(response.status,200);
+ assert.deepEqual(Buffer.from(await response.arrayBuffer()),await readFile('dist/assets'+route));
+ const head=await worker.fetch(new Request(origin+route,{method:'HEAD'}),{ASSETS:{fetch(){throw new Error('HEAD must not read asset');}}});
+ assert.equal(head.status,200);
+ assert.equal(await head.text(),'');
+ const unavailable=await worker.fetch(new Request(origin+route),{ASSETS:{fetch:async()=>new Response(null,{status:404})}});
+ assert.equal(unavailable.status,503);
+ assert.ok(unavailable.headers.get('Content-Security-Policy'));
 });
