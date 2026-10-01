@@ -12,7 +12,7 @@ export const config={
   {title:'Beside you through delivery.',body:'Work directly with the team making your content. From planning to final files, you know what is happening, what comes next and where your input matters.'}
  ],
  workPlaceholders:[
-  {id:'videography',title:'Videography',format:'Videography',placeholder:true},
+  {id:'sabrina-and-chris',title:'Sabrina & Chris',kind:'video',featured:true,vimeoId:'1232140797',src:'https://vimeo.com/1232140797',description:'Videography'},
   {id:'photography',title:'Photography',format:'Photography',placeholder:true},
   {id:'social',title:'Social & campaigns',format:'Social & campaigns',placeholder:true}
  ]

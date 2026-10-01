@@ -16,7 +16,7 @@ export default function Work({paused,pieces,collectionError,fullPage=false}){
 
     {pieces.map((piece,i)=><article className={'work-panel '+(expanded===piece.id?'is-expanded':'')} key={piece.id} style={{zIndex:i+1}}><div className={'work-screen work-screen-'+i%3}><div className="project-heading"><h3>{piece.title}</h3><span className="project-counter">{String(i+1).padStart(2,'0')}<span> / {String(pieces.length).padStart(2,'0')}</span></span></div><div className={'project-media '+(piece.placeholder?'is-placeholder':'')}>
 
-      {piece.placeholder?<><MediaArtwork variant={i}/><span className="placeholder-label">Coming soon · {piece.format}</span></>:piece.kind==='video'?<video src={piece.src} controls preload="metadata" playsInline aria-label={piece.title}>{piece.captions&&<track kind="captions" src={piece.captions} srcLang="en" label="English" default/>}</video>:<button className="image-expand" onClick={()=>setExpanded(expanded===piece.id?null:piece.id)} aria-expanded={expanded===piece.id} aria-label={(expanded===piece.id?'Close expanded view of ':'Expand ')+piece.title}><img src={piece.src} alt={piece.alt||piece.title} loading="lazy"/><span className="media-action">{expanded===piece.id?'Close view ':'View image '}</span></button>}
+      {piece.placeholder?<><MediaArtwork variant={i}/><span className="placeholder-label">Coming soon · {piece.format}</span></>:piece.vimeoId?<VimeoPlayer piece={piece}/>:piece.kind==='video'?<video src={piece.src} controls preload="metadata" playsInline aria-label={piece.title}>{piece.captions&&<track kind="captions" src={piece.captions} srcLang="en" label="English" default/>}</video>:<button className="image-expand" onClick={()=>setExpanded(expanded===piece.id?null:piece.id)} aria-expanded={expanded===piece.id} aria-label={(expanded===piece.id?'Close expanded view of ':'Expand ')+piece.title}><img src={piece.src} alt={piece.alt||piece.title} loading="lazy"/><span className="media-action">{expanded===piece.id?'Close view ':'View image '}</span></button>}
 
     </div><div className="project-bottom"><p>{piece.description||(piece.placeholder?'':piece.kind==='video'?'Videography':'Photography')}</p>{!fullPage&&<a href="/portfolio/">{piece.placeholder?'Explore the portfolio':'View collection'}</a>}</div></div></article>)}
 
@@ -26,3 +26,5 @@ export default function Work({paused,pieces,collectionError,fullPage=false}){
 
 }
 
+
+function VimeoPlayer({piece}){const [loaded,setLoaded]=useState(false);return loaded?<iframe className="vimeo-player" src={"https://player.vimeo.com/video/"+piece.vimeoId+"?dnt=1"} title={piece.title+" — videography"} allow="fullscreen; picture-in-picture" allowFullScreen/>:<div className="vimeo-preview"><button className="vimeo-play" onClick={()=>setLoaded(true)}>Play {piece.title}</button><p>Loads a Vimeo player. Vimeo receives connection information when you play.</p><a href={piece.src} target="_blank" rel="noopener noreferrer">Watch on Vimeo</a></div>;}
