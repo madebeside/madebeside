@@ -13,7 +13,7 @@ export const config={
  ],
  workPlaceholders:[
   {id:'sabrina-and-chris',title:'Videography',kind:'video',featured:true,vimeoId:'1232712180',src:'https://vimeo.com/1232712180',description:'Videography'},
-  {id:'photography',title:'Photography',format:'Photography',placeholder:true},
+  {id:'photography',title:'Photography',kind:'photo',featured:true,gallery:true,description:''},
   {id:'social',title:'Social & campaigns',format:'Social & campaigns',placeholder:true}
  ]
 };

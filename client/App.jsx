@@ -26,7 +26,7 @@ export default function App({pathname="/",initialPieces=config.workPlaceholders}
 
   const [paused,setPaused]=useState(false);
 
-  const [pieces,setPieces]=useState([...config.workPlaceholders.filter(p=>p.vimeoId),...initialPieces.filter(p=>!p.vimeoId)]);
+  const [pieces,setPieces]=useState([...config.workPlaceholders.filter(p=>p.vimeoId||p.gallery),...initialPieces.filter(p=>!p.vimeoId&&!p.gallery)]);
 
   const [collectionError,setCollectionError]=useState(false);
 
@@ -36,7 +36,7 @@ export default function App({pathname="/",initialPieces=config.workPlaceholders}
 
     fetch('/api/portfolio',{signal:abort.signal}).then(r=>{if(!r.ok)throw Error();return r.json();})
 
-      .then(data=>{if(data.items?.length)setPieces([...config.workPlaceholders.filter(p=>p.vimeoId),...data.items]);})
+      .then(data=>{if(data.items?.length)setPieces([...config.workPlaceholders.filter(p=>p.vimeoId||p.gallery),...data.items]);})
 
       .catch(e=>{if(e.name!=='AbortError')setCollectionError(true);});
 
