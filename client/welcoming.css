@@ -49,3 +49,12 @@ body:has(.contact-destination) .site-header .made-wordmark img{opacity:0}
 .vimeo-player{width:100%;height:100%;border:0}.vimeo-preview{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:24px;color:#f5f5f0;text-align:center}.vimeo-preview p{max-width:36ch;font-size:14px}.vimeo-play{background:#16db65;color:#121111;padding:18px 26px;border:0;border-radius:32px;font:inherit;font-weight:700;cursor:pointer}.vimeo-preview a{color:inherit}
 
 .vimeo-container{position:relative}.video-sound{position:absolute;right:20px;bottom:20px;background:#121111;color:#f5f5f0;border:1px solid #f5f5f0;border-radius:24px;padding:12px 18px;font:inherit;cursor:pointer;min-height:44px}.video-sound:focus-visible{outline:3px solid #16db65;outline-offset:4px}
+
+.video-controls{position:absolute;bottom:16px;left:16px;right:16px;display:flex;align-items:center;gap:10px;padding:10px;background:rgba(18,17,17,.94);border:1px solid #555;border-radius:16px;color:#f5f5f0;opacity:0;transform:translateY(6px);transition:opacity .25s,transform .25s}
+.vimeo-container:hover .video-controls,.vimeo-container:focus-within .video-controls{opacity:1;transform:none}
+.video-controls button{background:transparent;color:inherit;border:0;padding:8px;font:inherit;font-size:13px;min-height:44px;cursor:pointer}
+.video-controls button:focus-visible,.video-controls input:focus-visible{outline:2px solid #16db65;outline-offset:3px}
+.video-controls input{width:100%;accent-color:#16db65;min-height:44px}.video-seek{flex:1;min-width:40px}.video-volume{width:70px}.video-time{font-size:12px;white-space:nowrap}.video-error{position:absolute;top:16px;left:16px;right:16px;background:#121111;color:#f5f5f0;padding:16px}.video-error a{color:inherit}
+.vimeo-container:fullscreen{background:#121111;width:100vw;height:100vh}
+@media(hover:none),(max-width:767px){.video-controls{opacity:1;transform:none;gap:4px;flex-wrap:wrap;left:8px;right:8px;bottom:8px}.video-time{font-size:11px}.video-volume{width:55px}.video-controls button{font-size:12px}}
+@media(prefers-reduced-motion:reduce){.video-controls{transition:none}}
