@@ -65,3 +65,7 @@ body:has(.contact-destination) .site-header .made-wordmark img{opacity:0}
 .video-hit-area:focus-visible{outline:3px solid #16db65;outline-offset:-3px}
 .video-controls,.vimeo-container:hover .video-controls,.vimeo-container:focus-within .video-controls{position:relative;inset:auto;flex:none;width:100%;margin:0;border-radius:0;opacity:1;transform:none;background:#121111;border:0;border-top:1px solid #555}
 @media(hover:none),(max-width:767px){.video-controls{inset:auto;border-radius:0}}
+
+.video-controls,.vimeo-container:hover .video-controls,.vimeo-container:focus-within .video-controls{background:#16db65;color:#121111;border-top:1px solid #121111}
+.video-controls input{accent-color:#121111}
+.video-controls button:focus-visible,.video-controls input:focus-visible{outline-color:#121111}

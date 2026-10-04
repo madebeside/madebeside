@@ -29,7 +29,7 @@ export default function Work({paused,pieces,collectionError,fullPage=false}){
 
 
 function VimeoPlayer({piece,paused}){
- const container=useRef(),frame=useRef(),preferredVolume=useRef(0),fade=useRef(1);
+ const container=useRef(),frame=useRef(),preferredVolume=useRef(0),fade=useRef(1),arrival=useRef(false),gain=useRef(1),ramp=useRef(0);
  const [visible,setVisible]=useState(false),[playing,setPlaying]=useState(false),[volume,setVolume]=useState(0),[time,setTime]=useState(0),[duration,setDuration]=useState(0),[fullscreen,setFullscreen]=useState(false),[error,setError]=useState('');
  const send=(method,value)=>frame.current?.contentWindow?.postMessage({method,...(value===undefined?{}:{value})},'https://player.vimeo.com');
  const subscribe=()=>{['play','pause','timeupdate','volumechange','loaded','error'].forEach(value=>send('addEventListener',value));send('getDuration');send('getPaused');send('getVolume');};
@@ -40,7 +40,7 @@ function VimeoPlayer({piece,paused}){
   return()=>{observer.disconnect();document.removeEventListener('visibilitychange',hide);};
  },[]);
  useEffect(()=>{
-  if(!visible||paused){setPlaying(false);setVolume(0);preferredVolume.current=0;setTime(0);setDuration(0);}
+  if(!visible||paused){cancelAnimationFrame(ramp.current);gain.current=1;setPlaying(false);setVolume(0);preferredVolume.current=0;setTime(0);setDuration(0);}
  },[visible,paused]);
  useEffect(()=>{
   const receive=e=>{
@@ -48,7 +48,7 @@ function VimeoPlayer({piece,paused}){
    let data=e.data;try{if(typeof data==='string')data=JSON.parse(data);}catch{return;}
    if(!data||typeof data!=='object')return;
    if(data.event==='ready'||data.event==='loaded'){subscribe();setError('');}
-   if(data.event==='play')setPlaying(true);
+   if(data.event==='play'){setPlaying(true);if(!arrival.current){arrival.current=true;preferredVolume.current=1;gain.current=0;const started=performance.now();const rise=now=>{gain.current=Math.min(1,(now-started)/1200);send('setVolume',Math.round(gain.current*fade.current*100)/100);if(gain.current<1)ramp.current=requestAnimationFrame(rise);};ramp.current=requestAnimationFrame(rise);}}
    if(data.event==='pause')setPlaying(false);
    if(data.event==='timeupdate'){setTime(data.data.seconds);setDuration(data.data.duration);}
    if(data.event==='volumechange')setVolume(data.data.volume);
@@ -59,7 +59,7 @@ function VimeoPlayer({piece,paused}){
   };
   const changed=()=>setFullscreen(document.fullscreenElement===container.current);
   window.addEventListener('message',receive);document.addEventListener('fullscreenchange',changed);
-  return()=>{window.removeEventListener('message',receive);document.removeEventListener('fullscreenchange',changed);};
+  return()=>{window.removeEventListener('message',receive);document.removeEventListener('fullscreenchange',changed);cancelAnimationFrame(ramp.current);};
  },[]);
  useEffect(()=>{
  let tick=0,last=-1,stopped=false;
@@ -67,7 +67,7 @@ function VimeoPlayer({piece,paused}){
  const panel=container.current.closest('.work-panel'),next=panel?.nextElementSibling;
  const edge=next?next.getBoundingClientRect().top:panel?.getBoundingClientRect().bottom;
  const factor=Math.max(0,Math.min(1,(edge??innerHeight)/innerHeight));fade.current=factor;
- const level=Math.round(preferredVolume.current*factor*100)/100;
+ const level=Math.round(preferredVolume.current*gain.current*factor*100)/100;
  if(level!==last){send('setVolume',level);last=level;}
  if(factor===0&&!stopped){send('pause');stopped=true;}else if(factor>0)stopped=false;
  };
@@ -75,7 +75,7 @@ function VimeoPlayer({piece,paused}){
  window.addEventListener('scroll',schedule,{passive:true});window.addEventListener('resize',schedule);schedule();
  return()=>{cancelAnimationFrame(tick);window.removeEventListener('scroll',schedule);window.removeEventListener('resize',schedule);};
  },[visible,paused]);
- const changeVolume=value=>{preferredVolume.current=value;send('setVolume',value*fade.current);};
+ const changeVolume=value=>{cancelAnimationFrame(ramp.current);gain.current=1;preferredVolume.current=value;send('setMuted',false);send('setVolume',value*fade.current);};
  const toggleFullscreen=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if(container.current.requestFullscreen)await container.current.requestFullscreen();else send('requestFullscreen');}catch{setError('Fullscreen is unavailable in this browser.');}};
  const clock=n=>Math.floor((n||0)/60)+':'+String(Math.floor((n||0)%60)).padStart(2,'0');
  return <div ref={container} className="vimeo-player vimeo-container">
