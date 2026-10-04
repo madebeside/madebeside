@@ -72,11 +72,12 @@ body:has(.contact-destination) .site-header .made-wordmark img{opacity:0}
 
 .floating-photos{position:relative;width:100%;height:100%;background:#121111;overflow:hidden}
 .floating-photo{position:absolute;left:var(--x);top:var(--y);width:var(--size);animation:photo-drift var(--duration) ease-in-out var(--delay) infinite alternate}
-.floating-photo button{width:100%;border:0;padding:0;display:block;background:none;transform:rotate(var(--tilt));transition:transform .45s ease;cursor:pointer;box-shadow:0 16px 35px #0007}
+.floating-photo button{width:100%;border:0;padding:0;display:block;background:none;transform:rotate(var(--tilt));transition:transform .45s ease;cursor:pointer;border-radius:8px;overflow:hidden;box-shadow:0 16px 35px #0007}
 .floating-photo img{width:100%;height:auto;max-height:36vh;object-fit:contain;display:block}
 .floating-photo:hover,.floating-photo:focus-within{z-index:5}
-.floating-photo button:hover,.floating-photo button:focus-visible{transform:rotate(0deg) scale(1.13);outline:2px solid #16db65;outline-offset:4px}
-@keyframes photo-drift{from{transform:translate(0,0)}to{transform:translate(7px,-12px)}}
+.floating-photo button:hover,.floating-photo button:focus-visible{transform:rotate(0deg) scale(1.13);}
+.floating-photo button:focus-visible{outline:2px solid #f5f5f0;outline-offset:5px}
+@keyframes photo-drift{0%{transform:translate(-5px,7px) rotate(-1deg)}50%{transform:translate(8px,-10px) rotate(1deg)}100%{transform:translate(-7px,-20px) rotate(-1.5deg)}}
 .photos-paused .floating-photo{animation-play-state:paused}
 .photo-detail{border:0;padding:0;max-width:1100px;width:90vw;max-height:88svh;background:#121111;color:#f5f5f0}
 .photo-detail::backdrop{background:#121111d9}
@@ -88,5 +89,5 @@ body:has(.contact-destination) .site-header .made-wordmark img{opacity:0}
 .photo-detail button{background:#16db65;color:#121111;padding:12px 18px;border:0;font:inherit;cursor:pointer;min-height:44px}
 .photo-close{align-self:flex-end}.photo-nav{display:flex;gap:12px}
 .photo-detail button:focus-visible{outline:2px solid #f5f5f0;outline-offset:4px}
-@media(max-width:767px){.floating-photo{width:26%;left:calc(var(--x)*.93);top:var(--y)}.floating-photo:nth-child(4){left:70%;top:29%}.floating-photo img{max-height:23vh}.photo-detail-layout{grid-template-columns:1fr}.photo-detail-layout>img{height:48svh}.photo-detail-copy{padding:20px;gap:16px}.photo-detail-copy p{font-size:16px}}
+@media(max-width:767px){.floating-photo{width:18%;left:calc(var(--x)*.94);top:var(--y)}.floating-photo img{max-height:23vh}.photo-detail-layout{grid-template-columns:1fr}.photo-detail-layout>img{height:48svh}.photo-detail-copy{padding:20px;gap:16px}.photo-detail-copy p{font-size:16px}}
 @media(prefers-reduced-motion:reduce){.floating-photo{animation:none}.floating-photo button{transition:none}}
