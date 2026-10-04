@@ -29,7 +29,7 @@ export default function Work({paused,pieces,collectionError,fullPage=false}){
 
 
 function VimeoPlayer({piece,paused}){
- const container=useRef(),frame=useRef();
+ const container=useRef(),frame=useRef(),preferredVolume=useRef(0),fade=useRef(1);
  const [visible,setVisible]=useState(false),[playing,setPlaying]=useState(false),[volume,setVolume]=useState(0),[time,setTime]=useState(0),[duration,setDuration]=useState(0),[fullscreen,setFullscreen]=useState(false),[error,setError]=useState('');
  const send=(method,value)=>frame.current?.contentWindow?.postMessage({method,...(value===undefined?{}:{value})},'https://player.vimeo.com');
  const subscribe=()=>{['play','pause','timeupdate','volumechange','loaded','error'].forEach(value=>send('addEventListener',value));send('getDuration');send('getPaused');send('getVolume');};
@@ -40,7 +40,7 @@ function VimeoPlayer({piece,paused}){
   return()=>{observer.disconnect();document.removeEventListener('visibilitychange',hide);};
  },[]);
  useEffect(()=>{
-  if(!visible||paused){setPlaying(false);setVolume(0);setTime(0);setDuration(0);}
+  if(!visible||paused){setPlaying(false);setVolume(0);preferredVolume.current=0;setTime(0);setDuration(0);}
  },[visible,paused]);
  useEffect(()=>{
   const receive=e=>{
@@ -61,16 +61,31 @@ function VimeoPlayer({piece,paused}){
   window.addEventListener('message',receive);document.addEventListener('fullscreenchange',changed);
   return()=>{window.removeEventListener('message',receive);document.removeEventListener('fullscreenchange',changed);};
  },[]);
+ useEffect(()=>{
+ let tick=0,last=-1,stopped=false;
+ const update=()=>{tick=0;if(!frame.current||document.fullscreenElement===container.current)return;
+ const panel=container.current.closest('.work-panel'),next=panel?.nextElementSibling;
+ const edge=next?next.getBoundingClientRect().top:panel?.getBoundingClientRect().bottom;
+ const factor=Math.max(0,Math.min(1,(edge??innerHeight)/innerHeight));fade.current=factor;
+ const level=Math.round(preferredVolume.current*factor*100)/100;
+ if(level!==last){send('setVolume',level);last=level;}
+ if(factor===0&&!stopped){send('pause');stopped=true;}else if(factor>0)stopped=false;
+ };
+ const schedule=()=>{if(!tick)tick=requestAnimationFrame(update);};
+ window.addEventListener('scroll',schedule,{passive:true});window.addEventListener('resize',schedule);schedule();
+ return()=>{cancelAnimationFrame(tick);window.removeEventListener('scroll',schedule);window.removeEventListener('resize',schedule);};
+ },[visible,paused]);
+ const changeVolume=value=>{preferredVolume.current=value;send('setVolume',value*fade.current);};
  const toggleFullscreen=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else if(container.current.requestFullscreen)await container.current.requestFullscreen();else send('requestFullscreen');}catch{setError('Fullscreen is unavailable in this browser.');}};
  const clock=n=>Math.floor((n||0)/60)+':'+String(Math.floor((n||0)%60)).padStart(2,'0');
  return <div ref={container} className="vimeo-player vimeo-container">
- {visible&&!paused?<><iframe ref={frame} onLoad={subscribe} className="vimeo-player" src={'https://player.vimeo.com/video/'+piece.vimeoId+'?background=1&autoplay=1&muted=1&loop=1&controls=0&title=0&byline=0&portrait=0&dnt=1'} title="Videography by Made Beside" allow="autoplay; fullscreen; picture-in-picture" allowFullScreen tabIndex={-1}/>
+ {visible&&!paused?<><div className="video-surface"><iframe ref={frame} onLoad={subscribe} className="vimeo-player" src={'https://player.vimeo.com/video/'+piece.vimeoId+'?background=1&autoplay=1&muted=1&loop=1&controls=0&title=0&byline=0&portrait=0&dnt=1'} title="Videography by Made Beside" allow="autoplay; fullscreen; picture-in-picture" allowFullScreen tabIndex={-1}/><button className="video-hit-area" aria-label={playing?"Pause video":"Play video"} onClick={()=>send(playing?"pause":"play")}/></div>
  <div className="video-controls" role="group" aria-label="Video controls">
  <button onClick={()=>send(playing?'pause':'play')} aria-label={playing?'Pause video':'Play video'}>{playing?'Pause':'Play'}</button>
  <label className="video-seek"><span className="sr-only">Seek video</span><input type="range" min="0" max={duration||1} step=".1" value={Math.min(time,duration||1)} disabled={!duration} aria-valuetext={clock(time)+' of '+clock(duration)} onChange={e=>send('setCurrentTime',Number(e.target.value))}/></label>
  <span className="video-time">{clock(time)} / {clock(duration)}</span>
- <button onClick={()=>send('setVolume',volume?0:1)} aria-label={volume?'Mute sound':'Enable sound'}>{volume?'Mute':'Sound'}</button>
- <label className="video-volume"><span className="sr-only">Volume</span><input type="range" min="0" max="1" step=".05" value={volume} onChange={e=>send('setVolume',Number(e.target.value))}/></label>
+ <button onClick={()=>changeVolume(volume?0:1)} aria-label={volume?'Mute sound':'Enable sound'}>{volume?'Mute':'Sound'}</button>
+ <label className="video-volume"><span className="sr-only">Volume</span><input type="range" min="0" max="1" step=".05" value={volume} onChange={e=>changeVolume(Number(e.target.value))}/></label>
  <button onClick={toggleFullscreen}>{fullscreen?'Exit fullscreen':'Fullscreen'}</button>
  </div>{error&&<p className="video-error" role="status">{error} <a href={piece.src} target="_blank" rel="noopener noreferrer">Watch on Vimeo</a></p>}</>:<span className="sr-only">Videography. Motion is paused.</span>}
  </div>;

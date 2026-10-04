@@ -58,3 +58,10 @@ body:has(.contact-destination) .site-header .made-wordmark img{opacity:0}
 .vimeo-container:fullscreen{background:#121111;width:100vw;height:100vh}
 @media(hover:none),(max-width:767px){.video-controls{opacity:1;transform:none;gap:4px;flex-wrap:wrap;left:8px;right:8px;bottom:8px}.video-time{font-size:11px}.video-volume{width:55px}.video-controls button{font-size:12px}}
 @media(prefers-reduced-motion:reduce){.video-controls{transition:none}}
+
+.vimeo-container{display:flex;flex-direction:column}
+.video-surface{position:relative;flex:1;min-height:0}
+.video-hit-area{position:absolute;inset:0;width:100%;height:100%;border:0;background:transparent;cursor:pointer}
+.video-hit-area:focus-visible{outline:3px solid #16db65;outline-offset:-3px}
+.video-controls,.vimeo-container:hover .video-controls,.vimeo-container:focus-within .video-controls{position:relative;inset:auto;flex:none;width:100%;margin:0;border-radius:0;opacity:1;transform:none;background:#121111;border:0;border-top:1px solid #555}
+@media(hover:none),(max-width:767px){.video-controls{inset:auto;border-radius:0}}
