@@ -71,29 +71,16 @@ body:has(.contact-destination) .site-header .made-wordmark img{opacity:0}
 .video-controls button:focus-visible,.video-controls input:focus-visible{outline-color:#121111}
 
 
-.photo-editorial{height:100%;display:flex;flex-direction:column;background:#121111;color:#f5f5f0;padding:16px 24px;gap:14px;overflow:hidden}
-.photo-editorial-toolbar{display:flex;justify-content:space-between;align-items:center;flex:none;font-size:13px}
-.photo-editorial button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;min-height:44px}
-.photo-editorial-toolbar button,.photo-focus-navigation button{border-bottom:1px solid #686868;padding:8px 0}
-.photo-focus-layout{display:grid;grid-template-columns:1.5fr 1fr;gap:6%;min-height:0;flex:1}
-.photo-focus-image{min-height:0;height:100%;animation:photo-arrive .55s ease both}
-.photo-focus-image img{height:100%;width:100%;object-fit:contain;display:block}
-.photo-focus-caption{display:flex;flex-direction:column;justify-content:center;gap:20px;padding-right:6%}
-.photo-focus-caption h4{font-size:clamp(28px,4vw,64px);line-height:1.04;margin:0;letter-spacing:-.035em}
-.photo-focus-caption p{font-size:16px;line-height:1.5;margin:0;max-width:32ch}
-.photo-count{font-size:12px;color:#16db65}
-.photo-focus-navigation{display:flex;gap:24px}
-.photo-thumbnail-strip{display:flex;justify-content:center;gap:10px;flex:none;overflow-x:auto}
-.photo-thumbnail-strip button{padding:0;opacity:.5;transition:opacity .25s,transform .25s;flex:none}
-.photo-thumbnail-strip img{height:62px;width:46px;object-fit:cover;display:block;border-radius:3px}
-.photo-thumbnail-strip button:hover,.photo-thumbnail-strip button[aria-pressed=true]{opacity:1;transform:translateY(-2px)}
-.photo-editorial button:focus-visible{outline:2px solid #16db65;outline-offset:3px}
-.photo-contact-sheet{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));align-items:center;gap:14px;flex:1;min-height:0;overflow:auto}
-.photo-contact-sheet button{padding:0;text-align:left;transition:transform .3s}
-.photo-contact-sheet button:hover{transform:translateY(-8px)}
-.photo-contact-sheet img{width:100%;height:auto;display:block;border-radius:4px}
-.photo-contact-sheet span{display:block;font-size:11px;line-height:1.4;margin-top:10px}
-@keyframes photo-arrive{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-.still .photo-focus-image{animation:none}
-@media(max-width:767px){.photo-editorial{padding:12px;gap:8px}.photo-focus-layout{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto;gap:8px}.photo-focus-caption{padding:0;gap:6px}.photo-focus-caption h4{font-size:24px}.photo-focus-caption p{font-size:12px;max-width:none}.photo-focus-navigation{justify-content:space-between}.photo-count{display:none}.photo-thumbnail-strip{justify-content:flex-start;gap:8px}.photo-thumbnail-strip img{height:46px;width:35px}.photo-contact-sheet{grid-template-columns:repeat(3,minmax(0,1fr));align-items:start}.photo-contact-sheet span{font-size:10px}}
-@media(prefers-reduced-motion:reduce){.photo-focus-image{animation:none}.photo-editorial button{transition:none}}
+
+.photo-reel{height:100%;display:flex;flex-direction:column;background:#121111;color:#f5f5f0;overflow:hidden;padding:20px 0}
+.photo-reel-stage{position:relative;flex:1;min-height:0;touch-action:pan-y}
+.photo-reel-photo{position:absolute;left:50%;top:50%;width:18%;height:92%;border:0;padding:0;background:transparent;transform:translate(-50%,-50%) translateX(calc(var(--slot)*112%)) scale(var(--scale));transition:transform .65s cubic-bezier(.22,1,.36,1),opacity .65s;cursor:pointer}
+.photo-reel-photo img{height:100%;width:100%;object-fit:contain;display:block;border-radius:6px}
+.photo-reel-numbers{position:relative;flex:none;height:60px}
+.photo-reel-number{position:absolute;left:50%;top:0;width:18%;height:60px;border:0;background:none;color:inherit;font:inherit;font-size:20px;transform:translateX(-50%) translateX(calc(var(--slot)*112%));transition:transform .65s cubic-bezier(.22,1,.36,1),opacity .65s;cursor:pointer}
+.photo-reel-number[aria-current=true]{color:#16db65}
+.photo-reel-photo[aria-hidden=true],.photo-reel-number[aria-hidden=true]{pointer-events:none}
+.photo-reel button:focus-visible{outline:2px solid #16db65;outline-offset:-3px}
+.still .photo-reel-photo,.still .photo-reel-number{transition:none}
+@media(max-width:767px){.photo-reel-number{font-size:16px}.photo-reel{padding:12px 0}}
+@media(prefers-reduced-motion:reduce){.photo-reel-photo,.photo-reel-number{transition:none}}
