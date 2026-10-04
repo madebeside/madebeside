@@ -19,7 +19,7 @@ export default function Work({paused,pieces,collectionError,fullPage=false}){
 
       {piece.id==='photography'?<FloatingPhotos paused={paused}/>:piece.placeholder?<><MediaArtwork variant={i}/><span className="placeholder-label">Coming soon · {piece.format}</span></>:piece.vimeoId?<VimeoPlayer piece={piece} paused={paused}/>:piece.kind==='video'?<video src={piece.src} controls preload="metadata" playsInline aria-label={piece.title}>{piece.captions&&<track kind="captions" src={piece.captions} srcLang="en" label="English" default/>}</video>:<button className="image-expand" onClick={()=>setExpanded(expanded===piece.id?null:piece.id)} aria-expanded={expanded===piece.id} aria-label={(expanded===piece.id?'Close expanded view of ':'Expand ')+piece.title}><img src={piece.src} alt={piece.alt||piece.title} loading="lazy"/><span className="media-action">{expanded===piece.id?'Close view ':'View image '}</span></button>}
 
-    </div><div className="project-bottom"><p>{piece.description||(piece.placeholder?'':piece.kind==='video'?'Videography':'Photography')}</p>{!fullPage&&<a href="/portfolio/">{piece.placeholder?'Explore the portfolio':'View collection'}</a>}</div></div></article>)}
+    </div>{piece.id!=='photography'&&<div className="project-bottom"><p>{piece.description||(piece.placeholder?'':piece.kind==='video'?'Videography':'Photography')}</p>{!fullPage&&<a href="/portfolio/">{piece.placeholder?'Explore the portfolio':'View collection'}</a>}</div>}</div></article>)}
 
     {collectionError&&<p className="collection-error" role="status">The collection couldn’t load. <a href="/portfolio/">Try the portfolio.</a></p>}
 
