@@ -22,7 +22,7 @@ export default function LoadingIntro({onReady}){
     window.addEventListener('sbm:intro-ready',skipped);
     let loaded=15;update(loaded);
     const track=(promise,weight)=>Promise.resolve(promise).catch(()=>{}).then(()=>{loaded+=weight;update(loaded);});
-    const hero=document.querySelector('.hero-visual img,.white-hero .hero-photo img');
+    const hero=document.querySelector('.cut-inline-media img');
     const imageReady=hero?hero.decode():Promise.resolve();
     Promise.all([track(document.fonts.ready,25),track(imageReady,60)]).then(()=>update(100));
     return()=>{cancelled=true;tween?.kill();exit?.kill();window.removeEventListener('sbm:intro-ready',skipped);};

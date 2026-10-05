@@ -29,7 +29,7 @@ export default function Work({paused,pieces,collectionError,fullPage=false}){
 
 
 
-function VimeoPlayer({piece,paused}){
+export function VimeoPlayer({piece,paused}){
  const container=useRef(),frame=useRef(),preferredVolume=useRef(0),fade=useRef(1),arrival=useRef(false),gain=useRef(1),ramp=useRef(0);
  const [visible,setVisible]=useState(false),[playing,setPlaying]=useState(false),[volume,setVolume]=useState(0),[time,setTime]=useState(0),[duration,setDuration]=useState(0),[fullscreen,setFullscreen]=useState(false),[error,setError]=useState('');
  const send=(method,value)=>frame.current?.contentWindow?.postMessage({method,...(value===undefined?{}:{value})},'https://player.vimeo.com');
