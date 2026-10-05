@@ -4,6 +4,7 @@ import App from './App';
 import {config} from './config';
 import './identity.css';
 import './welcoming.css';
+import './white-edition.css';
 document.documentElement.style.setProperty('--green',config.accent);
 const initial=document.getElementById('initial-portfolio');
 const root=document.getElementById('root');

@@ -13,7 +13,7 @@ export default function Work({paused,pieces,collectionError,fullPage=false}){
 
   useEffect(()=>{const escape=e=>{if(e.key==='Escape')setExpanded(null);};window.addEventListener('keydown',escape);return()=>window.removeEventListener('keydown',escape);},[]);
 
-  return <section className="work" id="work" ref={root} tabIndex="-1" aria-label="Selected work">{!fullPage&&<div className="work-intro"><h2>See what<br/>we mean.</h2><a className="round-link" href="/portfolio/"><span>Full<br/>portfolio</span><span aria-hidden="true"></span></a></div>}
+  return <section className="work" id="work" ref={root} tabIndex="-1" aria-label="Selected work">{!fullPage&&<div className="work-intro"><h2>Made to<br/>mean something.</h2><a className="line-link" href="/portfolio/">Explore the portfolio</a></div>}
 
     {pieces.map((piece,i)=><article className={'work-panel '+(expanded===piece.id?'is-expanded':'')} key={piece.id} style={{zIndex:i+1}}><div className={'work-screen work-screen-'+i%3}><div className="project-heading"><h3>{piece.title}</h3><span className="project-counter">{String(i+1).padStart(2,'0')}<span> / {String(pieces.length).padStart(2,'0')}</span></span></div><div className={'project-media '+(piece.placeholder?'is-placeholder':'')}>
 
