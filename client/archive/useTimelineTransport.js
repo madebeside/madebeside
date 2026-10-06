@@ -10,7 +10,7 @@ export default function useTimelineTransport(clips,paused){
   const stop=useCallback(()=>{
     running.current=false;clock.current?.setActive(false);video.current?.pause();setPlaying(false);
   },[]);
-  const sync=useCallback(()=>{
+  const sync=useCallback((forceSeek=false)=>{
     const time=position.current,clip=timelineClipAt(arrangement.current,time);
     if(scrubber.current){scrubber.current.value=String(time);scrubber.current.setAttribute('aria-valuetext',timecode(time));}
     if(playhead.current)playhead.current.style.left=(time/TIMELINE_LENGTH*100)+'%';
@@ -21,12 +21,12 @@ export default function useTimelineTransport(clips,paused){
     if(!element||element.dataset.clip!==clip?.id){element?.pause();return;}
     if(element.readyState<1)return;
     const localTime=Math.min(time-clip.start,Math.max(0,element.duration-.04));
-    if(Math.abs(element.currentTime-localTime)>.22)element.currentTime=localTime;
+    if(forceSeek||Math.abs(element.currentTime-localTime)>.22)element.currentTime=localTime;
     if(running.current&&element.paused){
       const attempt=element.play();attempt?.catch(()=>{if(video.current===element&&running.current)stop();});
     }else if(!running.current&&!element.paused)element.pause();
   },[stop]);
-  const seek=useCallback(value=>{position.current=timelineTime(value);sync();},[sync]);
+  const seek=useCallback(value=>{position.current=timelineTime(value);sync(true);},[sync]);
   const toggle=useCallback(()=>{
     if(running.current){stop();return;}
     if(position.current>=TIMELINE_LENGTH)position.current=0;
@@ -44,7 +44,7 @@ export default function useTimelineTransport(clips,paused){
     document.addEventListener('visibilitychange',hide);sync();
     return()=>{subscription.remove();clock.current=null;observer.disconnect();document.removeEventListener('visibilitychange',hide);running.current=false;video.current?.pause();};
   },[stop,sync]);
-  useEffect(()=>{sync();},[clips,sync]);
+  useEffect(()=>{sync(true);},[clips,sync]);
   useEffect(()=>{if(paused)stop();},[paused,stop]);
   return {video,section,scrubber,playhead,timeLabel,playing,active:clips.find(clip=>clip.id===activeId)||null,seek,toggle,stop,sync};
 }

@@ -18,8 +18,11 @@ export default function AsciiWordmark({paused,className='',text}){
         if(!loaded)return;
         maskCtx.clearRect(0,0,width,height);
         if(text){
-          const fontSize=Math.min(52,Math.max(34,innerWidth*.033));
-          const lines=text.split('\n'),lineHeight=fontSize*1.08;
+          let fontSize=Math.min(52,Math.max(28,innerWidth*.033));
+          const lines=text.split('\n');
+          maskCtx.font='500 '+fontSize+'px "DM", Arial, sans-serif';maskCtx.letterSpacing=(-fontSize*.055)+'px';
+          fontSize*=Math.min(1,(width-32)/Math.max(...lines.map(line=>maskCtx.measureText(line).width)));
+          const lineHeight=fontSize*1.08;
           maskCtx.font='500 '+fontSize+'px "DM", Arial, sans-serif';maskCtx.textAlign='center';maskCtx.textBaseline='middle';maskCtx.fillStyle='#121111';maskCtx.letterSpacing=(-fontSize*.055)+'px';
           lines.forEach((line,i)=>maskCtx.fillText(line,width/2,height/2+(i-(lines.length-1)/2)*lineHeight));
         }else{
@@ -51,7 +54,7 @@ export default function AsciiWordmark({paused,className='',text}){
         }
         if(pointer.energy<.01)return;
         for(const p of points){
-          const force=pointerForce(pointer.x,pointer.y,p.x,p.y,text?88:110,(text?14:30)*pointer.energy);
+          const force=pointerForce(pointer.x,pointer.y,p.x,p.y,text?44:110,(text?14:30)*pointer.energy);
           if(Math.abs(force.x)+Math.abs(force.y)<.02)continue;
           ctx.clearRect(p.x-cell/2,p.y-cell/2,cell,cell);
           ctx.fillStyle=p.seed%7===0?'#16db65':'#121111';
