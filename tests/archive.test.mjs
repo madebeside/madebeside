@@ -4,6 +4,33 @@ import {coverRect,pointerForce,springStep,sceneProgress,finishReelDrag} from '..
 import {selectWork,selectFeaturedWork} from '../client/archive/work-data.js';
 import {subscribe} from '../client/archive/scheduler.js';
 import {watchVideos} from '../client/archive/video-lifecycle.js';
+import * as motion from '../client/archive/motion.js';
+
+test('centered projects resolve to full opacity without drift',()=>{
+  assert.deepEqual(motion.projectVisual?.(216,400,800),{focus:1,opacity:1,scale:1,y:0});
+});
+test('far projects stay bounded after large scroll jumps',()=>{
+  assert.deepEqual(motion.projectVisual?.(3000,400,800),{focus:0,opacity:.225,scale:.97,y:-14});
+  assert.deepEqual(motion.projectVisual?.(-3000,400,800),{focus:0,opacity:.225,scale:.97,y:14});
+});
+test('project focus reverses with scrolling and pauses at full readability',()=>{
+  const first=motion.projectVisual?.(600,400,800);
+  assert.ok(first?.opacity>.225&&first.opacity<1);
+  motion.projectVisual?.(-3000,400,800);
+  assert.deepEqual(motion.projectVisual?.(600,400,800),first);
+  assert.deepEqual(motion.projectVisual?.(3000,400,800,true),{focus:1,opacity:1,scale:1,y:0});
+});
+test('the scroll owner advances before scene subscribers even when registered later',t=>{
+  const saved={window:globalThis.window,document:globalThis.document,requestAnimationFrame:globalThis.requestAnimationFrame,cancelAnimationFrame:globalThis.cancelAnimationFrame};
+  const frames=new Map();let next=0,position=0,drawn;
+  globalThis.window={};globalThis.document=new EventTarget();globalThis.document.hidden=false;
+  globalThis.requestAnimationFrame=callback=>{frames.set(++next,callback);return next;};globalThis.cancelAnimationFrame=id=>frames.delete(id);
+  const scene=subscribe(()=>{drawn=position;});
+  const scroll=subscribe(()=>{position=123;},true,undefined,-10);
+  t.after(()=>{scene.remove();scroll.remove();Object.assign(globalThis,saved);});
+  const [id,draw]=frames.entries().next().value;frames.delete(id);draw(100);
+  assert.equal(drawn,123);
+});
 
 test('cover crop fills landscape and portrait surfaces without stretching',()=>{
   assert.deepEqual(coverRect(400,200,100,100),{x:-50,y:0,w:200,h:100});

@@ -8,12 +8,14 @@ import SceneCursor from './archive/SceneCursor';
 import {PortfolioPage,CapabilitiesPage,ApproachPage,ContactPage,ServicePage} from './archive/ArchivePages';
 import {selectWork} from './archive/work-data';
 import {watchVideos} from './archive/video-lifecycle';
+import useSmoothScroll from './archive/useSmoothScroll';
 
 const staticPieces=config.workPlaceholders.filter(p=>!p.placeholder);
 export default function App({pathname='/',initialPieces=config.workPlaceholders}){
   const [paused,setPaused]=useState(false),[open,setOpen]=useState(false);
   const [pieces,setPieces]=useState(()=>selectWork([...initialPieces,...staticPieces]));
   const [collectionError,setCollectionError]=useState(false);
+  useSmoothScroll(paused||open);
   const closeMenu=useCallback(()=>setOpen(false),[]);
   useEffect(()=>{
     const controller=new AbortController();
