@@ -28,7 +28,7 @@ export default function App({pathname='/',initialPieces=config.workPlaceholders}
   },[]);
   useEffect(()=>{document.documentElement.classList.toggle('motion-off',paused);},[paused]);
   useEffect(()=>{
-    const videos=[...document.querySelectorAll('video:not([data-project-film])')];
+    const videos=[...document.querySelectorAll('video:not([data-project-film]):not([data-timeline-film])')];
     return watchVideos(videos,paused);
   },[paused,pieces]);
   function toggleMotion(){const next=!paused;setPaused(next);try{sessionStorage.setItem('madebeside-motion',next?'paused':'running');}catch{}}
