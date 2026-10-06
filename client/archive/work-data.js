@@ -16,3 +16,8 @@ export function selectWork(items=[]){
   });
 }
 export function selectFeaturedWork(items,limit=2){return selectWork(items).filter(p=>p.featured&&!p.gallery&&!p.vimeoId).slice(0,limit);}
+import {projectPlaceholders} from './project-placeholders.js';
+export function selectEditorialWork(items=[],featuredOnly=false){
+  const projects=selectWork(items).filter(p=>!p.gallery&&!p.vimeoId&&(!featuredOnly||p.featured));
+  return projects.length?projects.map(p=>({...p,placeholder:false,format:p.kind==='photo'?'Photography':'Film'})):projectPlaceholders;
+}

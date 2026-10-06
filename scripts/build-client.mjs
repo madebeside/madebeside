@@ -3,7 +3,7 @@ import {readFile,writeFile,mkdir} from 'node:fs/promises';
 import {pathToFileURL} from 'node:url';
 import {resolve} from 'node:path';
 import {pages} from './seo.config.mjs';
-// Static policy and studio pages share the computational edition's dark identity.
+// Static policy and studio pages share the editorial edition's light identity.
 for(const route of ['privacy','terms','cookies','refunds','accessibility','studio']){
  const file='web/'+route+'/index.html';
  const html=await readFile(file,'utf8');

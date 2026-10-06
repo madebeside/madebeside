@@ -5,6 +5,18 @@ import {selectWork,selectFeaturedWork} from '../client/archive/work-data.js';
 import {subscribe} from '../client/archive/scheduler.js';
 import {watchVideos} from '../client/archive/video-lifecycle.js';
 import * as motion from '../client/archive/motion.js';
+import * as work from '../client/archive/work-data.js';
+
+test('editorial work preserves published content while excluding the wedding defaults',()=>{
+  const rows=work.selectEditorialWork?.([{id:'weddings',gallery:true},{id:'film',vimeoId:'1232712180'},{id:'brand',title:'A public project',kind:'photo',src:'/media/brand.jpg',featured:true}],true);
+  assert.deepEqual(rows?.map(row=>row.id),['brand']);
+  assert.equal(rows?.[0]?.title,'A public project');
+});
+test('an empty editorial collection uses explicitly identified placeholders',()=>{
+  const rows=work.selectEditorialWork?.([]);
+  assert.equal(rows?.length,3);
+  assert.ok(rows?.every(row=>row.placeholder===true&&row.src.startsWith('/placeholders/')));
+});
 
 test('centered projects resolve to full opacity without drift',()=>{
   assert.deepEqual(motion.projectVisual?.(216,400,800),{focus:1,opacity:1,scale:1,y:0});
