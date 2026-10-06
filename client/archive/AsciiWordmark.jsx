@@ -61,7 +61,7 @@ export default function AsciiWordmark({paused,className='',text}){
       fail(){setReady(false);},
       dispose(){alive=false;image.onload=null;}
     };
-    if(text){document.fonts.load('500 52px "DM"').then(()=>{if(alive){loaded=true;renderer.onReady?.();}});}
+    if(text){document.fonts.load('500 52px "DM"').then(()=>{if(alive){loaded=true;renderer.onReady?.();}}).catch(()=>{if(alive)setReady(false);});}
     else{image.onload=()=>{if(!alive)return;loaded=true;renderer.onReady?.();};image.src=source;}
     return renderer;
   },[text]);

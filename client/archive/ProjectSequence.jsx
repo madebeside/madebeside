@@ -14,14 +14,17 @@ export default function ProjectSequence({paused,pieces,featuredOnly=false}){
     function draw(){
       let nearest=-1,distance=Infinity;
       const scroll=window.scrollY;
+      positions.forEach((pos,index)=>{
+        const top=pos.top-scroll,delta=Math.abs(top+pos.height/2-viewport*.52);
+        if(top<viewport&&top+pos.height>0&&delta<distance){distance=delta;nearest=index;}
+      });
       rows.forEach((item,index)=>{
         const pos=positions[index];if(!pos)return;
-        const top=pos.top-scroll,state=projectVisual(top,pos.height,viewport,paused);
+        const top=pos.top-scroll,state=projectVisual(top,pos.height,viewport,paused,nearest===index);
         item.visual.style.opacity=state.opacity;
-        item.visual.style.transform=paused?'none':`translate3d(0,${state.y}px,0) scale(${state.scale})`;
+        item.visual.style.scale=state.scale;
+        item.visual.style.transform=paused?'none':`translate3d(0,${state.y}px,0)`;
         item.copy.style.opacity=.85+.15*state.focus;
-        const delta=Math.abs(top+pos.height/2-viewport*.52);
-        if(top<viewport&&top+pos.height>0&&delta<distance){distance=delta;nearest=index;}
       });
       if(nearest!==current){current=nearest;setActive(nearest);rows.forEach((item,i)=>item.row.classList.toggle('is-focused',i===nearest));}
     }
@@ -39,10 +42,10 @@ export default function ProjectSequence({paused,pieces,featuredOnly=false}){
     document.fonts?.ready.then(()=>{if(alive)measure();});
     return()=>{alive=false;clock.remove();observer.disconnect();resize.disconnect();window.removeEventListener('scroll',scroll);window.removeEventListener('resize',measure);};
   },[paused,projects]);
-  return <section className="project-sequence" aria-label="Selected projects" id="selected-work" ref={container}>
-    {projects.map((project,i)=><article className="project-row" data-project-row key={project.id} id={project.id} aria-labelledby={project.id+'-title'}>
+  return <section className="project-sequence" aria-label="Selected projects" id="selected-work" ref={container} tabIndex={-1}>
+    {projects.map((project,i)=><article className="project-row" data-project-row key={project.id} id={project.id} aria-labelledby={project.id+'-title'} tabIndex={-1}>
       <div className="project-copy"><h2 id={project.id+'-title'}>{project.title}</h2><p>{project.description}</p><a className="project-next" href={'#'+(projects[i+1]?.id||'project-invitation')}>{i<projects.length-1?'Next project':'Make something together'}<span aria-hidden="true">↘</span></a></div>
-      <ProjectFilm project={project} active={active===i} paused={paused}/>
+      <ProjectFilm key={project.src} project={project} active={active===i} paused={paused}/>
     </article>)}
   </section>;
 }

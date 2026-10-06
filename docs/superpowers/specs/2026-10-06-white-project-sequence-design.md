@@ -12,7 +12,7 @@ Three approaches were considered: a fullscreen pinned player; a rigid grid of pr
 
 The opening reproduces the supplied image's atmosphere: centered, modest two-line DM Sans text, exactly “Good things,” and “made beside.” The existing character renderer is applied to those words in ink. It keeps bounded cursor repulsion and changing glyphs. The background is a soft green, lavender and peach gradient. A transparent fade extends past the hero into the white foundation; its rectangle never ends with visible colour.
 
-Below it, three project placeholders use one consistent grid: approximately 32% copy, 68% landscape video. Each media frame uses 16:9, with a desktop maximum height of 62svh. Media moves in normal document flow. Copy remains beside its own media. White space separates projects without panels or alternating page colours. Neighbouring media fades toward 22.5% opacity and 97% scale; focused media returns to full opacity and scale. Copy never disappears. Small reversible vertical movement follows scrolling. Mobile uses copy above landscape media, retaining the same hierarchy without pinned content.
+Below it, three project placeholders use one consistent grid: approximately 32% copy, 68% landscape video. Each media frame uses 16:9, with a desktop maximum height of 62svh. Media moves in normal document flow. Copy remains beside its own media. White space separates projects without panels or alternating page colours. Neighbouring media fades toward 22.5% opacity and 97% scale; focused media returns to full opacity and scale. Copy never disappears. A 0.2-second opacity and 0.6-second scale handoff follows the nearest visible project; small reversible vertical movement follows scrolling directly. Mobile uses copy above landscape media, retaining the same hierarchy without pinned content.
 
 Placeholder titles are “Project 01”, “Project 02”, and “Project 03”; formats are Brand film, Social series, and Campaign film. Each explicitly says Placeholder. Their original looping geometric films use DM Sans and Made Beside's green, ink and paper. They imply no clients, results or completed commissions. No wedding photography or wedding film is rendered on the homepage or work page.
 
@@ -31,10 +31,14 @@ Manual pause and reduced motion destroy smooth scrolling, display all project co
 - `AsciiWordmark`: reusable transparent character renderer for the original logo or the two-line opening text.
 - `useSmoothScroll`: one Lenis lifecycle, subscribed to the existing clock before scenes.
 - `project-motion`: pure viewport focus and transform calculations.
-- `ProjectSequence`: semantic project rows and scroll focus; `ProjectFilm`: playback and accessible pause/play control.
+- `ProjectSequence({paused,pieces,featuredOnly=false})`: semantic project rows, published content or explicit empty-collection placeholders, and scroll focus; `ProjectFilm`: playback and accessible pause/play control.
 - `project-placeholders`: explicit temporary content, separate from published CMS data.
 - Existing contact/portfolio APIs, SSR, metadata and backend contracts remain.
 
 ## Verification
 
 Test motion focus reversal, scale/opacity bounds, pause fallback, and priority ordering before implementation. Run the complete existing suite and production build. Inspect desktop and mobile in the real browser, including the gradient handoff, consecutive projects in both scroll directions, media playback, motion pause, navigation, keyboard focus, and absence of wedding assets/agency dropdowns. Save screenshots. Report browser observations separately from frame-rate claims and hosting status.
+
+## Final verification
+
+Implementation and browser evidence are recorded in `docs/white-sequence-review.md`. Both dimensions are constrained at the desktop height cap to preserve 16:9. Published CMS/SSR content remains available; wedding defaults are excluded. The original DM Sans text remains sharp at rest and receives changing cells and a localized cursor disturbance. A fresh source review and its regression fixes were completed; 31 tests pass. The local design branch remains available for further visual review.

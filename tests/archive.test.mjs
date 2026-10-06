@@ -6,6 +6,33 @@ import {subscribe} from '../client/archive/scheduler.js';
 import {watchVideos} from '../client/archive/video-lifecycle.js';
 import * as motion from '../client/archive/motion.js';
 import * as work from '../client/archive/work-data.js';
+import * as media from '../client/archive/video-lifecycle.js';
+
+test('manual film playback supports play-pause-play while automatic motion stays paused',()=>{
+  const video={paused:true,play(){this.paused=false;return Promise.resolve();},pause(){this.paused=true;}};
+  const player=media.createProjectPlayback?.(video,{active:true,paused:true,visible:true,hidden:false});
+  player?.toggle();assert.equal(video.paused,false);
+  player.toggle();assert.equal(video.paused,true);
+  player.toggle();assert.equal(video.paused,false);
+  player.update({hidden:true});assert.equal(video.paused,true);
+  player.update({hidden:false});assert.equal(video.paused,true);
+});
+test('an offscreen project stops explicit playback and a manually paused film stays paused',()=>{
+  const video={paused:true,play(){this.paused=false;return Promise.resolve();},pause(){this.paused=true;}};
+  const player=media.createProjectPlayback?.(video,{active:true,paused:false,visible:true,hidden:false});
+  assert.equal(video.paused,false);
+  player.toggle();assert.equal(video.paused,true);
+  player.update({hidden:true});player.update({hidden:false});assert.equal(video.paused,true);
+  player.toggle();assert.equal(video.paused,false);
+  player.update({visible:false});assert.equal(video.paused,true);
+});
+test('a failed CMS film without a poster retains an explanation and recovery actions',async()=>{
+  const {default:Failure}=await import('../client/archive/ProjectMediaFailure.js');
+  const {createElement}=await import('react');const {renderToStaticMarkup}=await import('react-dom/server');
+  const html=renderToStaticMarkup(createElement(Failure,{project:{id:'published',title:'Published film',kind:'video',src:'/media/published'}}));
+  assert.match(html,/couldn’t load/);assert.match(html,/<button[^>]*>Try again<\/button>/);
+  assert.match(html,/href="\/media\/published"/);assert.match(html,/Open film/);
+});
 
 test('editorial work preserves published content while excluding the wedding defaults',()=>{
   const rows=work.selectEditorialWork?.([{id:'weddings',gallery:true},{id:'film',vimeoId:'1232712180'},{id:'brand',title:'A public project',kind:'photo',src:'/media/brand.jpg',featured:true}],true);
@@ -19,17 +46,18 @@ test('an empty editorial collection uses explicitly identified placeholders',()=
 });
 
 test('centered projects resolve to full opacity without drift',()=>{
-  assert.deepEqual(motion.projectVisual?.(216,400,800),{focus:1,opacity:1,scale:1,y:0});
+  assert.deepEqual(motion.projectVisual?.(216,400,800,false,true),{focus:1,opacity:1,scale:1,y:0});
 });
 test('far projects stay bounded after large scroll jumps',()=>{
   assert.deepEqual(motion.projectVisual?.(3000,400,800),{focus:0,opacity:.225,scale:.97,y:-14});
   assert.deepEqual(motion.projectVisual?.(-3000,400,800),{focus:0,opacity:.225,scale:.97,y:14});
 });
 test('project focus reverses with scrolling and pauses at full readability',()=>{
-  const first=motion.projectVisual?.(600,400,800);
-  assert.ok(first?.opacity>.225&&first.opacity<1);
+  const first=motion.projectVisual?.(600,400,800,false,true);
+  assert.equal(first?.opacity,1);
+  assert.equal(motion.projectVisual?.(600,400,800,false,false)?.opacity,.225);
   motion.projectVisual?.(-3000,400,800);
-  assert.deepEqual(motion.projectVisual?.(600,400,800),first);
+  assert.deepEqual(motion.projectVisual?.(600,400,800,false,true),first);
   assert.deepEqual(motion.projectVisual?.(3000,400,800,true),{focus:1,opacity:1,scale:1,y:0});
 });
 test('the scroll owner advances before scene subscribers even when registered later',t=>{

@@ -6,3 +6,21 @@ export function watchVideos(videos,paused){
   const change=()=>videos.forEach(apply);document.addEventListener('visibilitychange',change);
   return()=>{observer.disconnect();document.removeEventListener('visibilitychange',change);visible.clear();};
 }
+export function createProjectPlayback(video,initial){
+  let state={active:false,paused:false,visible:false,hidden:false,...initial},intent='auto',disposed=false;
+  function apply(){
+    if(disposed)return;
+    const play=state.visible&&!state.hidden&&(intent==='play'||(intent==='auto'&&state.active&&!state.paused));
+    if(play)video.play().catch(()=>{});else video.pause();
+  }
+  apply();
+  return {
+    update(next){
+      if(disposed)return;
+      if(intent==='play'&&((next.paused&&!state.paused)||next.hidden||next.visible===false))intent='auto';
+      state={...state,...next};apply();
+    },
+    toggle(){if(disposed)return;intent=video.paused?'play':'pause';apply();},
+    dispose(){disposed=true;video.pause();}
+  };
+}

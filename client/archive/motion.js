@@ -25,10 +25,8 @@ export function finishReelDrag(state,total,paused){
   return next;
 }
 // Focus is a function of position, so the same scroll position is reversible.
-export function projectVisual(top,height,viewport,paused=false){
+export function projectVisual(top,height,viewport,paused=false,focused=false){
   if(paused||viewport<=0)return {focus:1,opacity:1,scale:1,y:0};
-  const distance=Math.abs(top+height/2-viewport*.52);
-  const progress=clamp((distance-viewport*.15)/(viewport*.55),0,1);
-  const focus=1-progress*progress*(3-2*progress);
+  const focus=Number(focused);
   return {focus,opacity:.225+.775*focus,scale:.97+.03*focus,y:clamp((viewport*.52-top-height/2)*.035,-14,14)};
 }
