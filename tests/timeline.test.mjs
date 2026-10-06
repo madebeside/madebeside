@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {advanceTimelineTime,initialTimeline,moveTimelineClip,timelineClipAt,timelineTime,timecode,TIMELINE_LENGTH} from '../client/archive/timeline-model.js';
+import * as edit from '../client/archive/timeline-model.js';
+import {createTimelineHistory,commitTimelineEdit,undoTimelineEdit,redoTimelineEdit} from '../client/archive/timeline-history.js';
 
 test('time input remains finite and bounded, including failed input',()=>{
   assert.equal(TIMELINE_LENGTH,32);
@@ -54,4 +56,63 @@ test('irregular frame gaps advance elapsed time and invalid intervals stay safe'
   assert.equal(advanceTimelineTime(position,-500),5);
   assert.equal(advanceTimelineTime(position,NaN),5);
   assert.equal(advanceTimelineTime(31,3000),32);
+});
+test('trimming preserves source bounds and keeps the opposite edge fixed',()=>{
+  const original=initialTimeline(),id=original[0].id;
+  const left=edit.trimTimelineClip(original,id,'left',2);
+  assert.deepEqual([left[0].start,left[0].duration,left[0].offset],[2,6,2]);
+  const right=edit.trimTimelineClip(left,id,'right',5);
+  assert.deepEqual([right[0].start,right[0].duration,right[0].offset],[2,3,2]);
+  const extended=edit.trimTimelineClip(right,id,'left',0);
+  assert.deepEqual([extended[0].start,extended[0].duration,extended[0].offset],[0,5,0]);
+  assert.equal(edit.trimTimelineClip(left,id,'right',30)[0].duration,6);
+  assert.equal(edit.trimTimelineClip(left,id,'left',30)[0].duration,.5);
+  assert.equal(original[0].duration,8);
+});
+test('splitting joins the exact source frames and rejects tiny pieces',()=>{
+  const original=initialTimeline(),id=original[0].id;
+  const split=edit.splitTimelineClip(original,id,3,'split-1');
+  assert.equal(split.length,4);
+  assert.deepEqual([split[0].start,split[0].duration,split[0].offset],[0,3,0]);
+  assert.deepEqual([split[1].start,split[1].duration,split[1].offset],[3,5,3]);
+  assert.equal(timelineClipAt(split,3).id,'split-1');
+  assert.equal(edit.splitTimelineClip(original,id,.1,'tiny'),original);
+  assert.equal(edit.splitTimelineClip(original,id,9,'outside'),original);
+});
+test('adding and duplicating use independent instances of bounded real placeholder sources',()=>{
+  const original=initialTimeline();
+  const added=edit.addTimelineClip(original,'project-02','added',31,2);
+  assert.deepEqual([added.at(-1).assetId,added.at(-1).start,added.at(-1).offset],['project-02',24,0]);
+  const trimmed=edit.trimTimelineClip(original,original[0].id,'left',2);
+  const duplicated=edit.duplicateTimelineClip(trimmed,original[0].id,'duplicate');
+  assert.deepEqual([duplicated.at(-1).id,duplicated.at(-1).offset,duplicated.at(-1).duration],['duplicate',2,6]);
+  assert.equal(edit.addTimelineClip(original,'missing','bad',0),original);
+});
+test('hidden layers reveal the next underlying clip and all-hidden yields a gap',()=>{
+  const original=initialTimeline();const overlap=moveTimelineClip(original,original[1].id,0,2);
+  assert.equal(timelineClipAt(overlap,2,[2]).id,original[0].id);
+  assert.equal(timelineClipAt(overlap,2,[0,1,2]),null);
+});
+test('snapping can be disabled for frame-level editing and shuffle changes the cut',()=>{
+  const original=initialTimeline();
+  assert.equal(moveTimelineClip(original,original[0].id,.13,0,true)[0].start,.25);
+  assert.ok(Math.abs(moveTimelineClip(original,original[0].id,.13,0,false)[0].start-4/30)<.00001);
+  const shuffled=edit.shuffleTimelineClips(original);
+  assert.notDeepEqual(shuffled,original);assert.deepEqual(shuffled.map(c=>c.id).sort(),original.map(c=>c.id).sort());
+  assert.ok(shuffled.every(c=>c.start>=0&&c.start+c.duration<=32));
+});
+test('undo and redo restore complete edits without creating no-op history',()=>{
+  const original=initialTimeline(),base=createTimelineHistory(original);
+  const changed=commitTimelineEdit(base,edit.trimTimelineClip(original,original[0].id,'left',2));
+  const restored=undoTimelineEdit(changed);
+  assert.deepEqual(restored.present,original);
+  assert.deepEqual(redoTimelineEdit(restored).present,changed.present);
+  assert.equal(commitTimelineEdit(base,structuredClone(original)),base);
+  const fork=commitTimelineEdit(restored,edit.shuffleTimelineClips(original));
+  assert.equal(fork.future.length,0);assert.deepEqual(base.present,original);
+});
+test('playback speed scales elapsed time while invalid rates use normal speed',()=>{
+  assert.equal(advanceTimelineTime(0,1000,.5),.5);
+  assert.equal(advanceTimelineTime(0,1000,2),2);
+  assert.equal(advanceTimelineTime(0,1000,NaN),1);
 });

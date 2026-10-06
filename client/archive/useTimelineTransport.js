@@ -2,16 +2,17 @@ import {useCallback,useEffect,useRef,useState} from 'react';
 import {subscribe} from './scheduler';
 import {advanceTimelineTime,timelineClipAt,timelineTime,timecode,TIMELINE_LENGTH} from './timeline-model';
 
-export default function useTimelineTransport(clips,paused){
+export default function useTimelineTransport(clips,paused,{hiddenTracks=[],speed=1}={}){
   const video=useRef(),section=useRef(),scrubber=useRef(),playhead=useRef(),timeLabel=useRef();
   const clock=useRef(),lastFrame=useRef(null),position=useRef(0),running=useRef(false),arrangement=useRef(clips),activeRef=useRef(clips[0]?.id);
   arrangement.current=clips;
+  const options=useRef({hiddenTracks,speed});options.current={hiddenTracks,speed};
   const [playing,setPlaying]=useState(false),[activeId,setActiveId]=useState(clips[0]?.id);
   const stop=useCallback(()=>{
     running.current=false;lastFrame.current=null;clock.current?.setActive(false);video.current?.pause();setPlaying(false);
   },[]);
   const sync=useCallback((forceSeek=false)=>{
-    const time=position.current,clip=timelineClipAt(arrangement.current,time);
+    const time=position.current,clip=timelineClipAt(arrangement.current,time,options.current.hiddenTracks);
     if(scrubber.current){scrubber.current.value=String(time);scrubber.current.setAttribute('aria-valuetext',timecode(time));}
     if(playhead.current)playhead.current.style.left=(time/TIMELINE_LENGTH*100)+'%';
     if(timeLabel.current)timeLabel.current.textContent=timecode(time);
@@ -20,7 +21,8 @@ export default function useTimelineTransport(clips,paused){
     // Wait for the newly selected source to mount before touching its media clock.
     if(!element||element.dataset.clip!==clip?.id){element?.pause();return;}
     if(element.readyState<1)return;
-    const localTime=Math.min(time-clip.start,Math.max(0,element.duration-.04));
+    const localTime=Math.min(clip.offset+time-clip.start,Math.max(0,element.duration-.04));
+    if(element.playbackRate!==options.current.speed)element.playbackRate=options.current.speed;
     if(forceSeek||Math.abs(element.currentTime-localTime)>.22)element.currentTime=localTime;
     if(running.current&&element.paused){
       const attempt=element.play();attempt?.catch(()=>{if(video.current===element&&running.current)stop();});
@@ -34,7 +36,7 @@ export default function useTimelineTransport(clips,paused){
   },[stop,sync]);
   useEffect(()=>{
     const subscription=subscribe(time=>{
-      position.current=advanceTimelineTime(position.current,time-(lastFrame.current??time));lastFrame.current=time;sync();
+      position.current=advanceTimelineTime(position.current,time-(lastFrame.current??time),options.current.speed);lastFrame.current=time;sync();
       if(position.current>=TIMELINE_LENGTH)stop();
     },false,stop);
     clock.current=subscription;
@@ -45,6 +47,8 @@ export default function useTimelineTransport(clips,paused){
     return()=>{subscription.remove();clock.current=null;observer.disconnect();document.removeEventListener('visibilitychange',hide);running.current=false;video.current?.pause();};
   },[stop,sync]);
   useEffect(()=>{sync(true);},[clips,sync]);
+  useEffect(()=>{lastFrame.current=running.current?performance.now():null;sync(true);},[hiddenTracks,speed,sync]);
   useEffect(()=>{if(paused)stop();},[paused,stop]);
-  return {video,section,scrubber,playhead,timeLabel,playing,active:clips.find(clip=>clip.id===activeId)||null,seek,toggle,stop,sync};
+  const getTime=useCallback(()=>position.current,[]);
+  return {video,section,scrubber,playhead,timeLabel,playing,active:clips.find(clip=>clip.id===activeId)||null,seek,toggle,stop,sync,getTime};
 }

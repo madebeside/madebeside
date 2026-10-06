@@ -2,7 +2,7 @@ import React from 'react';
 import AsciiWordmark from './AsciiWordmark';
 import ProjectSequence from './ProjectSequence';
 import EditingTimeline from './EditingTimeline';
-import ReviewCarousel from './ReviewCarousel';
+import ReviewSpread from './ReviewSpread';
 import './editorial.css';
 
 export default function ArchiveHome({paused,pieces}){
@@ -15,6 +15,6 @@ export default function ArchiveHome({paused,pieces}){
     </section>
     <ProjectSequence paused={paused} pieces={pieces} featuredOnly/>
     <EditingTimeline paused={paused}/>
-    <ReviewCarousel paused={paused}/>
+    <ReviewSpread paused={paused}/>
   </div>;
 }

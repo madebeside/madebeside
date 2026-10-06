@@ -6,22 +6,63 @@ export function timelineTime(value){
   const number=Number(value);
   return Number.isFinite(number)?Math.max(0,Math.min(TIMELINE_LENGTH,number)):0;
 }
-export function advanceTimelineTime(position,elapsedMilliseconds){
+export function advanceTimelineTime(position,elapsedMilliseconds,speed=1){
   const elapsed=Number(elapsedMilliseconds);
-  return timelineTime(position+(Number.isFinite(elapsed)?Math.max(0,elapsed)/1000:0));
+  const rate=Number.isFinite(Number(speed))?Math.max(.5,Math.min(2,Number(speed))):1;
+  return timelineTime(position+(Number.isFinite(elapsed)?Math.max(0,elapsed)/1000*rate:0));
 }
 export function initialTimeline(){
-  return projectPlaceholders.map((project,index)=>({...project,start:index*8,duration:8,track:index%2}));
+  return projectPlaceholders.map((project,index)=>({...project,assetId:project.id,sourceDuration:8,offset:0,start:index*8,duration:8,track:index%2}));
 }
-export function moveTimelineClip(clips,id,start,track){
+function snapTime(time,snap=true){return Math.round(timelineTime(time)*(snap?4:30))/(snap?4:30);}
+export function moveTimelineClip(clips,id,start,track,snap=true){
   return clips.map(clip=>clip.id!==id?clip:{...clip,
-    start:Math.round(Math.min(TIMELINE_LENGTH-clip.duration,timelineTime(start))*4)/4,
+    start:Math.min(TIMELINE_LENGTH-clip.duration,snapTime(start,snap)),
     track:Math.max(0,Math.min(TRACK_COUNT-1,Math.round(Number(track)||0)))
   });
 }
-export function timelineClipAt(clips,time){
+export function trimTimelineClip(clips,id,edge,time,snap=true){
+  return clips.map(clip=>{
+    if(clip.id!==id)return clip;
+    const end=clip.start+clip.duration,target=snapTime(time,snap);
+    if(edge==='left'){
+      const start=Math.max(0,clip.start-clip.offset,Math.min(end-.5,target));
+      return {...clip,start,duration:end-start,offset:clip.offset+start-clip.start};
+    }
+    if(edge==='right')return {...clip,duration:Math.max(.5,Math.min(TIMELINE_LENGTH,clip.start+clip.sourceDuration-clip.offset,target)-clip.start)};
+    return clip;
+  });
+}
+export function splitTimelineClip(clips,id,time,newId){
+  const clip=clips.find(item=>item.id===id),position=timelineTime(time);
+  if(!clip||position-clip.start<.5||clip.start+clip.duration-position<.5)return clips;
+  const left=position-clip.start;
+  return clips.flatMap(item=>item.id!==id?[item]:[
+    {...clip,duration:left},
+    {...clip,id:newId,start:position,duration:clip.duration-left,offset:clip.offset+left}
+  ]);
+}
+export function addTimelineClip(clips,assetId,newId,time,track=2){
+  const source=initialTimeline().find(clip=>clip.assetId===assetId);if(!source)return clips;
+  const [added]=moveTimelineClip([{...source,id:newId}],newId,time,track);
+  return [...clips,added];
+}
+export function duplicateTimelineClip(clips,id,newId){
+  const source=clips.find(clip=>clip.id===id);if(!source)return clips;
+  const [added]=moveTimelineClip([{...source,id:newId}],newId,source.start+source.duration,(source.track+1)%TRACK_COUNT);
+  return [...clips,added];
+}
+export function shuffleTimelineClips(clips){
+  if(!clips.length)return clips;
+  const reordered=[...clips.slice(1),clips[0]];let cursor=0,layer=0;
+  return reordered.map((clip,index)=>{
+    if(cursor+clip.duration>TIMELINE_LENGTH){cursor=0;layer=(layer+1)%TRACK_COUNT;}
+    const result={...clip,start:cursor,track:(layer+index)%TRACK_COUNT};cursor+=clip.duration;return result;
+  });
+}
+export function timelineClipAt(clips,time,hiddenTracks=[]){
   const position=timelineTime(time);
-  return clips.filter(clip=>position>=clip.start&&position<clip.start+clip.duration)
+  return clips.filter(clip=>!hiddenTracks.includes(clip.track)&&position>=clip.start&&position<clip.start+clip.duration)
     .sort((a,b)=>b.track-a.track||b.start-a.start)[0]||null;
 }
 export function timecode(time){
