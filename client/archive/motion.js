@@ -1,0 +1,21 @@
+export const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
+export function coverRect(sw,sh,cw,ch){
+  if(!(sw>0&&sh>0&&cw>0&&ch>0))return {x:0,y:0,w:0,h:0};
+  const scale=Math.max(cw/sw,ch/sh),w=sw*scale,h=sh*scale;
+  return {x:(cw-w)/2,y:(ch-h)/2,w,h};
+}
+export function pointerForce(px,py,x,y,radius,max){
+  if(px===null||py===null||!Number.isFinite(px)||!Number.isFinite(py))return {x:0,y:0};
+  const dx=x-px,dy=y-py,distance=Math.hypot(dx,dy);
+  if(distance===0||distance>=radius)return {x:0,y:0};
+  const force=(1-distance/radius)*max;
+  return {x:dx/distance*force,y:dy/distance*force};
+}
+export function springStep(position,velocity,target,dt){
+  const step=clamp(Number.isFinite(dt)?dt:0,0,.032);
+  const nextVelocity=velocity+((target-position)*180-velocity*26)*step;
+  return {position:position+nextVelocity*step,velocity:nextVelocity};
+}
+export function sceneProgress(scrollY,top,height,viewportHeight){
+  return clamp((scrollY-top+viewportHeight)/(height+viewportHeight),0,1);
+}
