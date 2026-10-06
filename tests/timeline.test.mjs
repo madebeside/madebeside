@@ -116,3 +116,39 @@ test('playback speed scales elapsed time while invalid rates use normal speed',(
   assert.equal(advanceTimelineTime(0,1000,2),2);
   assert.equal(advanceTimelineTime(0,1000,NaN),1);
 });
+test('identical overlaps play the top visible instance and preserve every buried clip',()=>{
+  let clips=edit.addTimelineClip(initialTimeline(),'project-01','brand-copy',0,2);
+  clips=edit.addTimelineClip(clips,'project-03','campaign-copy',0,2);
+  assert.equal(timelineClipAt(clips,0).id,'campaign-copy');
+  assert.equal(edit.timelineStackOrder(clips).at(-1).id,'campaign-copy');
+  assert.equal(edit.timelineStackOrder(clips).length,clips.length);
+  const moved=moveTimelineClip(clips,'brand-copy',2,2);
+  assert.equal(timelineClipAt(moved,3).id,'brand-copy');
+  assert.equal(edit.timelineStackOrder(moved).at(-1).id,'brand-copy');
+  assert.equal(timelineClipAt(clips,0,[2]).id,'project-01');
+});
+test('minimum-duration films use compact controls at either zoom limit',()=>{
+  for(const trackWidth of [766,1586]){
+    assert.equal(edit.timelineClipIsCompact({duration:.5},trackWidth),true);
+    assert.equal(edit.timelineClipIsCompact({duration:8},trackWidth),false);
+  }
+  assert.equal(edit.timelineClipIsCompact({duration:2},766),true);
+});
+test('cancelling a held drag before undo or reset makes its later release inert',async()=>{
+  const {takeTimelineGesture}=await import('../client/archive/timeline-gesture.js');
+  const initial=initialTimeline(),edited=moveTimelineClip(initial,'project-01',2,0);
+  const held={current:{latest:moveTimelineClip(edited,'project-01',4,2),moved:true}};
+  let history=commitTimelineEdit(createTimelineHistory(initial),edited);
+  const cancelled=takeTimelineGesture(held);
+  assert.ok(cancelled.moved);
+  history=undoTimelineEdit(history);
+  const release=takeTimelineGesture(held);
+  if(release?.moved)history=commitTimelineEdit(history,release.latest);
+  assert.deepEqual(history.present,initial);
+  assert.equal(history.future.length,1);
+  assert.deepEqual(redoTimelineEdit(history).present,edited);
+  held.current={latest:edited,moved:true};
+  takeTimelineGesture(held);history=createTimelineHistory(initialTimeline());
+  assert.equal(takeTimelineGesture(held),null);
+  assert.deepEqual(history.present,initial);
+});

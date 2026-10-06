@@ -25,7 +25,7 @@
 
 ### Task 1: Editing model and transport
 
-**Files:** `timeline-model.js`, `timeline-history.js`, `useTimelineTransport.js`, `tests/timeline.test.mjs`.
+**Files:** `timeline-model.js`, `timeline-history.js`, `timeline-gesture.js`, `useTimelineTransport.js`, `tests/timeline.test.mjs`.
 **Interfaces:** `trimTimelineClip(clips,id,edge,time,snap)`, `splitTimelineClip(clips,id,time,newId)`, `addTimelineClip(clips,assetId,newId,time,track)`, `duplicateTimelineClip(clips,id,newId)`, `shuffleTimelineClips(clips)`, existing move/selection helpers plus optional snap/hidden layers/rate. History has `{past,present,future}` through create/commit/undo/redo functions. Transport exposes `getTime` and consumes `{hiddenTracks,speed}`.
 
 - [x] Write and run failing model tests for trim bounds, split offsets/continuity, source instance creation, snapping, history, hidden layers and speed.
@@ -45,5 +45,5 @@
 
 ### Task 4: Verify and review
 
-- [ ] Run full suite/build and responsive checks, commit implementation, request one fresh read-only review from the starting commit `a03ffc1`.
-- [ ] Fix material findings with failing-then-passing tests, save screenshots/verification notes, complete this plan and leave the preview ready.
+- [x] Run full suite/build and responsive checks, commit implementation, request one fresh read-only review from the starting commit `a03ffc1`.
+- [x] Fix material findings with failing-then-passing tests, save screenshots/verification notes, complete this plan and leave the preview ready.

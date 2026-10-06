@@ -62,8 +62,19 @@ export function shuffleTimelineClips(clips){
 }
 export function timelineClipAt(clips,time,hiddenTracks=[]){
   const position=timelineTime(time);
-  return clips.filter(clip=>!hiddenTracks.includes(clip.track)&&position>=clip.start&&position<clip.start+clip.duration)
-    .sort((a,b)=>b.track-a.track||b.start-a.start)[0]||null;
+  let winner=null;
+  for(const clip of clips){
+    if(hiddenTracks.includes(clip.track)||position<clip.start||position>=clip.start+clip.duration)continue;
+    if(!winner||clip.track>winner.track||clip.track===winner.track&&clip.start>=winner.start)winner=clip;
+  }
+  return winner;
+}
+export function timelineStackOrder(clips){
+  // Stable sorting puts the latest instance on top when layer and start match.
+  return [...clips].sort((a,b)=>a.track-b.track||a.start-b.start);
+}
+export function timelineClipIsCompact(clip,trackWidth){
+  return clip.duration/TIMELINE_LENGTH*trackWidth<64;
 }
 export function timecode(time){
   const frames=Math.floor(timelineTime(time)*30+.00001),seconds=Math.floor(frames/30);

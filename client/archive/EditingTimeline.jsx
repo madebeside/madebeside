@@ -1,6 +1,7 @@
 import React,{useEffect,useRef,useState} from 'react';
-import {initialTimeline,moveTimelineClip,trimTimelineClip,splitTimelineClip,addTimelineClip,duplicateTimelineClip,shuffleTimelineClips,timecode,TIMELINE_LENGTH,TRACK_COUNT} from './timeline-model';
+import {initialTimeline,moveTimelineClip,trimTimelineClip,splitTimelineClip,addTimelineClip,duplicateTimelineClip,shuffleTimelineClips,timelineStackOrder,timelineClipIsCompact,timecode,TIMELINE_LENGTH,TRACK_COUNT} from './timeline-model';
 import {createTimelineHistory,commitTimelineEdit,undoTimelineEdit,redoTimelineEdit} from './timeline-history';
+import {takeTimelineGesture} from './timeline-gesture';
 import {projectPlaceholders} from './project-placeholders';
 import useTimelineTransport from './useTimelineTransport';
 import ProjectMediaFailure from './ProjectMediaFailure';
@@ -21,16 +22,26 @@ export default function EditingTimeline({paused}){
   const [history,setHistory]=useState(()=>createTimelineHistory(initialTimeline())),[draft,setDraft]=useState(null);
   const [selected,setSelected]=useState('project-01'),[dragging,setDragging]=useState(null),[notice,setNotice]=useState('');
   const [hiddenTracks,setHiddenTracks]=useState([]),[snap,setSnap]=useState(true),[zoom,setZoom]=useState(1),[speed,setSpeed]=useState(1);
+  const [trackWidth,setTrackWidth]=useState(766);
   const tracks=useRef(),drag=useRef(),serial=useRef(0),suppressClick=useRef(false);
   const clips=draft||history.present,selectedClip=clips.find(clip=>clip.id===selected);
+  const stack=timelineStackOrder(clips);
   const transport=useTimelineTransport(clips,paused,{hiddenTracks,speed});
+  useEffect(()=>{const observer=new ResizeObserver(([entry])=>setTrackWidth(entry.contentRect.width));observer.observe(tracks.current);return()=>observer.disconnect();},[]);
   const nextId=asset=>asset+'-edit-'+(++serial.current);
-  const choose=(clip,time=clip?.start||0)=>{setSelected(clip?.id||null);transport.seek(time);};
+  function release(gesture){if(gesture?.target.hasPointerCapture(gesture.pointerId))gesture.target.releasePointerCapture(gesture.pointerId);}
+  function cancelGesture(){
+    const gesture=takeTimelineGesture(drag);if(!gesture)return;
+    release(gesture);setDragging(null);setDraft(null);suppressClick.current=true;
+  }
+  const choose=(clip,time=clip?.start||0)=>{cancelGesture();setSelected(clip?.id||null);transport.seek(time);};
   function commit(next,selection=selected,message='Cut updated.',time){
+    cancelGesture();
     transport.stop();setHistory(current=>commitTimelineEdit(current,next));setDraft(null);
     const clip=next.find(item=>item.id===selection)||next[0];choose(clip,time??clip?.start??0);setNotice(message);
   }
   function restore(direction){
+    cancelGesture();
     const next=direction==='undo'?undoTimelineEdit(history):redoTimelineEdit(history);
     transport.stop();setDraft(null);setHistory(next);choose(next.present.find(clip=>clip.id===selected)||next.present[0]);setNotice(direction==='undo'?'Edit undone.':'Edit restored.');
   }
@@ -52,13 +63,12 @@ export default function EditingTimeline({paused}){
     const clip=next.find(item=>item.id===origin.id);transport.seek(origin.mode==='right'?clip.start+clip.duration-.05:clip.start);
   }
   function end(event,cancelled=false){
-    const origin=drag.current;if(!origin)return;
-    drag.current=null;setDragging(null);
-    if(origin.target.hasPointerCapture(origin.pointerId))origin.target.releasePointerCapture(origin.pointerId);
+    const origin=takeTimelineGesture(drag);if(!origin)return;
+    setDragging(null);release(origin);
     if(cancelled){setDraft(null);choose(origin.clip);setNotice('Edit cancelled.');return;}
     if(origin.moved)commit(origin.latest,origin.id,origin.mode==='move'?'Clip moved.':'Clip trimmed.');
   }
-  function lost(){if(drag.current){const origin=drag.current;drag.current=null;setDraft(null);choose(origin.clip);setDragging(null);}}
+  function lost(){const origin=takeTimelineGesture(drag);if(origin){setDraft(null);choose(origin.clip);setDragging(null);}}
   function remove(){if(selectedClip)commit(clips.filter(clip=>clip.id!==selected),null,'Clip removed.');}
   function split(clip=selectedClip){
     if(!clip)return;
@@ -69,7 +79,7 @@ export default function EditingTimeline({paused}){
   function duplicate(){if(selectedClip){const id=nextId(selectedClip.assetId);commit(duplicateTimelineClip(clips,selected,id),id,'Clip duplicated.');}}
   function add(asset){const id=nextId(asset.id);commit(addTimelineClip(clips,asset.id,id,transport.getTime()),id,'Film added to layer 3.');}
   function preview(asset){const existing=clips.find(clip=>clip.assetId===asset.id);if(existing)choose(existing);else add(asset);}
-  function reset(){transport.stop();setHistory(createTimelineHistory(initialTimeline()));setDraft(null);setHiddenTracks([]);setSpeed(1);choose(initialTimeline()[0]);setNotice('A fresh timeline.');}
+  function reset(){cancelGesture();transport.stop();setHistory(createTimelineHistory(initialTimeline()));setDraft(null);setHiddenTracks([]);setSpeed(1);choose(initialTimeline()[0]);setNotice('A fresh timeline.');}
   function key(event,clip,edge){
     if(event.key==='Escape'){if(drag.current){event.preventDefault();end(event,true);}return;}
     if(!edge&&(event.key==='Delete'||event.key==='Backspace')){event.preventDefault();setSelected(clip.id);commit(clips.filter(item=>item.id!==clip.id),null,'Clip removed.');return;}
@@ -115,7 +125,7 @@ export default function EditingTimeline({paused}){
           <input ref={transport.scrubber} className="timeline-scrubber" type="range" min="0" max={TIMELINE_LENGTH} step={snap?'.05':1/30} defaultValue="0" aria-label="Scrub timeline" onInput={event=>transport.seek(event.currentTarget.value)}/>
           <div className="timeline-tracks" ref={tracks}>
             {[2,1,0].map(track=><div className={'timeline-track'+(hiddenTracks.includes(track)?' is-hidden':'')} key={track} aria-hidden="true"/>)}
-            {clips.map(clip=><div key={clip.id} className={'timeline-clip layer-'+clip.track+(selected===clip.id?' is-selected':'')+(dragging===clip.id?' is-dragging':'')+(hiddenTracks.includes(clip.track)?' is-muted':'')} style={{left:clip.start/TIMELINE_LENGTH*100+'%',width:clip.duration/TIMELINE_LENGTH*100+'%',top:(TRACK_COUNT-1-clip.track)*TRACK_HEIGHT+12+'px'}} data-clip-id={clip.id} data-start={clip.start} data-track={clip.track} data-duration={clip.duration} data-offset={clip.offset}>
+            {clips.map(clip=><div key={clip.id} className={'timeline-clip layer-'+clip.track+(selected===clip.id?' is-selected':'')+(dragging===clip.id?' is-dragging':'')+(hiddenTracks.includes(clip.track)?' is-muted':'')+(timelineClipIsCompact(clip,trackWidth)?' is-compact':'')} style={{left:clip.start/TIMELINE_LENGTH*100+'%',width:clip.duration/TIMELINE_LENGTH*100+'%',top:(TRACK_COUNT-1-clip.track)*TRACK_HEIGHT+12+'px',zIndex:dragging===clip.id?stack.length+1:stack.indexOf(clip)+1}} data-clip-id={clip.id} data-start={clip.start} data-track={clip.track} data-duration={clip.duration} data-offset={clip.offset}>
               <button className="timeline-clip-body" {...dragHandlers(clip,'move')} aria-label={'Select '+clip.format+' clip. Layer '+(clip.track+1)+', starts '+timecode(clip.start)+', length '+clip.duration+' seconds'} aria-pressed={selected===clip.id} aria-describedby="timeline-help" onKeyDown={event=>key(event,clip)} onClick={()=>{if(suppressClick.current){suppressClick.current=false;return;}choose(clip);}} data-interactive data-cursor="Move">
                 <span className="clip-name">{clip.format}</span><span className="clip-strip">{[0,1,2,3].map(frame=><img key={frame} src={clip.poster} alt="" draggable="false" width="96" height="54" loading="lazy"/>)}</span>
               </button>
@@ -126,8 +136,9 @@ export default function EditingTimeline({paused}){
         </div>
       </div>
     </div>
-    <div className="cut-bottom"><div className="selected-film"><span className="selected-film-marker" aria-hidden="true"/><span>{selectedClip?selectedClip.format+' · '+timecode(selectedClip.offset)+' → '+timecode(selectedClip.offset+selectedClip.duration):'An open timeline'}</span></div><div className="cut-view"><button aria-pressed={snap} onClick={()=>setSnap(value=>!value)}>Snap {snap?'on':'off'}</button><button onClick={()=>setZoom(value=>Math.max(1,value-.5))} disabled={zoom===1} aria-label="Zoom timeline out">−</button><span>{zoom*100}%</span><button onClick={()=>setZoom(value=>Math.min(2,value+.5))} disabled={zoom===2} aria-label="Zoom timeline in">+</button><button className="timeline-reset" onClick={reset}>Reset ↺</button></div></div>
-    <p id="timeline-help" className="timeline-help">Move a film. Pull its edges. Make a cut.<span>Arrows move or trim. S splits. Delete removes. Space plays. Ctrl / ⌘ Z brings it back.</span></p>
+    {!!clips.length&&<div className="cut-index" aria-label="Every clip in your cut"><span>In your cut</span><div>{clips.map((clip,index)=><button key={clip.id} className={selected===clip.id?'is-selected':''} aria-pressed={selected===clip.id} aria-label={'Select cut clip '+(index+1)+': '+clip.format} onClick={()=>choose(clip)}><i className={'layer-dot layer-'+clip.track} aria-hidden="true"/><span>{String(index+1).padStart(2,'0')} · {clip.format}</span></button>)}</div></div>}
+    <div className="cut-bottom"><div className="selected-edit-controls">{selectedClip?<><button className="selected-film" {...dragHandlers(selectedClip,'move')} onKeyDown={event=>key(event,selectedClip)} aria-label={'Move selected '+selectedClip.format+' clip'} aria-describedby="timeline-help" data-interactive data-cursor="Move"><span className="selected-film-marker" aria-hidden="true"/><span>{selectedClip.format}<small>Drag to move ↔</small></span></button><div className="selected-trims">{['left','right'].map(edge=><button key={edge} {...dragHandlers(selectedClip,edge)} onKeyDown={event=>key(event,selectedClip,edge)} aria-label={'Trim selected '+(edge==='left'?'start':'end')+' of '+selectedClip.format} data-interactive data-cursor="Trim"><span>{edge==='left'?'In':'Out'}</span><strong>{timecode(edge==='left'?selectedClip.offset:selectedClip.offset+selectedClip.duration)}</strong></button>)}</div></>:<span>An open timeline</span>}</div><div className="cut-view"><button aria-pressed={snap} onClick={()=>setSnap(value=>!value)}>Snap {snap?'on':'off'}</button><button onClick={()=>setZoom(value=>Math.max(1,value-.5))} disabled={zoom===1} aria-label="Zoom timeline out">−</button><span>{zoom*100}%</span><button onClick={()=>setZoom(value=>Math.min(2,value+.5))} disabled={zoom===2} aria-label="Zoom timeline in">+</button><button className="timeline-reset" onClick={reset}>Reset ↺</button></div></div>
+    <p id="timeline-help" className="timeline-help">Move a film. Pull its edges. Make a cut.<span>Find overlapping or tiny clips by name below the timeline. Drag In / Out to trim. Arrows move or trim. S splits. Delete removes. Space plays. Ctrl / ⌘ Z brings it back.</span></p>
     <p className="cut-notice" role="status">{notice||'Nothing precious. Everything can be undone.'}</p>
   </section>;
 }

@@ -17,6 +17,16 @@
 
 The films and review text are visibly identified placeholders. No new client claims, footage or attribution were invented. Opening, project sequence, palette, fonts and footer composition are retained. Physical touch hardware and measured frame-rate profiling were not part of these checks.
 
-Full suite: 46 passing tests. Client, server-rendered HTML and Worker builds succeeded. Final review recorded after the implementation commit.
+Full final suite: 49 passing tests. Client, server-rendered HTML and Worker builds succeeded.
+
+## Fresh review and fixes
+
+One independent read-only review covered `a03ffc1..ac218b9`. It found no critical issues or deferred minors. Its three important findings were fixed in one pass, each with a failing then passing regression:
+
+- Active drag ownership is cleared before undo, redo, reset and independent arrangement edits. The regression verifies that a later release cannot overwrite undo or clear redo history. The UI releases pointer capture as part of cancellation. Physical undo-while-holding input was not simulated in the browser.
+- Same-layer overlap priority is now consistent: higher layer, later start, then later inserted instance. The renderer uses the same stack order as the monitor. Browser verification added Brand and Campaign at the identical position and confirmed the visible top Campaign instance was the actual source. Every buried instance can be selected through the cut index and moved with the larger selected-film control; moving the buried Brand changed both the stack and actual preview correctly.
+- Narrow films switch to compact strips, with separate large move and In/Out controls below. Browser verification trimmed a film to 0.5 seconds at 100% and 200% zoom, confirmed the overlapping strip handles were absent, and dragged the 115px move control to change its start while preserving its duration/source offset. Separate trim controls were 68px wide, and all three controls remained inside the 320px phone layout. Frame-level keyboard controls still worked.
+
+No findings were declined, and no minor issues were deferred. Preview motion preferences, viewport overrides, cache changes and blocked-source settings were restored after verification.
 
 Browser screenshots: `output/timeline-review/review-spread-desktop.jpg` and `output/timeline-review/editing-playground-desktop.jpg` (local review artifacts, ignored by Git).
