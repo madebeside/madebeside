@@ -15,9 +15,9 @@ for(const name of (await fs.readdir('drizzle')).filter(n=>n.endsWith('.sql')).so
 }
 const env={ASSETS:localAssets('dist/assets'),DB:sqliteBinding(sqlite),BUCKET:localBucket('.sites-runtime/media'),PORTFOLIO_OWNER_EMAIL:'preview-owner@local.invalid'};
 http.createServer(async(req,res)=>{try{
- const url=new URL(req.url,'http://127.0.0.1:4173');
+ const url=new URL(req.url,'http://127.0.0.1:4188');
  let size=0;const chunks=[];for await(const chunk of req){size+=chunk.length;if(size>(url.pathname==='/api/portfolio'?21*1024*1024:16000)){res.writeHead(413);res.end('Too large');return;}chunks.push(chunk);}
  const response=await worker.fetch(new Request(url,{method:req.method,headers:{...req.headers,'oai-authenticated-user-id':'local-preview','oai-authenticated-user-email':'preview-owner@local.invalid'},body:['GET','HEAD'].includes(req.method)?undefined:Buffer.concat(chunks)}),env,{waitUntil:p=>p.catch(()=>{})});
  res.writeHead(response.status,Object.fromEntries(response.headers));res.end(Buffer.from(await response.arrayBuffer()));
  }catch{res.writeHead(500);res.end('Preview unavailable');}
-}).listen(4173,'127.0.0.1',()=>console.log('Local: http://127.0.0.1:4173'));
+}).listen(4188,'127.0.0.1',()=>console.log('Local: http://127.0.0.1:4188'));
