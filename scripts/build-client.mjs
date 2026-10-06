@@ -9,6 +9,8 @@ for(const route of ['privacy','terms','cookies','refunds','accessibility','studi
  const html=await readFile(file,'utf8');
  if(!html.includes('href="/archive-static.css"'))await writeFile(file,html.replace('</head>','<link rel="stylesheet" href="/archive-static.css"></head>'));
 }
+const notFound=await readFile('web/404.html','utf8');
+if(!notFound.includes('href="/archive-static.css"'))await writeFile('web/404.html',notFound.replace('</head>','<link rel="stylesheet" href="/archive-static.css"></head>'));
 await build();
 await build({configFile:false,root:'client',ssr:{noExternal:true,target:'webworker'},define:{'process.env.NODE_ENV':'"production"'},build:{ssr:'entry-server.jsx',outDir:'../.sites-runtime/ssr',emptyOutDir:true,minify:true,rollupOptions:{output:{entryFileNames:'render.mjs',inlineDynamicImports:true}}}});
 const {renderPage}=await import(pathToFileURL(resolve('.sites-runtime/ssr/render.mjs')));

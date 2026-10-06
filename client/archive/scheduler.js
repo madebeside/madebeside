@@ -7,11 +7,11 @@ function wake(){
 function tick(now){
   frame=0;
   const dt=Math.min((now-last)/1000||1/60,.032);last=now;
-  for(const entry of entries)if(entry.active)entry.draw(now,dt);
+  for(const entry of entries)if(entry.active){try{entry.draw(now,dt);}catch(error){entry.active=false;try{entry.onError?.(error);}catch{}}}
   wake();
 }
-export function subscribe(draw,active=true){
-  const entry={draw,active};entries.add(entry);
+export function subscribe(draw,active=true,onError){
+  const entry={draw,active,onError};entries.add(entry);
   if(!watching){document.addEventListener('visibilitychange',wake);watching=true;}
   wake();
   return {

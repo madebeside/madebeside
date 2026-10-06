@@ -12,7 +12,7 @@ float hash(vec2 p){return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453);}
 void main(){vec2 uv=(gl_FragCoord.xy*2.-u_resolution)/u_resolution.y;vec3 ro=vec3(0.,.05,3.7);vec3 rd=normalize(vec3(uv*.82,-2.));float travel=0.;bool hit=false;for(int i=0;i<48;i++){float d=scene(ro+rd*travel);if(d<.0015){hit=true;break;}travel+=d*.85;if(travel>7.)break;}vec3 color=vec3(.036,.041,.036);color+=vec3(.012,.028,.017)/(1.+length(uv));if(hit){vec3 p=ro+rd*travel,n=normal(p);vec3 light=normalize(vec3(-1.2,1.8,2.));float diffuse=max(dot(n,light),0.);float rim=pow(1.-max(dot(n,-rd),0.),2.);float shine=pow(max(dot(reflect(-light,n),-rd),0.),36.);color=vec3(.035,.7,.255)*(.19+diffuse*.9)+vec3(.56,1.,.7)*shine*.85+vec3(.15,.6,.25)*rim*.7;}float grain=(hash(gl_FragCoord.xy+floor(u_time*18.))-.5)*.048;color+=grain;gl_FragColor=vec4(color,1.);}`;
 
 export default function BrandField({paused,className=''}){
-  const ref=useRef(),[ready,setReady]=useState(false);
+  const ref=useRef(),[ready,setReady]=useState(false),[epoch,setEpoch]=useState(0);
   const setup=useCallback((canvas,size)=>{
     const gl=canvas.getContext('webgl',{alpha:false,antialias:false,powerPreference:'low-power'});if(!gl)return null;
     function shader(type,source){const sh=gl.createShader(type);gl.shaderSource(sh,source);gl.compileShader(sh);if(!gl.getShaderParameter(sh,gl.COMPILE_STATUS)){gl.deleteShader(sh);return null;}return sh;}
@@ -24,13 +24,15 @@ export default function BrandField({paused,className=''}){
     const resolution=gl.getUniformLocation(program,'u_resolution'),pointer=gl.getUniformLocation(program,'u_pointer'),time=gl.getUniformLocation(program,'u_time'),energy=gl.getUniformLocation(program,'u_energy');
     let elapsed=0,lost=false;
     const contextLost=e=>{e.preventDefault();lost=true;setReady(false);};canvas.addEventListener('webglcontextlost',contextLost);
+    const contextRestored=()=>setEpoch(value=>value+1);canvas.addEventListener('webglcontextrestored',contextRestored);
     setReady(true);
     return {
       resize({width,height,dpr}){const ratio=Math.min(dpr,width<700?.85:1.15,1300/width);canvas.width=Math.round(width*ratio);canvas.height=Math.round(height*ratio);gl.viewport(0,0,canvas.width,canvas.height);},
       render(now,dt,p,{width,height}){if(lost)return;elapsed+=dt;gl.uniform2f(resolution,canvas.width,canvas.height);gl.uniform2f(pointer,(p.x??width/2)/width-.5,.5-(p.y??height/2)/height);gl.uniform1f(time,elapsed);gl.uniform1f(energy,p.energy);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);},
-      dispose(){canvas.removeEventListener('webglcontextlost',contextLost);gl.deleteBuffer(buffer);gl.deleteProgram(program);gl.deleteShader(vs);gl.deleteShader(fs);}
+      fail(){lost=true;setReady(false);},
+      dispose(){canvas.removeEventListener('webglcontextlost',contextLost);canvas.removeEventListener('webglcontextrestored',contextRestored);gl.deleteBuffer(buffer);gl.deleteProgram(program);gl.deleteShader(vs);gl.deleteShader(fs);}
     };
-  },[]);
+  },[epoch]);
   useCanvasScene(ref,paused,setup);
   return <div className={'brand-field '+className+(ready?' is-ready':'')} data-interactive data-cursor="Shift"><div className="brand-field-fallback" aria-hidden="true"><i/><i/></div><canvas ref={ref} aria-hidden="true"/></div>;
 }

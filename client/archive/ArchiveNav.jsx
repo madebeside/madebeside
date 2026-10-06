@@ -1,6 +1,6 @@
 import React,{useEffect,useRef} from 'react';
 const links=[['Work','/portfolio/'],['Services','/capabilities/'],['About','/approach/'],['Start a project','/contact/']];
-export default function ArchiveNav({open,onToggle,onClose,pathname}){
+export default function ArchiveNav({open,onToggle,onClose,pathname,paused,onMotion}){
   const menu=useRef(),button=useRef();
   useEffect(()=>{
     if(!open)return;
@@ -19,7 +19,7 @@ export default function ArchiveNav({open,onToggle,onClose,pathname}){
     return()=>{document.body.style.overflow=before;document.removeEventListener('keydown',key);button.current?.focus();};
   },[open,onClose]);
   return <>
-    <header className={'archive-nav '+(open?'menu-is-open':'')}><a className="nav-wordmark" href="/" aria-label="Made Beside home"><img src="/identity/wordmark-source.png" width="2010" height="562" alt="Made Beside"/></a><button ref={button} className="menu-toggle" onClick={onToggle} aria-expanded={open} aria-controls="archive-menu"><span aria-hidden="true">{open?'×':':/'}</span>{open?'Close':'Menu'}</button></header>
+    <header className={'archive-nav '+(open?'menu-is-open':'')}><a className="nav-wordmark" href="/" aria-label="Made Beside home"><img src="/identity/wordmark-source.png" width="2010" height="562" alt="Made Beside"/></a><div className="nav-actions"><button className="motion-control" aria-label={paused?'Resume motion':'Pause motion'} title={paused?'Resume motion':'Pause motion'} aria-pressed={paused} onClick={onMotion} hidden={open}><span aria-hidden="true">{paused?'▶':'Ⅱ'}</span></button><button ref={button} className="menu-toggle" onClick={onToggle} aria-expanded={open} aria-controls="archive-menu"><span aria-hidden="true">{open?'×':':/'}</span>{open?'Close':'Menu'}</button></div></header>
     {open&&<nav id="archive-menu" className="archive-menu" aria-label="Main navigation" ref={menu}><div className="menu-scan" aria-hidden="true">+</div><div className="menu-list">{links.map(([name,url],i)=><a key={url} href={url} aria-current={pathname===url?'page':undefined}><span>{name}</span><span className="menu-arrow" aria-hidden="true">↗</span></a>)}</div><div className="menu-bottom"><a href="mailto:hello@madebeside.com">hello@madebeside.com ↗</a><p>Good things,<br/>made beside.</p></div></nav>}
   </>;
 }

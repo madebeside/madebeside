@@ -15,3 +15,4 @@ export function selectWork(items=[]){
     seen.add(piece.id);return true;
   });
 }
+export function selectFeaturedWork(items,limit=2){return selectWork(items).filter(p=>p.featured&&!p.gallery&&!p.vimeoId).slice(0,limit);}

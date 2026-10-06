@@ -35,6 +35,11 @@ export default function AsciiWordmark({paused,className=''}){
         if(!loaded)return;
         ctx.clearRect(0,0,width,height);ctx.drawImage(base,0,0,width,height);
         ctx.font='600 '+Math.round(cell*.98)+'px DM';ctx.textAlign='center';ctx.textBaseline='middle';
+        for(let n=0;n<24&&points.length;n++){
+          const p=points[(Math.floor(time/150)*37+n*79)%points.length];
+          ctx.fillStyle='#121111';ctx.fillRect(p.x-cell/2-1,p.y-cell/2-1,cell+2,cell+2);
+          ctx.fillStyle='#f5f5f0';ctx.fillText(glyphs[(p.seed+Math.floor(time/150))%glyphs.length],p.x,p.y);
+        }
         if(pointer.energy<.01)return;
         for(const p of points){
           const force=pointerForce(pointer.x,pointer.y,p.x,p.y,110,30*pointer.energy);
@@ -44,9 +49,10 @@ export default function AsciiWordmark({paused,className=''}){
           ctx.fillText(glyphs[(p.seed+Math.floor(time/105))%glyphs.length],p.x+force.x,p.y+force.y);
         }
       },
+      fail(){setReady(false);},
       dispose(){alive=false;image.onload=null;}
     };
-    image.onload=()=>{if(!alive)return;loaded=true;renderer.resize(size);renderer.onReady?.();};image.src=source;
+    image.onload=()=>{if(!alive)return;loaded=true;renderer.onReady?.();};image.src=source;
     return renderer;
   },[]);
   useCanvasScene(canvas,paused,setup);

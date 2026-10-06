@@ -42,9 +42,10 @@ export default function PixelMedia({src,alt,paused,className='',priority=false,c
         }
         ctx.imageSmoothingEnabled=true;
       },
+      fail(){setReady(false);},
       dispose(){alive=false;image.onload=null;tiles.clear();}
     };
-    image.onload=()=>{if(!alive)return;loaded=true;renderer.resize(size);renderer.onReady?.();};image.src=src;
+    image.onload=()=>{if(!alive)return;loaded=true;renderer.onReady?.();};image.src=src;
     return renderer;
   },[src]);
   useCanvasScene(canvas,paused,setup);

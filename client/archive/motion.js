@@ -19,3 +19,8 @@ export function springStep(position,velocity,target,dt){
 export function sceneProgress(scrollY,top,height,viewportHeight){
   return clamp((scrollY-top+viewportHeight)/(height+viewportHeight),0,1);
 }
+export function finishReelDrag(state,total,paused){
+  state.drag=false;const next=clamp(Math.round(-state.target/state.stride),0,total-1);state.target=next?-next*state.stride:0;
+  if(paused){state.position=state.target;state.velocity=0;}
+  return next;
+}
