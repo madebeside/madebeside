@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {initialTimeline,moveTimelineClip,timelineClipAt,timelineTime,timecode,TIMELINE_LENGTH} from '../client/archive/timeline-model.js';
+import {advanceTimelineTime,initialTimeline,moveTimelineClip,timelineClipAt,timelineTime,timecode,TIMELINE_LENGTH} from '../client/archive/timeline-model.js';
 
 test('time input remains finite and bounded, including failed input',()=>{
   assert.equal(TIMELINE_LENGTH,32);
@@ -39,4 +39,19 @@ test('reset yields fresh independent clips and absent ids are harmless',()=>{
 test('timecode uses a stable 30-frame clock',()=>{
   assert.equal(timecode(0),'00:00:00');assert.equal(timecode(8.5),'00:08:15');
   assert.equal(timecode(32),'00:32:00');assert.equal(timecode(NaN),'00:00:00');
+});
+test('playback follows wall time at 60, 30 and 20 frames per second',()=>{
+  for(const fps of [60,30,20]){
+    let position=0;
+    for(let frame=0;frame<fps;frame++)position=advanceTimelineTime(position,1000/fps);
+    assert.ok(Math.abs(position-1)<.00001,'one wall second at '+fps+'fps advanced '+position);
+  }
+});
+test('irregular frame gaps advance elapsed time and invalid intervals stay safe',()=>{
+  let position=4;
+  for(const elapsed of [16,17,50,300,17,600])position=advanceTimelineTime(position,elapsed);
+  assert.equal(position,5);
+  assert.equal(advanceTimelineTime(position,-500),5);
+  assert.equal(advanceTimelineTime(position,NaN),5);
+  assert.equal(advanceTimelineTime(31,3000),32);
 });

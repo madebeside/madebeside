@@ -32,29 +32,29 @@
 **Files:** Create `client/archive/timeline-model.js`, `client/archive/useTimelineTransport.js`, `tests/timeline.test.mjs`; modify `package.json` and `client/App.jsx`.
 **Interfaces:** `initialTimeline()` returns independent clip arrays; `moveTimelineClip(clips,id,start,track)` returns a clamped immutable arrangement; `timelineClipAt(clips,time)` returns the top visible clip or null; `timelineTime(value)` clamps to 0..32; `timecode(time)` formats mm:ss:ff at 30fps. `useTimelineTransport(clips,paused)` exposes refs and seek/toggle/stop/reset synchronisation to Task 2.
 
-- [ ] Write tests for bounds/NaN, no mutation, gaps, precedence, keyboard-equivalent deltas, independent reset and formatting; run `node --test tests/timeline.test.mjs`, expecting missing-module failure.
-- [ ] Implement the model and shared-clock transport with no autoplay, media-source guard, cleanup and direct DOM frame updates; exclude `data-timeline-film` from the legacy observer.
-- [ ] Run the model suite; expect all tests passing. Commit this task.
+- [x] Write tests for bounds/NaN, no mutation, gaps, precedence, keyboard-equivalent deltas, independent reset and formatting; run `node --test tests/timeline.test.mjs`, expecting missing-module failure.
+- [x] Implement the model and shared-clock transport with no autoplay, media-source guard, cleanup and direct DOM frame updates; exclude `data-timeline-film` from the legacy observer.
+- [x] Run the model suite; expect all tests passing. Commit this task.
 
 ### Task 2: Editorial timeline and opening theme
 
 **Files:** Create `client/archive/EditingTimeline.jsx` and `client/archive/timeline.css`; modify `ArchiveHome.jsx`, `AsciiWordmark.jsx`, `editorial.css` and `archive.css`.
 **Interfaces:** Consume Task 1 functions and transport; `EditingTimeline({paused})` renders the three labelled placeholders and accessible editing controls.
 
-- [ ] Implement pointer capture with horizontal start/vertical track movement, arrow-key equivalents, click selection, native scrub range and reset. Render highest-track preview, readable gaps and recoverable failed media.
-- [ ] Set exact headline, 44px pointer radius and longer-line responsive fit; integrate subtle root gradient washes behind the white page.
-- [ ] Build client/SSR/Worker; expect exit 0. Verify desktop selection/play/scrub/drag/gap/reset/error and mobile keyboard/touch/overflow. Commit this task after checks.
+- [x] Implement pointer capture with horizontal start/vertical track movement, arrow-key equivalents, click selection, native scrub range and reset. Render highest-track preview, readable gaps and recoverable failed media.
+- [x] Set exact headline, 44px pointer radius and longer-line responsive fit; integrate subtle root gradient washes behind the white page.
+- [x] Build client/SSR/Worker; expect exit 0. Verify desktop selection/play/scrub/drag/gap/reset/error and mobile keyboard/touch/overflow. Commit this task after checks.
 
 ### Task 3: Reviews and footer
 
 **Files:** Create `client/archive/ReviewCarousel.jsx` and `client/archive/closing.css`; modify `ArchiveHome.jsx` and `ArchiveFooter.jsx`.
 **Interfaces:** `ReviewCarousel({paused})` provides three labelled manual review slots; footer preserves `({paused,invite=true})`.
 
-- [ ] Build manual selector, previous/next and swipe with stable focus, explicit placeholder content and reduced-motion reveal.
-- [ ] Recompose footer invitation, real navigation/social/location, clock and oversized intact wordmark; preserve policies/back-to-top.
-- [ ] Run the full test suite and build; expect 0 failures/exit 0. Check desktop and 320/390/768/1440 layouts, review interactions and reduced motion. Commit this task.
+- [x] Build manual selector, previous/next and swipe with stable focus, explicit placeholder content and reduced-motion reveal.
+- [x] Recompose footer invitation, real navigation/social/location, clock and oversized intact wordmark; preserve policies/back-to-top.
+- [x] Run the full test suite and build; expect 0 failures/exit 0. Check desktop and 320/390/768/1440 layouts, review interactions and reduced motion. Commit this task.
 
 ### Task 4: Review and completion
 
-- [ ] Request one fresh whole-change review of base `6ac6c33` to final HEAD; fix material findings in one tested pass.
-- [ ] Re-run affected checks and full suite after fixes; preserve screenshots and verification notes, complete plan checkboxes and leave the local preview running.
+- [x] Request one fresh whole-change review of base `6ac6c33` to final HEAD; fix material findings in one tested pass.
+- [x] Re-run affected checks and full suite after fixes; preserve screenshots and verification notes, complete plan checkboxes and leave the local preview running.

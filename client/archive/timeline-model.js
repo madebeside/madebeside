@@ -6,6 +6,10 @@ export function timelineTime(value){
   const number=Number(value);
   return Number.isFinite(number)?Math.max(0,Math.min(TIMELINE_LENGTH,number)):0;
 }
+export function advanceTimelineTime(position,elapsedMilliseconds){
+  const elapsed=Number(elapsedMilliseconds);
+  return timelineTime(position+(Number.isFinite(elapsed)?Math.max(0,elapsed)/1000:0));
+}
 export function initialTimeline(){
   return projectPlaceholders.map((project,index)=>({...project,start:index*8,duration:8,track:index%2}));
 }

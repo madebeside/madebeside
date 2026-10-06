@@ -1,14 +1,14 @@
 import {useCallback,useEffect,useRef,useState} from 'react';
 import {subscribe} from './scheduler';
-import {timelineClipAt,timelineTime,timecode,TIMELINE_LENGTH} from './timeline-model';
+import {advanceTimelineTime,timelineClipAt,timelineTime,timecode,TIMELINE_LENGTH} from './timeline-model';
 
 export default function useTimelineTransport(clips,paused){
   const video=useRef(),section=useRef(),scrubber=useRef(),playhead=useRef(),timeLabel=useRef();
-  const clock=useRef(),position=useRef(0),running=useRef(false),arrangement=useRef(clips),activeRef=useRef(clips[0]?.id);
+  const clock=useRef(),lastFrame=useRef(null),position=useRef(0),running=useRef(false),arrangement=useRef(clips),activeRef=useRef(clips[0]?.id);
   arrangement.current=clips;
   const [playing,setPlaying]=useState(false),[activeId,setActiveId]=useState(clips[0]?.id);
   const stop=useCallback(()=>{
-    running.current=false;clock.current?.setActive(false);video.current?.pause();setPlaying(false);
+    running.current=false;lastFrame.current=null;clock.current?.setActive(false);video.current?.pause();setPlaying(false);
   },[]);
   const sync=useCallback((forceSeek=false)=>{
     const time=position.current,clip=timelineClipAt(arrangement.current,time);
@@ -26,15 +26,15 @@ export default function useTimelineTransport(clips,paused){
       const attempt=element.play();attempt?.catch(()=>{if(video.current===element&&running.current)stop();});
     }else if(!running.current&&!element.paused)element.pause();
   },[stop]);
-  const seek=useCallback(value=>{position.current=timelineTime(value);sync(true);},[sync]);
+  const seek=useCallback(value=>{position.current=timelineTime(value);lastFrame.current=running.current?performance.now():null;sync(true);},[sync]);
   const toggle=useCallback(()=>{
     if(running.current){stop();return;}
     if(position.current>=TIMELINE_LENGTH)position.current=0;
-    running.current=true;setPlaying(true);clock.current?.setActive(true);sync();
+    running.current=true;lastFrame.current=performance.now();setPlaying(true);clock.current?.setActive(true);sync();
   },[stop,sync]);
   useEffect(()=>{
-    const subscription=subscribe((time,dt)=>{
-      position.current=timelineTime(position.current+dt);sync();
+    const subscription=subscribe(time=>{
+      position.current=advanceTimelineTime(position.current,time-(lastFrame.current??time));lastFrame.current=time;sync();
       if(position.current>=TIMELINE_LENGTH)stop();
     },false,stop);
     clock.current=subscription;
