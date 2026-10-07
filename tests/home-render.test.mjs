@@ -70,3 +70,11 @@ test('supporting routes retain useful content while using distinct page worlds',
  }
  assert.equal(new Set(worlds).size,4);
 });
+
+test('supporting pages use the reference masthead and three-column playbook rather than service cards',async()=>{
+ const pages=await server.ssrLoadModule('/client/archive/ArchivePages.jsx');
+ const {services}=await server.ssrLoadModule('/client/services.js');
+ const html=renderToStaticMarkup(React.createElement(pages.ServicePage,{service:services[1],paused:true}));
+ assert.match(html,/reference-masthead/);assert.match(html,/reference-image-wall/);assert.match(html,/reference-playbook/);
+ assert.doesNotMatch(html,/social-posters|class="world-deliverables"/);
+});
