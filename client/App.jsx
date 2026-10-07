@@ -5,6 +5,7 @@ import ArchiveNav from './archive/ArchiveNav';
 import ArchiveHome from './archive/ArchiveHome';
 import ArchiveFooter from './archive/ArchiveFooter';
 import SceneCursor from './archive/SceneCursor';
+import RiverAtmosphere from './archive/RiverAtmosphere';
 import {PortfolioPage,CapabilitiesPage,ApproachPage,ContactPage,ServicePage} from './archive/ArchivePages';
 import {selectWork} from './archive/work-data';
 import {watchVideos} from './archive/video-lifecycle';
@@ -35,5 +36,5 @@ export default function App({pathname='/',initialPieces=config.workPlaceholders}
   function toggleMotion(){const next=!paused;setPaused(next);try{sessionStorage.setItem('madebeside-motion',next?'paused':'running');}catch{}}
   const route=pathname.replace(/\/$/,''),service=services.find(s=>route==='/services/'+s.slug);
   const Page=({'/portfolio':PortfolioPage,'/capabilities':CapabilitiesPage,'/approach':ApproachPage,'/contact':ContactPage})[route];
-  return <><a className="skip" href="#main">Skip to content</a><ArchiveNav open={open} onToggle={()=>setOpen(!open)} onClose={closeMenu} pathname={pathname} paused={paused} onMotion={toggleMotion}/><main id="main" tabIndex="-1" aria-hidden={open?true:undefined}>{service?<ServicePage service={service} paused={paused}/>:Page?<Page paused={paused} pieces={pieces} collectionError={collectionError}/>:<ArchiveHome paused={paused} pieces={pieces} collectionError={collectionError}/>}</main><div aria-hidden={open?true:undefined}><ArchiveFooter paused={paused} invite={route!=='/contact'}/></div><SceneCursor paused={paused||open}/></>;
+  return <><RiverAtmosphere home={!Page&&!service}/><a className="skip" href="#main">Skip to content</a><ArchiveNav open={open} onToggle={()=>setOpen(!open)} onClose={closeMenu} pathname={pathname} paused={paused} onMotion={toggleMotion}/><main id="main" tabIndex="-1" aria-hidden={open?true:undefined}>{service?<ServicePage service={service} paused={paused}/>:Page?<Page paused={paused} pieces={pieces} collectionError={collectionError}/>:<ArchiveHome paused={paused} pieces={pieces} collectionError={collectionError}/>}</main><div aria-hidden={open?true:undefined}><ArchiveFooter paused={paused} invite={route!=='/contact'}/></div><SceneCursor paused={paused||open}/></>;
 }

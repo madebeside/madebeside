@@ -7,7 +7,6 @@ import './editorial.css';
 
 export default function ArchiveHome({paused,pieces}){
   return <div className="editorial-home">
-    <div className="intro-atmosphere" aria-hidden="true"/>
     <section className="beside-opening" aria-labelledby="home-title">
       <h1 id="home-title" className="sr-only">The best things, are made beside you.</h1>
       <AsciiWordmark paused={paused} text={'The best things,\nare made beside you.'} className="intro-headline"/>
