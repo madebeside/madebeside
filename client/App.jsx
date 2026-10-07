@@ -9,6 +9,7 @@ import {PortfolioPage,CapabilitiesPage,ApproachPage,ContactPage,ServicePage} fro
 import {selectWork} from './archive/work-data';
 import {watchVideos} from './archive/video-lifecycle';
 import useSmoothScroll from './archive/useSmoothScroll';
+import './archive/atmosphere.css';
 
 const staticPieces=config.workPlaceholders.filter(p=>!p.placeholder);
 export default function App({pathname='/',initialPieces=config.workPlaceholders}){
