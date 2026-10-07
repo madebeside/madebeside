@@ -51,3 +51,17 @@
 #main:has(.world-approach){padding-bottom:0}.world-approach .reference-playbook{padding-bottom:0}
 @media(max-width:800px){.corner-brand{width:130px;height:36px;padding:6px 10px}.corner-brand img{height:24px}}
 #main:has(.world-approach){border-radius:0}
+/* Fit long capability names as whole words inside their copy column. */
+.chapter-copy .kinetic-type{font-size:clamp(36px,4.7vw,76px);overflow-wrap:normal}.chapter-copy .word-window{max-width:100%}
+.reference-playbook{padding-bottom:0}
+#main:has(.page-world){padding-bottom:0;border-radius:0;clip-path:inset(0 round 0 0 64px 64px);isolation:isolate}
+.world-work-sequence .project-row:last-child{padding-bottom:0}.world-work-sequence .project-row:last-child .project-visual{transform:none!important}
+@media(max-width:800px){.chapter-copy .kinetic-type{font-size:clamp(34px,9vw,43px)}}
+@media(max-width:600px){#main:has(.page-world){clip-path:inset(0 round 0 0 38px 38px)}}
+#main:has(.page-world){border-radius:0 0 64px 64px;clip-path:none;contain:paint}
+@media(max-width:600px){#main:has(.page-world){border-radius:0 0 38px 38px}}
+/* Paint the curve over the final content, so a pinned dark hero cannot show through. */
+#main:has(.page-world){border-radius:0;--end-radius:64px}
+#main:has(.page-world)::after{content:"";position:absolute;z-index:20;pointer-events:none;left:0;right:0;bottom:0;height:var(--end-radius);background:radial-gradient(circle at 100% 0,transparent calc(var(--end-radius) - .5px),#ededed var(--end-radius)) left top/var(--end-radius) var(--end-radius) no-repeat,radial-gradient(circle at 0 0,transparent calc(var(--end-radius) - .5px),#ededed var(--end-radius)) right top/var(--end-radius) var(--end-radius) no-repeat}
+@media(max-width:600px){#main:has(.page-world){--end-radius:38px;border-radius:0}}
+.world-work-sequence .project-film{aspect-ratio:auto}.world-work-sequence .project-visual{max-height:none}.world-work-sequence .project-row:last-child .project-visual{scale:1!important}
