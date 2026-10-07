@@ -47,7 +47,7 @@ export default function AsciiWordmark({paused,className='',text}){
         if(!loaded)return;
         ctx.clearRect(0,0,width,height);ctx.drawImage(base,0,0,width,height);
         ctx.font='600 '+(cell*1.25)+'px DM';ctx.textAlign='center';ctx.textBaseline='middle';
-        for(let n=0;n<24&&points.length;n++){
+        for(let n=0;n<24&&points.length&&!text&&pointer.energy>=.01;n++){
           const p=points[(Math.floor(time/150)*37+n*79)%points.length];
           ctx.clearRect(p.x-cell/2,p.y-cell/2,cell,cell);
           ctx.fillStyle='#121111';ctx.fillText(glyphs[(p.seed+Math.floor(time/150))%glyphs.length],p.x,p.y);

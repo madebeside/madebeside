@@ -9,3 +9,10 @@
 .circle-navigation.is-open .circle-menu-trigger{pointer-events:none;z-index:0}.circle-menu-trigger:focus-visible{outline-offset:2px}.circle-navigation.is-open .circle-menu-trigger:focus-visible{left:0;right:auto;min-width:42px;padding:10px 4px;background:#ffffff80;pointer-events:auto}.circle-navigation.is-open .circle-menu-trigger:focus-visible i{opacity:1;transform:scale(.45);filter:none}
 @media(max-width:600px){.circle-navigation{top:12px;height:48px}.circle-menu-links{gap:23px}.circle-menu-links a{font-size:13px}.circle-menu-trigger i{width:10px;height:10px}}
 @media(prefers-reduced-motion:reduce){.circle-menu-links a,.circle-menu-trigger i{transition:none;filter:none}}
+
+/* Deliberate stepped movement applies only to menu opening. */
+.circle-menu-trigger i{width:8px;height:8px;opacity:.76}
+.circle-navigation.is-open .circle-menu-trigger i{transition:transform .72s steps(9,end),opacity .48s steps(6,end),filter .6s steps(8,end)}
+.circle-navigation.is-open .circle-menu-links a{transition:transform .78s steps(10,end),opacity .5s steps(7,end),filter .7s steps(10,end);transition-delay:calc(var(--menu-order)*.045s)}
+@media(max-width:600px){.circle-menu-trigger i{width:7px;height:7px}}
+@media(prefers-reduced-motion:reduce){.circle-navigation.is-open .circle-menu-trigger i,.circle-navigation.is-open .circle-menu-links a{transition:none}}

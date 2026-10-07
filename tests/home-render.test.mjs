@@ -37,3 +37,25 @@ test('opening restores the canvas text treatment and reviews use ribbons rather 
   assert.match(html,/ascii-wordmark/);assert.match(html,/<canvas/);
   assert.match(html,/review-ribbon/);assert.doesNotMatch(html,/bookmark-panels/);
 });
+
+test('project descriptions and sample metrics accompany the preview without the hover instruction',()=>{
+ const html=render(false);
+ assert.match(html,/Sample metrics/);assert.match(html,/Leads generated/);
+ assert.doesNotMatch(html,/Hover to watch|tap on mobile/i);
+});
+test('each review ribbon identifies its placeholder author and company',()=>{
+ const html=render(false);
+ assert.equal([...html.matchAll(/class="ribbon-attribution"/g)].length,3);
+ assert.match(html,/Name placeholder/);assert.match(html,/Company placeholder/);
+});
+
+test('scroll-driven ribbons never reveal an empty leading edge at the end of the section',async()=>{
+ const {reviewRibbonOffset}=await server.ssrLoadModule('/client/archive/ReviewSpread.jsx');
+ assert.equal(typeof reviewRibbonOffset,'function');
+ for(const progress of [-100,0,300,900,2000,NaN]){
+  assert.ok(reviewRibbonOffset(progress,0)<=-100);
+  assert.ok(reviewRibbonOffset(progress,1)<=-100);
+ }
+ assert.ok(reviewRibbonOffset(500,0)>reviewRibbonOffset(0,0));
+ assert.ok(reviewRibbonOffset(500,1)<reviewRibbonOffset(0,1));
+});
