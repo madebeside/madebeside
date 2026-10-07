@@ -18,3 +18,11 @@
 @media(prefers-reduced-motion:reduce){.circle-navigation.is-open .circle-menu-trigger i,.circle-navigation.is-open .circle-menu-links a{transition:none}}
 .corner-brand{position:fixed;left:var(--gutter);top:25px;width:130px;z-index:1501;display:block;padding:5px 0}.corner-brand img{width:100%;height:auto;filter:brightness(0)}.corner-brand:focus-visible{outline-offset:6px}
 @media(max-width:600px){.corner-brand{top:17px;width:108px}}
+/* One persistent surface contracts to the dots; it never disappears abruptly. */
+.circle-navigation::before{content:"";position:absolute;inset:0 0 4px;border-radius:24px;background:#fffffff2;clip-path:inset(0 0 0 calc(100% - 70px) round 24px);transition:clip-path .52s cubic-bezier(.22,1,.36,1);pointer-events:none}
+.circle-navigation.is-open::before{clip-path:inset(0 0 0 0 round 24px)}
+.circle-navigation .circle-menu-trigger,.route-world .circle-navigation .circle-menu-trigger,.route-world .circle-navigation .circle-menu-links{background:transparent}
+.circle-menu-links{transition:visibility 0s .52s}.circle-navigation.is-open .circle-menu-links{transition-delay:0s}
+.circle-menu-trigger i{transition:transform .48s var(--menu-ease),opacity .32s var(--menu-ease),filter .4s var(--menu-ease)}
+.circle-menu-links a{transition:transform .48s var(--menu-ease),opacity .28s var(--menu-ease),filter .4s var(--menu-ease);transition-delay:calc((2 - var(--menu-order))*.025s)}
+@media(prefers-reduced-motion:reduce){.circle-navigation::before,.circle-menu-links,.circle-menu-trigger i,.circle-menu-links a{transition:none}}
