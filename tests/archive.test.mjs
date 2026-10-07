@@ -8,6 +8,18 @@ import * as motion from '../client/archive/motion.js';
 import * as work from '../client/archive/work-data.js';
 import * as media from '../client/archive/video-lifecycle.js';
 
+test('scroll showcase selection owns automatic film playback across visibility and reduced motion',()=>{
+  const video={paused:true,play(){this.paused=false;return Promise.resolve();},pause(){this.paused=true;}};
+  const player=media.createProjectPlayback(video,{active:true,paused:false,visible:true,hidden:false});
+  assert.equal(video.paused,false);
+  player.update({active:false});assert.equal(video.paused,true);
+  player.update({active:true,hidden:true});assert.equal(video.paused,true);
+  player.update({hidden:false});assert.equal(video.paused,false);
+  player.update({paused:true});assert.equal(video.paused,true);
+  player.update({paused:false,visible:false});assert.equal(video.paused,true);
+  player.dispose();player.update({visible:true});assert.equal(video.paused,true);
+});
+
 test('manual film playback supports play-pause-play while automatic motion stays paused',()=>{
   const video={paused:true,play(){this.paused=false;return Promise.resolve();},pause(){this.paused=true;}};
   const player=media.createProjectPlayback?.(video,{active:true,paused:true,visible:true,hidden:false});

@@ -1,15 +1,13 @@
 import React from 'react';
 import OpeningScene from './OpeningScene';
-import ProjectSequence from './ProjectSequence';
-import EditingTimeline from './EditingTimeline';
+import EditingShowcase from './EditingShowcase';
 import ReviewSpread from './ReviewSpread';
 import './editorial.css';
 
 export default function ArchiveHome({paused,pieces}){
   return <div className="editorial-home">
     <OpeningScene paused={paused}/>
-    <ProjectSequence paused={paused} pieces={pieces} featuredOnly/>
-    <EditingTimeline paused={paused}/>
+    <EditingShowcase paused={paused} pieces={pieces}/>
     <ReviewSpread paused={paused}/>
   </div>;
 }
