@@ -65,3 +65,13 @@
 #main:has(.page-world)::after{content:"";position:absolute;z-index:20;pointer-events:none;left:0;right:0;bottom:0;height:var(--end-radius);background:radial-gradient(circle at 100% 0,transparent calc(var(--end-radius) - .5px),#ededed var(--end-radius)) left top/var(--end-radius) var(--end-radius) no-repeat,radial-gradient(circle at 0 0,transparent calc(var(--end-radius) - .5px),#ededed var(--end-radius)) right top/var(--end-radius) var(--end-radius) no-repeat}
 @media(max-width:600px){#main:has(.page-world){--end-radius:38px;border-radius:0}}
 .world-work-sequence .project-film{aspect-ratio:auto}.world-work-sequence .project-visual{max-height:none}.world-work-sequence .project-row:last-child .project-visual{scale:1!important}
+/* Center the opaque mark, compensating for transparent padding in the source. */
+.corner-brand img{transform:translate(-2.4px,2.25px)}
+@media(max-width:800px){.corner-brand img{transform:translate(-2.05px,1.92px)}}
+.chapter-number{-webkit-text-stroke:2px #121111;paint-order:stroke fill;text-shadow:0 2px 14px #0003}
+.chapter-service-link{display:flex;align-items:center;justify-content:space-between;gap:20px;font-size:15px;font-weight:600;padding:16px 0;border-bottom:1px solid currentColor;margin:0 0 35px;transition:transform .4s cubic-bezier(.22,1,.36,1)}.chapter-service-link:hover{transform:translateX(5px)}.chapter-service-link span{font-size:24px}
+.world-answers details{border-top:1px solid #12111130;padding:0;transform:translateY(calc((1 - var(--section-progress,1))*60px))}.world-answers summary{display:flex;align-items:center;justify-content:space-between;gap:25px;padding:26px 0;cursor:pointer;font-size:22px;line-height:1.2;letter-spacing:-.03em;list-style:none}.world-answers summary::-webkit-details-marker{display:none}.world-answers summary span{flex-shrink:0;font-size:28px;line-height:1;transition:transform .35s cubic-bezier(.22,1,.36,1)}.world-answers details[open] summary span{transform:rotate(45deg)}.world-answers .answer-content{padding:0 35px 26px 0}.world-answers .answer-content p{margin:0}.world-answers details[open] .answer-content{animation:answer-arrive .4s cubic-bezier(.22,1,.36,1)}
+@keyframes answer-arrive{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.world-still .world-answers details{transform:none}.world-still .answer-content{animation:none!important}
+@media(max-width:800px){.world-answers summary{font-size:19px}.chapter-service-link{font-size:14px}}
+@media(prefers-reduced-motion:reduce){.world-answers details{transform:none}.world-answers .answer-content{animation:none!important}.world-answers summary span{transition:none}}

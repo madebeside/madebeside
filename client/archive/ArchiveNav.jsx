@@ -1,6 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
 import './circle-menu.css';
-const links=[['Home','/'],['Work','/portfolio/'],['Capabilities','/capabilities/'],['Approach','/approach/'],['Content production','/services/content-production/'],['Social media','/services/social-media-management/'],['Content strategy','/services/content-strategy/'],['Digital marketing','/services/digital-marketing/'],['Start a project','/contact/']];
+const links=[['Home','/'],['Work','/portfolio/'],['What we do','/capabilities/'],['Our approach','/approach/'],['Get in touch','/contact/']];
 export default function ArchiveNav({pathname}){
   const [open,setOpen]=useState(false),root=useRef(),button=useRef();
   useEffect(()=>{
