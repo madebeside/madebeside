@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
 
 test('a longer page continues the same river instead of stretching earlier bends',async()=>{
   const {riverNodes}=await import('../client/archive/river-geometry.js');
@@ -38,4 +39,10 @@ test('cursor icons update at the exact pointer position without trailing or reap
 test('existing cursor actions resolve to compact icons rather than text badges',async()=>{
   const {sceneCursorKind}=await import('../client/archive/scene-cursor-controller.js');
   for(const [label,kind] of [['Move','move'],['Drag','move'],['Shift','move'],['Trim','trim'],['Pin','pin'],['Unpin','unpin'],['+','plus'],['↗','arrow'],['▶','play'],['Ⅱ','pause']])assert.equal(sceneCursorKind(label),kind);
+});
+test('native cursor hiding is restricted to the active custom-cursor scope',async()=>{
+  const css=await readFile(new URL('../client/archive/archive.css',import.meta.url),'utf8');
+  const hidingRules=[...css.matchAll(/([^{}]+)\{[^{}]*\bcursor\s*:\s*none(?:\s*!important)?[^{}]*\}/g)].map(match=>match[1].trim());
+  assert.ok(hidingRules.length>0);
+  assert.deepEqual(hidingRules.filter(selector=>!selector.includes('.has-scene-cursor')),[],'Inactive or CSS-hidden icons must leave the native pointer visible.');
 });
