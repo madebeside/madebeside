@@ -17,3 +17,11 @@
 /* A pale green-gray footer sits behind the rounded white page edge. */
 body:has(.editorial-home){background:#eff2ed}
 .archive-footer.editorial-footer{background:#eff2ed}
+
+/* The same full-width white page edge closes every route above a gray footer. */
+body{background:#ededed}
+#main{background:#fff;border-radius:0 0 64px 64px;overflow:clip;z-index:2;padding-bottom:56px;box-shadow:none}
+#main:has(.editorial-home){border-radius:0 0 64px 64px;box-shadow:none}
+body:has(.editorial-home){background:#ededed}
+.archive-footer.editorial-footer{background:#ededed;margin-top:-64px;padding-top:154px;z-index:1}
+@media(max-width:600px){#main,#main:has(.editorial-home){border-radius:0 0 38px 38px;padding-bottom:38px}.archive-footer.editorial-footer{margin-top:-38px;padding-top:110px}}

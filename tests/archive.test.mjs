@@ -162,3 +162,16 @@ test('visible looping video resumes after backgrounding while manual playback st
   doc.hidden=true;doc.dispatchEvent(new Event('visibilitychange'));assert.equal(loop.paused,true);
   doc.hidden=false;doc.dispatchEvent(new Event('visibilitychange'));assert.equal(loop.paused,false);assert.equal(manual.paused,true);
 });
+
+test('the shared motion clock samples at 30fps without delaying subscriber order',t=>{
+ const saved={window:globalThis.window,document:globalThis.document,requestAnimationFrame:globalThis.requestAnimationFrame,cancelAnimationFrame:globalThis.cancelAnimationFrame};
+ const frames=new Map();let next=0;const samples=[];
+ globalThis.window={};globalThis.document=new EventTarget();globalThis.document.hidden=false;
+ globalThis.requestAnimationFrame=callback=>{frames.set(++next,callback);return next;};globalThis.cancelAnimationFrame=id=>frames.delete(id);
+ const scene=subscribe(time=>samples.push(time));
+ t.after(()=>{scene.remove();Object.assign(globalThis,saved);});
+ for(const time of [100,108.33,116.67,125,133.34,141.67,150,158.33,166.68]){
+  const [id,draw]=frames.entries().next().value;frames.delete(id);draw(time);
+ }
+ assert.deepEqual(samples,[100,133.34,166.68]);
+});

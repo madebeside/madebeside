@@ -7,7 +7,8 @@ function wake(){
 }
 function tick(now){
   frame=0;
-  const dt=Math.min((now-last)/1000||1/60,.032);last=now;
+  if(last&&now-last<1000/30-.25){wake();return;}
+  const dt=Math.min((now-last)/1000||1/30,.05);last=now;
   for(const entry of ordered)if(entry.active){try{entry.draw(now,dt);}catch(error){entry.active=false;try{entry.onError?.(error);}catch{}}}
   wake();
 }

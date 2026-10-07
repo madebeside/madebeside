@@ -9,6 +9,7 @@ import {PortfolioPage,CapabilitiesPage,ApproachPage,ContactPage,ServicePage} fro
 import {selectWork} from './archive/work-data';
 import {watchVideos} from './archive/video-lifecycle';
 import useSmoothScroll from './archive/useSmoothScroll';
+import useAnimationCadence from './archive/useAnimationCadence';
 import './archive/atmosphere.css';
 
 const staticPieces=config.workPlaceholders.filter(p=>!p.placeholder);
@@ -17,6 +18,7 @@ export default function App({pathname='/',initialPieces=config.workPlaceholders}
   const [pieces,setPieces]=useState(()=>selectWork([...initialPieces,...staticPieces]));
   const [collectionError,setCollectionError]=useState(false);
   useSmoothScroll(paused);
+  useAnimationCadence(paused);
   useEffect(()=>{
     const controller=new AbortController();
     fetch('/api/portfolio',{signal:controller.signal}).then(r=>{if(!r.ok)throw Error();return r.json();}).then(data=>setPieces(selectWork([...(data.items||[]),...staticPieces]))).catch(e=>{if(e.name!=='AbortError')setCollectionError(true);});

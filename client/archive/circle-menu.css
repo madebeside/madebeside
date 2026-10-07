@@ -3,7 +3,7 @@
 .circle-menu-trigger>span{display:flex;justify-content:flex-end;align-items:center;gap:6px}.circle-menu-trigger i{display:block;width:12px;height:12px;background:var(--ink);border-radius:50%;transition:transform .75s var(--menu-ease),opacity .4s,filter .5s}
 .circle-navigation.is-open .circle-menu-trigger i{transform:translateX(-180px) scale(.25);filter:blur(4px);opacity:0}.circle-navigation.is-open .circle-menu-trigger i:nth-child(2){transform:translateX(-95px) scale(.25)}.circle-navigation.is-open .circle-menu-trigger i:nth-child(3){transform:translateX(-20px) scale(.25)}
 .circle-menu-links{position:absolute;inset:0;display:flex;align-items:center;justify-content:flex-end;gap:34px;visibility:hidden;pointer-events:none;transition:visibility 0s .7s}
-.circle-menu-links a{position:relative;font-size:14px;font-weight:550;white-space:nowrap;opacity:0;transform:translateX(calc(100px + var(--menu-order)*-30px));filter:blur(7px);transition:transform .85s var(--menu-ease),opacity .35s,filter .6s;transition-delay:calc(var(--menu-order)*.045s);padding:14px 0;pointer-events:auto}
+.circle-menu-links a{position:relative;font-size:14px;font-weight:550;white-space:nowrap;opacity:0;transform:translateX(calc(100px + var(--menu-order)*-30px));filter:blur(7px);transition:transform .85s var(--menu-ease),opacity .35s,filter .6s;transition-delay:calc(var(--menu-order)*.025s);padding:14px 0;pointer-events:auto}
 .circle-menu-links a i{position:absolute;bottom:8px;left:0;width:100%;height:1px;background:var(--ink);transform:scaleX(0);transform-origin:left;transition:transform .4s var(--menu-ease)}.circle-menu-links a:hover i,.circle-menu-links a:focus-visible i{transform:scaleX(1)}
 .circle-navigation.is-open{pointer-events:auto}.circle-navigation.is-open .circle-menu-links{visibility:visible;transition-delay:0s;pointer-events:auto}.circle-navigation.is-open .circle-menu-links a{opacity:1;transform:none;filter:blur(0)}
 .circle-navigation.is-open .circle-menu-trigger{pointer-events:none;z-index:0}.circle-menu-trigger:focus-visible{outline-offset:2px}.circle-navigation.is-open .circle-menu-trigger:focus-visible{left:0;right:auto;min-width:42px;padding:10px 4px;background:#ffffff80;pointer-events:auto}.circle-navigation.is-open .circle-menu-trigger:focus-visible i{opacity:1;transform:scale(.45);filter:none}
@@ -12,7 +12,7 @@
 
 /* Deliberate stepped movement applies only to menu opening. */
 .circle-menu-trigger i{width:8px;height:8px;opacity:.76}
-.circle-navigation.is-open .circle-menu-trigger i{transition:transform .72s steps(9,end),opacity .48s steps(6,end),filter .6s steps(8,end)}
-.circle-navigation.is-open .circle-menu-links a{transition:transform .78s steps(10,end),opacity .5s steps(7,end),filter .7s steps(10,end);transition-delay:calc(var(--menu-order)*.045s)}
+.circle-navigation.is-open .circle-menu-trigger i{transition:transform .4s steps(8,end),opacity .26s steps(6,end),filter .34s steps(8,end)}
+.circle-navigation.is-open .circle-menu-links a{transition:transform .42s steps(10,end),opacity .26s steps(7,end),filter .38s steps(10,end);transition-delay:calc(var(--menu-order)*.025s)}
 @media(max-width:600px){.circle-menu-trigger i{width:7px;height:7px}}
 @media(prefers-reduced-motion:reduce){.circle-navigation.is-open .circle-menu-trigger i,.circle-navigation.is-open .circle-menu-links a{transition:none}}
