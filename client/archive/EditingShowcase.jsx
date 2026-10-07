@@ -1,22 +1,22 @@
 import React,{useMemo,useRef,useState} from 'react';
 import {selectEditorialWork} from './work-data';
 import ShowcaseFilm from './ShowcaseFilm';
-import {timelineIndex,timelineStep} from './timeline-selection';
+import {timelineIndex,timelineStep,sampleProjectMetrics} from './timeline-selection';
 import './editing-showcase.css';
-const metrics=[['Views','128K'],['Impressions','240K'],['Engagement','6.8%'],['Leads generated','84']];
 const timecode=seconds=>{const n=Math.floor(Math.max(0,seconds||0)*30);return [Math.floor(n/1800),Math.floor(n/30)%60,n%30].map(v=>String(v).padStart(2,'0')).join(':');};
 export default function EditingShowcase({paused,pieces}){
  const projects=useMemo(()=>selectEditorialWork(pieces,true).slice(0,3),[pieces]);
  const [selection,setActive]=useState(-1),[time,setTime]=useState(0);
  const active=timelineIndex(selection,projects.length),total=String(projects.length).padStart(2,'0');
- const rail=useRef(),buttons=useRef([]);
- const select=index=>{if(index!==active){setActive(index);setTime(0);}};
+ const rail=useRef(),buttons=useRef([]),lastPointer=useRef({x:null,y:null}),hoverUntil=useRef(0);
+ const select=index=>{if(index!==active){if(document.activeElement===buttons.current[index])rail.current.focus({preventScroll:true});hoverUntil.current=performance.now()+650;setActive(index);setTime(0);}};
  const key=event=>{
   if(event.key==='Escape'){setActive(-1);rail.current.focus();return;}
   if(!['ArrowLeft','ArrowRight'].includes(event.key))return;
   event.preventDefault();
   const index=timelineStep(active,buttons.current.indexOf(document.activeElement),projects.length,event.key==='ArrowRight'?1:-1);
   buttons.current[index]?.focus();
+  select(index);
  };
  return <section className="editing-showcase" id="selected-work" aria-labelledby="showcase-title" tabIndex={-1}>
   <div className="timeline-heading"><h2 id="showcase-title">Selected work.</h2><span>{projects.some(p=>p.placeholder)?'Placeholder projects':''}</span></div>
@@ -29,8 +29,8 @@ export default function EditingShowcase({paused,pieces}){
     if(y>=(small?85:80)&&y<(small?305:rect.height)&&x>=0&&x<width)select(Math.min(projects.length-1,Math.floor(x/width*projects.length)));
    }}>
     <div className="timeline-ruler" aria-hidden="true">{Array.from({length:9},(_,index)=><span key={index}>{index}s</span>)}</div>
-    <div className="timeline-selectors" style={{'--count':projects.length}}>
-     {projects.map((project,index)=><button key={project.id} className={'timeline-selector'+(active===index?' is-selected':'')} ref={node=>buttons.current[index]=node} aria-label={'Expand '+project.title} aria-expanded={active===index} aria-controls={project.id+'-preview'} onPointerEnter={event=>{if(event.pointerType==='mouse')select(index);}} onFocus={()=>select(index)} onClick={()=>select(index)}>
+    <div className="timeline-selectors" style={{'--count':projects.length,'--active':active}}>
+     {projects.map((project,index)=><button key={project.id} className={'timeline-selector'+(active===index?' is-selected':'')} ref={node=>buttons.current[index]=node} aria-label={'Expand '+project.title} disabled={active===index} aria-hidden={active===index?true:undefined} tabIndex={active===index?-1:0} aria-expanded={active===index} aria-controls={project.id+'-preview'} onPointerMove={event=>{if(event.pointerType!=='mouse')return;const p=lastPointer.current,moved=p.x!==event.clientX||p.y!==event.clientY;lastPointer.current={x:event.clientX,y:event.clientY};if(moved&&performance.now()>=hoverUntil.current)select(index);}} onClick={()=>select(index)}>
       <img src={project.poster||project.src} alt=""/><span>{project.title}</span><i aria-hidden="true">↗</i>
      </button>)}
     </div>
@@ -42,7 +42,7 @@ export default function EditingShowcase({paused,pieces}){
     <div className="project-details" aria-live="polite">
      {projects.map((project,index)=><div key={project.id} className={'project-detail'+(active===index||(active<0&&index===0)?' is-current':'')} hidden={active>=0&&active!==index}>
       <span className="project-format">{project.format}</span><h3 tabIndex={0}>{project.title}</h3><p tabIndex={0}>{project.description||'A shared idea, brought to life.'}</p>
-      <div className="metric-label">Sample metrics · illustrative only</div><dl>{metrics.map(([label,value])=><div tabIndex={0} key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
+      <div className="metric-label">Sample metrics · illustrative only</div><dl>{sampleProjectMetrics(index).map(([label,value])=><div tabIndex={0} key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
      </div>)}
     </div>
    </div>

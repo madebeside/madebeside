@@ -9,7 +9,7 @@ export default function ArchiveNav({pathname}){
     document.addEventListener('pointerdown',outside);document.addEventListener('keydown',key);
     return()=>{document.removeEventListener('pointerdown',outside);document.removeEventListener('keydown',key);};
   },[]);
-  return <nav ref={root} data-hover-motion className={'circle-navigation'+(open?' is-open':'')} aria-label="Main navigation"
+  return <><a className="corner-brand" href="/" aria-label="Made Beside home"><img src="/identity/wordmark-source.png" alt="Made Beside"/></a><nav ref={root} data-hover-motion className={'circle-navigation'+(open?' is-open':'')} aria-label="Main navigation"
     onPointerEnter={e=>{if(e.pointerType==='mouse')setOpen(true);}}
     onPointerLeave={()=>{if(!root.current.contains(document.activeElement))setOpen(false);}}
     onBlur={e=>{if(!e.currentTarget.contains(e.relatedTarget))setOpen(false);}}>
@@ -19,5 +19,5 @@ export default function ArchiveNav({pathname}){
     <div id="circle-menu-links" className="circle-menu-links" inert={!open?true:undefined}>
       {links.map(([label,url],index)=><a key={url} href={url} style={{'--menu-order':index}} aria-current={pathname===url?'page':undefined}><span>{label}</span><i aria-hidden="true"/></a>)}
     </div>
-  </nav>;
+  </nav></>;
 }
