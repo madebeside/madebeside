@@ -32,10 +32,10 @@ test('project fragments remain present without an obsolete header inset',async()
   assert.equal(padding,0);
   for(const id of ['project-01','project-02','project-03'])assert.match(render(false),new RegExp('id="'+id+'"'));
 });
-test('opening restores the canvas text treatment and reviews use ribbons rather than bookmarks',()=>{
+test('opening retains the canvas text treatment and reviews are readable without moving ribbons',()=>{
   const html=render(false);
   assert.match(html,/ascii-wordmark/);assert.match(html,/<canvas/);
-  assert.match(html,/review-ribbon/);assert.doesNotMatch(html,/bookmark-panels/);
+  assert.match(html,/review-quote/);assert.doesNotMatch(html,/bookmark-panels|ribbon-track/);
 });
 
 test('project descriptions and sample metrics accompany the preview without the hover instruction',()=>{
@@ -43,19 +43,16 @@ test('project descriptions and sample metrics accompany the preview without the 
  assert.match(html,/Sample metrics/);assert.match(html,/Leads generated/);
  assert.doesNotMatch(html,/Hover to watch|tap on mobile/i);
 });
-test('each review ribbon identifies its placeholder author and company',()=>{
+test('each stationary review identifies its placeholder author and company',()=>{
  const html=render(false);
- assert.equal([...html.matchAll(/class="ribbon-attribution"/g)].length,3);
+ assert.equal([...html.matchAll(/class="review-attribution"/g)].length,3);
  assert.match(html,/Name placeholder/);assert.match(html,/Company placeholder/);
 });
 
-test('scroll-driven ribbons never reveal an empty leading edge at the end of the section',async()=>{
- const {reviewRibbonOffset}=await server.ssrLoadModule('/client/archive/ReviewSpread.jsx');
- assert.equal(typeof reviewRibbonOffset,'function');
- for(const progress of [-100,0,300,900,2000,NaN]){
-  assert.ok(reviewRibbonOffset(progress,0)<=-100);
-  assert.ok(reviewRibbonOffset(progress,1)<=-100);
- }
- assert.ok(reviewRibbonOffset(500,0)>reviewRibbonOffset(0,0));
- assert.ok(reviewRibbonOffset(500,1)<reviewRibbonOffset(0,1));
+
+test('project selection targets remain outside the animated video layers',()=>{
+ const html=render(false),articles=[...html.matchAll(/<article id="project-0[123]"[\s\S]*?<\/article>/g)];
+ assert.equal(articles.length,3);
+ for(const article of articles)assert.doesNotMatch(article[0],/<button/);
+ assert.match(html,/class="timeline-selectors"/);
 });

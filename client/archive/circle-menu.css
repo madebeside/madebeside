@@ -10,9 +10,9 @@
 @media(max-width:600px){.circle-navigation{top:12px;height:48px}.circle-menu-links{gap:23px}.circle-menu-links a{font-size:13px}.circle-menu-trigger i{width:10px;height:10px}}
 @media(prefers-reduced-motion:reduce){.circle-menu-links a,.circle-menu-trigger i{transition:none;filter:none}}
 
-/* Deliberate stepped movement applies only to menu opening. */
+/* Bézier movement is sampled by the hover clock, preserving a gentle landing. */
 .circle-menu-trigger i{width:8px;height:8px;opacity:.76}
-.circle-navigation.is-open .circle-menu-trigger i{transition:transform .4s steps(8,end),opacity .26s steps(6,end),filter .34s steps(8,end)}
-.circle-navigation.is-open .circle-menu-links a{transition:transform .42s steps(10,end),opacity .26s steps(7,end),filter .38s steps(10,end);transition-delay:calc(var(--menu-order)*.025s)}
+.circle-navigation.is-open .circle-menu-trigger i{transition:transform .46s var(--menu-ease),opacity .26s var(--menu-ease),filter .38s var(--menu-ease)}
+.circle-navigation.is-open .circle-menu-links a{transition:transform .48s var(--menu-ease),opacity .28s var(--menu-ease),filter .4s var(--menu-ease);transition-delay:calc(var(--menu-order)*.025s)}
 @media(max-width:600px){.circle-menu-trigger i{width:7px;height:7px}}
 @media(prefers-reduced-motion:reduce){.circle-navigation.is-open .circle-menu-trigger i,.circle-navigation.is-open .circle-menu-links a{transition:none}}

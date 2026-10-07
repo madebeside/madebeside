@@ -9,7 +9,7 @@ export default function useCanvasScene(ref,paused,setup){
     const host=canvas.parentElement;
     const size={width:1,height:1,dpr:1,top:0,viewport:innerHeight};
     const pointer={x:null,y:null,tx:null,ty:null,energy:0,inside:false};
-    let bounds,visible=false,alive=true,failed=false;
+    let bounds,visible=false,alive=true,failed=false,lastPointerFrame=0,pendingRenderDt=0;
     const renderer=setup(canvas,size);if(!renderer)return;
     const draw=(time,dt)=>{
       if(failed)return;
@@ -19,7 +19,11 @@ export default function useCanvasScene(ref,paused,setup){
         pointer.y=pointer.y===null?pointer.ty:pointer.y+(pointer.ty-pointer.y)*ease;
       }
       pointer.energy+=(Number(pointer.inside)-pointer.energy)*ease;
-      renderer.render(time,dt,pointer,size);
+      pendingRenderDt=Math.min(.05,pendingRenderDt+dt);
+      if(pointer.energy>.01&&time-lastPointerFrame<1000/30-.25)return;
+      lastPointerFrame=time;
+      renderer.render(time,pendingRenderDt,pointer,size);
+      pendingRenderDt=0;
     };
     const resize=()=>{
       if(!alive)return;

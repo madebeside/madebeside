@@ -1,16 +1,19 @@
 import {useEffect} from 'react';
 import {subscribe} from './scheduler';
 
-// Sample native CSS motion on the same clock as scroll and canvas scenes.
+// Only hover transitions receive the sampled cadence. Scroll and arrivals stay native.
 export default function useAnimationCadence(disabled){
  useEffect(()=>{
   if(disabled||matchMedia('(prefers-reduced-motion:reduce)').matches||!document.getAnimations)return;
-  const managed=new Map();
+  const managed=new Map();let last=0;
   const clock=subscribe(now=>{
+   if(last&&now-last<1000/30-.25)return;last=now;
    const animations=document.getAnimations(),live=new Set(animations);
    for(const animation of managed.keys())if(!live.has(animation)||animation.playState==='idle'||animation.playState==='finished')managed.delete(animation);
    for(const animation of animations){
     if(!managed.has(animation)){
+     const target=animation.effect?.target;
+     if(animation.constructor.name!=='CSSTransition'||!target?.closest?.('a,button,[tabindex="0"],[data-hover-motion]'))continue;
      if(animation.playState!=='running'||typeof animation.currentTime!=='number'||animation.playbackRate<=0)continue;
      managed.set(animation,{start:now,base:animation.currentTime,rate:animation.playbackRate});animation.pause();
     }

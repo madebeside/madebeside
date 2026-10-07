@@ -22,13 +22,22 @@ export default function EditingShowcase({paused,pieces}){
   <div className="timeline-heading"><h2 id="showcase-title">Selected work.</h2><span>{projects.some(p=>p.placeholder)?'Placeholder projects':''}</span></div>
   <div className={'hover-timeline'+(active>=0?' has-expanded':'')} ref={rail} tabIndex={-1} onKeyDown={key}>
    <div className="timeline-meta"><span className="timeline-signature"><i aria-hidden="true"/><span>made beside</span></span><span className="timeline-time">{timecode(time)} <span>/ 00:08:00</span></span><span className="timeline-status">{active>=0?projects[active].format:total+' films'}</span></div>
-   <div className="timeline-stage">
+   <div className="timeline-stage" data-hover-motion onPointerMove={event=>{
+    if(active>=0||event.pointerType!=='mouse')return;
+    const rect=event.currentTarget.getBoundingClientRect(),x=event.clientX-rect.left,y=event.clientY-rect.top;
+    const small=innerWidth<=800,width=rect.width*(small?1:.64);
+    if(y>=(small?85:80)&&y<(small?305:rect.height)&&x>=0&&x<width)select(Math.min(projects.length-1,Math.floor(x/width*projects.length)));
+   }}>
     <div className="timeline-ruler" aria-hidden="true">{Array.from({length:9},(_,index)=><span key={index}>{index}s</span>)}</div>
-    {projects.map((project,index)=><article id={project.id} key={project.id} style={{'--slot':index,'--count':projects.length}} className={'timeline-clip'+(active===index?' is-expanded':'')+(active>=0&&active!==index?' is-masked':'')}
-      onPointerEnter={event=>{if(event.pointerType==='mouse')select(index);}}>
+    <div className="timeline-selectors" style={{'--count':projects.length}}>
+     {projects.map((project,index)=><button key={project.id} className={'timeline-selector'+(active===index?' is-selected':'')} ref={node=>buttons.current[index]=node} aria-label={'Expand '+project.title} aria-expanded={active===index} aria-controls={project.id+'-preview'} onPointerEnter={event=>{if(event.pointerType==='mouse')select(index);}} onFocus={()=>select(index)} onClick={()=>select(index)}>
+      <img src={project.poster||project.src} alt=""/><span>{project.title}</span><i aria-hidden="true">↗</i>
+     </button>)}
+    </div>
+    {projects.map((project,index)=><article id={project.id} key={project.id} style={{'--slot':index,'--count':projects.length}} className={'timeline-clip'+(active===index?' is-expanded':'')+(active>=0&&active!==index?' is-masked':'')}>
      <img className="timeline-thumbnail" src={project.poster||project.src} alt=""/>
      <div id={project.id+'-preview'} className="timeline-preview"><ShowcaseFilm project={project} active={active===index} paused={paused} exposed onTime={active===index?setTime:undefined}/></div>
-     <button className="timeline-clip-target" ref={node=>buttons.current[index]=node} aria-label={'Expand '+project.title} aria-expanded={active===index} aria-controls={project.id+'-preview'} onFocus={()=>select(index)} onClick={()=>select(index)}><span className="clip-caption"><span>{project.title}</span><i aria-hidden="true">↗</i></span></button>
+     <span className="clip-caption" aria-hidden="true"><span>{project.title}</span></span>
     </article>)}
     <div className="project-details" aria-live="polite">
      {projects.map((project,index)=><div key={project.id} className={'project-detail'+(active===index||(active<0&&index===0)?' is-current':'')} hidden={active>=0&&active!==index}>

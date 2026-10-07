@@ -9,7 +9,7 @@ export default function ArchiveNav({pathname}){
     document.addEventListener('pointerdown',outside);document.addEventListener('keydown',key);
     return()=>{document.removeEventListener('pointerdown',outside);document.removeEventListener('keydown',key);};
   },[]);
-  return <nav ref={root} className={'circle-navigation'+(open?' is-open':'')} aria-label="Main navigation"
+  return <nav ref={root} data-hover-motion className={'circle-navigation'+(open?' is-open':'')} aria-label="Main navigation"
     onPointerEnter={e=>{if(e.pointerType==='mouse')setOpen(true);}}
     onPointerLeave={()=>{if(!root.current.contains(document.activeElement))setOpen(false);}}
     onBlur={e=>{if(!e.currentTarget.contains(e.relatedTarget))setOpen(false);}}>
