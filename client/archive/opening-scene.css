@@ -1,16 +1,5 @@
-.opening-scene{position:sticky;top:-200svh;height:300svh;z-index:1}
-.opening-viewport{position:sticky;top:0;height:100svh;min-height:480px;display:grid;place-items:center;overflow:clip;background:#fff;isolation:isolate}
-.opening-gradient{position:absolute;inset:-12%;z-index:-1;background:radial-gradient(ellipse at 22% 48%,#8befb3 0,transparent 49%),radial-gradient(ellipse at 67% 9%,#c0c9f4 0,transparent 57%),radial-gradient(ellipse at 92% 80%,#ffdcc7 0,transparent 54%),#f2f8f3;will-change:transform;transform-origin:48% 45%}
-.opening-scale{position:relative;width:100%;text-align:center;transform-origin:center;will-change:transform}
-.elastic-headline{font-size:clamp(30px,3.15vw,54px);font-weight:500;line-height:1.08;letter-spacing:-.06em;margin:0}
-.headline-line{display:block;white-space:nowrap}.headline-line>span{display:inline-block;transform-origin:center 70%}
+.opening-scene{position:relative;height:100svh;min-height:520px;display:grid;place-items:center;overflow:clip;background:#fff}
+.opening-gradient{position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 22% 46%,#16db651a 0,transparent 54%),radial-gradient(ellipse at 78% 20%,#16db650a 0,transparent 58%);opacity:.55}
+.opening-scene .ascii-wordmark.intro-headline{position:relative;width:min(610px,100%);height:200px}
 .opening-scroll-hint{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);font-size:12px;letter-spacing:-.02em;display:flex;align-items:center;gap:23px}.opening-scroll-hint>span{font-size:22px;transition:transform .5s cubic-bezier(.2,.8,.2,1)}.opening-scroll-hint:hover>span{transform:translateY(5px)}
-.opening-scene.is-entering .headline-line>span{animation:word-settle 1.3s both;animation-timing-function:cubic-bezier(.16,1,.3,1);animation-delay:calc(var(--word)*.028s)}
-.opening-scene.is-entering .opening-gradient{animation:gradient-settle 1.5s cubic-bezier(.16,1,.3,1) both}
-.opening-scene.is-entering .opening-scroll-hint{animation:opening-ui 1.5s both}.entrance-running .circle-navigation{animation:opening-ui 1.5s both}
-@keyframes word-settle{0%{opacity:0;transform:translate3d(0,40px,0) scale(5.4) rotate(-7deg);filter:blur(8px)}35%{opacity:1;filter:blur(0)}66%{transform:translate3d(0,-7px,0) scale(.96) rotate(1deg)}82%{transform:translate3d(0,2px,0) scale(1.015) rotate(-.3deg)}100%{opacity:1;transform:none;filter:none}}
-@keyframes gradient-settle{from{transform:scale(2.25) rotate(9deg)}to{transform:scale(1) rotate(0)}}
-@keyframes opening-ui{0%,68%{opacity:0}100%{opacity:1}}
-.opening-scene.is-still{position:relative;top:auto;height:100svh}.opening-scene.is-still .opening-viewport{position:relative}.opening-scene.is-still .opening-scale,.opening-scene.is-still .opening-gradient{transform:none!important;will-change:auto}
-@media(max-width:600px){.elastic-headline{font-size:clamp(23px,6.1vw,35px)}.opening-scroll-hint{bottom:28px}.opening-gradient{background:radial-gradient(ellipse at 14% 45%,#92efb8 0,transparent 52%),radial-gradient(ellipse at 86% 9%,#c4ccf7 0,transparent 58%),radial-gradient(ellipse at 85% 87%,#ffddca 0,transparent 55%),#f2f8f3}}
-@media(prefers-reduced-motion:reduce){.opening-scene{position:relative;top:auto;height:100svh}.opening-viewport{position:relative}.opening-scale,.opening-gradient{transform:none!important;will-change:auto}}
+@media(max-width:600px){.opening-scene .ascii-wordmark.intro-headline{height:170px}.opening-scroll-hint{bottom:28px}}

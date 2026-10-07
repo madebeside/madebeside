@@ -1,7 +1,7 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {createShowcasePlayback} from './video-lifecycle';
 
-export default function ShowcaseFilm({project,active,paused,onTime}){
+export default function ShowcaseFilm({project,active,paused,onTime,exposed=false}){
   const video=useRef(),surface=useRef(),player=useRef();
   const [failed,setFailed]=useState(false);
   useEffect(()=>{
@@ -12,7 +12,7 @@ export default function ShowcaseFilm({project,active,paused,onTime}){
     return()=>{playback.dispose();player.current=null;};
   },[project.src]);
   useEffect(()=>{player.current?.update({active,paused});},[active,paused]);
-  return <figure ref={surface} className={'showcase-film'+(active?' is-active':'')} aria-hidden={!active}>
+  return <figure ref={surface} className={'showcase-film'+(active?' is-active':'')} aria-hidden={!exposed&&!active}>
     {project.kind==='photo'?<img src={project.src} alt={project.alt||project.title}/>:<>
       {project.poster&&<img className="showcase-poster" src={project.poster} alt=""/>}
       <video ref={video} src={project.src} poster={project.poster} data-showcase-film muted loop playsInline preload="metadata" aria-label={project.title} onTimeUpdate={e=>{if(active)onTime?.(e.currentTarget.currentTime);}} hidden={failed}/>

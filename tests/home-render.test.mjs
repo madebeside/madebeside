@@ -5,7 +5,6 @@ import {fileURLToPath} from 'node:url';
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {createServer} from 'vite';
-import {showcaseState} from '../client/archive/scroll-scenes.js';
 
 const root=fileURLToPath(new URL('../',import.meta.url));
 const server=await createServer({configFile:false,root,server:{middlewareMode:true,hmr:false,watch:null},appType:'custom'});
@@ -21,14 +20,20 @@ test('every visible reduced-motion preview remains exposed to assistive technolo
   const figures=[...render(true).matchAll(/<figure[^>]*class="showcase-film[^>]*>/g)].map(match=>match[0]);
   assert.equal(figures.length,3);assert.ok(figures.every(figure=>!figure.includes('aria-hidden="true"')));
 });
-test('the mobile-visible program header discloses placeholder projects',()=>{
-  const program=render(false).split('class="workspace-program"')[1];
-  const header=program.match(/class="workspace-panel-title"[^>]*>([\s\S]*?)<\/div>/)[1];
-  assert.match(header,/Placeholder project/);
+test('the simplified showcase has three accessible expand controls and honest placeholder disclosure',()=>{
+  const html=render(false);
+  assert.equal([...html.matchAll(/aria-label="Expand Project 0[123]"/g)].length,3);
+  assert.match(html,/Placeholder projects/);
+  assert.doesNotMatch(html,/workspace-program|sequence-playhead|type="range"/);
 });
-test('native project fragment alignment selects its own project without an obsolete header inset',async()=>{
+test('project fragments remain present without an obsolete header inset',async()=>{
   const css=await readFile(new URL('../client/archive/archive.css',import.meta.url),'utf8');
   const padding=parseFloat(css.match(/scroll-padding-top:([^;}]+)/)[1]);
-  const viewport=800;
-  for(const index of [1,2])assert.equal(showcaseState((index*viewport-padding)/(3*viewport)).index,index);
+  assert.equal(padding,0);
+  for(const id of ['project-01','project-02','project-03'])assert.match(render(false),new RegExp('id="'+id+'"'));
+});
+test('opening restores the canvas text treatment and reviews use ribbons rather than bookmarks',()=>{
+  const html=render(false);
+  assert.match(html,/ascii-wordmark/);assert.match(html,/<canvas/);
+  assert.match(html,/review-ribbon/);assert.doesNotMatch(html,/bookmark-panels/);
 });

@@ -5,16 +5,16 @@ Made Beside’s public website presents creative work to business owners and gro
 ## Language
 
 **Opening**:
-The initial scene with “The best things, are made beside you.” Downward scrolling enlarges the headline beyond the viewport while the gradient grows at a different rate.
+The initial scene with “The best things, are made beside you.” It uses the restored datamosh-style text treatment over a faint green gradient and scrolls normally without zooming.
 _Avoid_: Splash page, intro video
 
 **Showcase**:
-A scroll-only sequence of three projects presented within an editing-software composition. Scrolling selects projects while their videos play normally.
-_Avoid_: Editing playground, interactive editor
+A dark, rounded timeline of three projects. Hover, keyboard focus, or tap expands one normally playing video and masks the other two into thumbnail strips; it has no scrubbing.
+_Avoid_: Editing playground, interactive editor, scroll-selected workspace
 
-**River gradient**:
-The connected, winding field of mint, lavender, and peach that varies throughout the page rather than restarting at section boundaries.
-_Avoid_: Section gradients, stretched gradient
+**Hero gradient**:
+A faint green tint confined to the opening. The page after the opening uses a white background, with black and green for content surfaces.
+_Avoid_: River gradient, section gradients
 
 **Circle menu**:
 Three horizontal circles that reveal Work, About, and Start a project through a leftward motion transition.

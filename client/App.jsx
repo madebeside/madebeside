@@ -5,7 +5,6 @@ import ArchiveNav from './archive/ArchiveNav';
 import ArchiveHome from './archive/ArchiveHome';
 import ArchiveFooter from './archive/ArchiveFooter';
 import SceneCursor from './archive/SceneCursor';
-import RiverAtmosphere from './archive/RiverAtmosphere';
 import {PortfolioPage,CapabilitiesPage,ApproachPage,ContactPage,ServicePage} from './archive/ArchivePages';
 import {selectWork} from './archive/work-data';
 import {watchVideos} from './archive/video-lifecycle';
@@ -33,5 +32,5 @@ export default function App({pathname='/',initialPieces=config.workPlaceholders}
   },[paused,pieces]);
   const route=pathname.replace(/\/$/,''),service=services.find(s=>route==='/services/'+s.slug);
   const Page=({'/portfolio':PortfolioPage,'/capabilities':CapabilitiesPage,'/approach':ApproachPage,'/contact':ContactPage})[route];
-  return <><RiverAtmosphere/><a className="skip" href="#main">Skip to content</a><ArchiveNav pathname={pathname}/><main id="main" tabIndex="-1">{service?<ServicePage service={service} paused={paused}/>:Page?<Page paused={paused} pieces={pieces} collectionError={collectionError}/>:<ArchiveHome paused={paused} pieces={pieces} collectionError={collectionError}/>}</main><ArchiveFooter paused={paused} invite={route!=='/contact'}/><SceneCursor paused={paused}/></>;
+  return <><a className="skip" href="#main">Skip to content</a><ArchiveNav pathname={pathname}/><main id="main" tabIndex="-1">{service?<ServicePage service={service} paused={paused}/>:Page?<Page paused={paused} pieces={pieces} collectionError={collectionError}/>:<ArchiveHome paused={paused} pieces={pieces} collectionError={collectionError}/>}</main><ArchiveFooter paused={paused} invite={route!=='/contact'}/><SceneCursor paused={paused}/></>;
 }
