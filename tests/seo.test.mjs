@@ -39,7 +39,7 @@ test('initial HTML includes headings, service content, navigation and inquiry fi
  for(const route of Object.keys(pages)){
   const html=await(await worker.fetch(new Request(origin+route),{})).text();
   assert.match(html,/<h1[ >]/);assert.match(html,/href="\/contact\//);
-  if(route.startsWith('/services/')){assert.match(html,/Toronto/);assert.match(html,/class="plain-answer"/);assert.match(html,/<h3>/);assert.match(html,/service-process-steps/);assert.ok(!html.includes('<details>'));}
+  if(route.startsWith('/services/')){assert.match(html,/Toronto/);assert.match(html,/class="plain-answer"/);assert.match(html,/<h3>/);assert.match(html,/world-process/);assert.ok(!html.includes('<details>'));}
   if(route==='/contact/')assert.match(html,/<form/);
  }
 });

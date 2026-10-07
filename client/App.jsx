@@ -11,6 +11,7 @@ import {watchVideos} from './archive/video-lifecycle';
 import useSmoothScroll from './archive/useSmoothScroll';
 import useAnimationCadence from './archive/useAnimationCadence';
 import './archive/atmosphere.css';
+import {routeAccents} from './archive/route-identity';
 
 const staticPieces=config.workPlaceholders.filter(p=>!p.placeholder);
 export default function App({pathname='/',initialPieces=config.workPlaceholders}){
@@ -34,5 +35,7 @@ export default function App({pathname='/',initialPieces=config.workPlaceholders}
   },[paused,pieces]);
   const route=pathname.replace(/\/$/,''),service=services.find(s=>route==='/services/'+s.slug);
   const Page=({'/portfolio':PortfolioPage,'/capabilities':CapabilitiesPage,'/approach':ApproachPage,'/contact':ContactPage})[route];
-  return <><a className="skip" href="#main">Skip to content</a><ArchiveNav pathname={pathname}/><main id="main" tabIndex="-1">{service?<ServicePage service={service} paused={paused}/>:Page?<Page paused={paused} pieces={pieces} collectionError={collectionError}/>:<ArchiveHome paused={paused} pieces={pieces} collectionError={collectionError}/>}</main><ArchiveFooter paused={paused} invite={route!=='/contact'}/><SceneCursor paused={paused}/></>;
+  const content=<><a className="skip" href="#main">Skip to content</a><ArchiveNav pathname={pathname}/><main id="main" tabIndex="-1">{service?<ServicePage service={service} paused={paused}/>:Page?<Page paused={paused} pieces={pieces} collectionError={collectionError}/>:<ArchiveHome paused={paused} pieces={pieces} collectionError={collectionError}/>}</main><ArchiveFooter paused={paused} invite={route!=='/contact'}/><SceneCursor paused={paused}/></>;
+  const accent=routeAccents[route];
+  return accent?<div className="route-world" style={{'--green':accent,'--route-accent':accent}}>{content}</div>:content;
 }

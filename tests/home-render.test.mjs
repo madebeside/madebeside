@@ -56,3 +56,17 @@ test('project selection targets remain outside the animated video layers',()=>{
  for(const article of articles)assert.doesNotMatch(article[0],/<button/);
  assert.match(html,/class="timeline-selectors"/);
 });
+test('supporting routes retain useful content while using distinct page worlds',async()=>{
+ const pages=await server.ssrLoadModule('/client/archive/ArchivePages.jsx');
+ const {services}=await server.ssrLoadModule('/client/services.js');
+ const worlds=[];
+ for(const service of services){
+  const html=renderToStaticMarkup(React.createElement(pages.ServicePage,{service,paused:true}));
+  assert.match(html,new RegExp('world-'+service.slug));
+  assert.match(html,/data-kinetic/);assert.match(html,/Placeholder image/);
+  for(const [name] of [...service.deliverables,...service.steps,...service.faqs])assert.ok(html.includes(name));
+  assert.equal((html.match(/<h1/g)||[]).length,1);
+  worlds.push(html.match(/data-page-world="([^"]+)"/)?.[1]);
+ }
+ assert.equal(new Set(worlds).size,4);
+});
