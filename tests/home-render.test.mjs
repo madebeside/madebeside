@@ -64,17 +64,20 @@ test('supporting routes retain useful content while using distinct page worlds',
   const html=renderToStaticMarkup(React.createElement(pages.ServicePage,{service,paused:true}));
   assert.match(html,new RegExp('world-'+service.slug));
   assert.match(html,/data-kinetic/);assert.match(html,/Placeholder image/);
-  for(const [name] of [...service.deliverables,...service.steps,...service.faqs])assert.ok(html.includes(name));
+  const visibleText=html.replace(/<[^>]*>/g,'');
+  for(const [name] of [...service.deliverables,...service.steps,...service.faqs])assert.ok(visibleText.includes(name));
   assert.equal((html.match(/<h1/g)||[]).length,1);
   worlds.push(html.match(/data-page-world="([^"]+)"/)?.[1]);
  }
  assert.equal(new Set(worlds).size,4);
 });
 
-test('supporting pages use the reference masthead and three-column playbook rather than service cards',async()=>{
+test('supporting pages retain each deliverable in the new layered playbook and cover the introduction',async()=>{
  const pages=await server.ssrLoadModule('/client/archive/ArchivePages.jsx');
  const {services}=await server.ssrLoadModule('/client/services.js');
  const html=renderToStaticMarkup(React.createElement(pages.ServicePage,{service:services[1],paused:true}));
- assert.match(html,/reference-masthead/);assert.match(html,/reference-image-wall/);assert.match(html,/reference-playbook/);
+ assert.match(html,/reference-masthead/);assert.match(html,/world-content-cover/);assert.match(html,/reference-playbook/);
+ assert.equal((html.match(/class="playbook-chapter /g)||[]).length,services[1].deliverables.length);
+ assert.doesNotMatch(html,/reference-image-wall|room-place|room-brand|room-explore|Good ideas\. Great company\./);
  assert.doesNotMatch(html,/social-posters|class="world-deliverables"/);
 });

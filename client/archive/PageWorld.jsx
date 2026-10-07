@@ -9,7 +9,8 @@ export function World({name,paused,children}){
   host.querySelectorAll('[data-reveal]').forEach(e=>observer.observe(e));
   return()=>{observer.disconnect();host.classList.remove('world-motion-ready');};
  },[paused]);
- return <div ref={root} data-page-world={name} className={'page-world world-'+name+(paused?' world-still':'')}>{children}</div>;
+ const sections=React.Children.toArray(children);
+ return <div ref={root} data-page-world={name} className={'page-world world-'+name+(paused?' world-still':'')}>{sections[0]}<div className="world-content-cover">{sections.slice(1)}</div></div>;
 }
 export function Kinetic({text,as:Tag='h1',className=''}){
  return <Tag className={'kinetic-type '+className} data-kinetic>{text.split(' ').map((word,i)=><React.Fragment key={i}><span className="word-window"><span style={{'--word':i}}>{word}</span></span>{' '}</React.Fragment>)}</Tag>;
