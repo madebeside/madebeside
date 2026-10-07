@@ -47,3 +47,7 @@
 .world-still .chapter-number,.world-still .chapter-copy .word-window>span,.world-still .chapter-copy p,.world-still .chapter-media .world-photo,.world-still .reference-wide-image .world-photo,.world-still .contact-intro,.world-still .contact-details,.world-still .reference-statement p,.world-still .world-answers>h2,.world-still .world-answers article{transform:none;opacity:1}
 @media(prefers-reduced-motion:reduce){.chapter-number,.chapter-copy .word-window>span,.chapter-copy p,.chapter-media .world-photo,.reference-wide-image .world-photo,.reference-contact-sheet .contact-intro,.reference-contact-sheet .contact-details,.reference-statement p,.world-answers>h2,.world-answers article{transform:none;opacity:1}}
 .playbook-chapters{padding-bottom:0}.playbook-chapter:last-of-type{margin-bottom:0}.reference-playbook{padding-bottom:60px}
+.corner-brand{display:flex;align-items:center;justify-content:center;box-sizing:border-box;width:154px;height:40px;padding:6px 12px}.corner-brand img{display:block;width:100%;height:28px;object-fit:contain}
+#main:has(.world-approach){padding-bottom:0}.world-approach .reference-playbook{padding-bottom:0}
+@media(max-width:800px){.corner-brand{width:130px;height:36px;padding:6px 10px}.corner-brand img{height:24px}}
+#main:has(.world-approach){border-radius:0}

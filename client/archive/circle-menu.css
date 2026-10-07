@@ -26,3 +26,10 @@
 .circle-menu-trigger i{transition:transform .48s var(--menu-ease),opacity .32s var(--menu-ease),filter .4s var(--menu-ease)}
 .circle-menu-links a{transition:transform .48s var(--menu-ease),opacity .28s var(--menu-ease),filter .4s var(--menu-ease);transition-delay:calc((2 - var(--menu-order))*.025s)}
 @media(prefers-reduced-motion:reduce){.circle-navigation::before,.circle-menu-links,.circle-menu-trigger i,.circle-menu-links a{transition:none}}
+/* The expanded bar holds every page without squeezing the link labels. */
+.circle-navigation{width:min(940px,calc(100% - 210px - var(--gutter)));height:110px}
+.circle-navigation::before{clip-path:inset(0 0 calc(100% - 48px) calc(100% - 70px) round 24px)}.circle-navigation.is-open::before{clip-path:inset(0 0 4px 0 round 24px)}
+.circle-navigation .circle-menu-links{flex-wrap:wrap;align-content:center;justify-content:center;gap:0 24px;padding:10px 24px}.circle-menu-links a{font-size:13px;padding:10px 0;transition-delay:calc(min(var(--menu-order),3)*.02s)}.circle-navigation.is-open .circle-menu-links a{transition-delay:calc(min(var(--menu-order),3)*.02s)}
+@media(max-width:700px){.circle-navigation{width:calc(100% - var(--gutter)*2);height:160px;transition:top .4s var(--menu-ease)}.circle-navigation.is-open{top:72px}.circle-navigation .circle-menu-links{gap:0 18px;padding:12px 16px}.circle-menu-links a{font-size:12px;padding:10px 0}}
+@media(prefers-reduced-motion:reduce){.circle-navigation{transition:none}}
+@media(max-width:700px){.circle-navigation{height:220px}}
