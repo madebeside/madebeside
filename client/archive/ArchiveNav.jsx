@@ -1,25 +1,23 @@
-import React,{useEffect,useRef} from 'react';
-const links=[['Work','/portfolio/'],['Services','/capabilities/'],['About','/approach/'],['Start a project','/contact/']];
-export default function ArchiveNav({open,onToggle,onClose,pathname,paused,onMotion}){
-  const menu=useRef(),button=useRef();
+import React,{useEffect,useRef,useState} from 'react';
+import './circle-menu.css';
+const links=[['Work','/portfolio/'],['About','/approach/'],['Start a project','/contact/']];
+export default function ArchiveNav({pathname}){
+  const [open,setOpen]=useState(false),root=useRef(),button=useRef();
   useEffect(()=>{
-    if(!open)return;
-    const before=document.body.style.overflow;document.body.style.overflow='hidden';
-    const focusables=()=>[button.current,...menu.current.querySelectorAll('a[href]')];
-    menu.current.querySelector('a')?.focus();
-    const key=e=>{
-      if(e.key==='Escape'){e.preventDefault();onClose();}
-      if(e.key==='Tab'){
-        const all=focusables(),index=all.indexOf(document.activeElement);
-        const next=(index+(e.shiftKey?-1:1)+all.length)%all.length;
-        e.preventDefault();all[next].focus();
-      }
-    };
-    document.addEventListener('keydown',key);
-    return()=>{document.body.style.overflow=before;document.removeEventListener('keydown',key);button.current?.focus();};
-  },[open,onClose]);
-  return <>
-    <header className={'archive-nav '+(open?'menu-is-open':'')}><a className="nav-wordmark" href="/" aria-label="Made Beside home"><img src="/identity/wordmark-source.png" width="2010" height="562" alt="Made Beside"/></a><div className="nav-actions"><button className="motion-control" aria-label={paused?'Resume motion':'Pause motion'} title={paused?'Resume motion':'Pause motion'} aria-pressed={paused} onClick={onMotion} hidden={open}><span aria-hidden="true">{paused?'▶':'Ⅱ'}</span></button><button ref={button} className="menu-toggle" onClick={onToggle} aria-expanded={open} aria-controls="archive-menu"><span aria-hidden="true">{open?'×':':/'}</span>{open?'Close':'Menu'}</button></div></header>
-    {open&&<nav id="archive-menu" className="archive-menu" aria-label="Main navigation" ref={menu}><div className="menu-scan" aria-hidden="true">+</div><div className="menu-list">{links.map(([name,url],i)=><a key={url} href={url} aria-current={pathname===url?'page':undefined}><span>{name}</span><span className="menu-arrow" aria-hidden="true">↗</span></a>)}</div><div className="menu-bottom"><a href="mailto:hello@madebeside.com">hello@madebeside.com ↗</a><p>Good things,<br/>made beside.</p></div></nav>}
-  </>;
+    const outside=e=>{if(!root.current.contains(e.target))setOpen(false);};
+    const key=e=>{if(e.key==='Escape'&&root.current.contains(document.activeElement)){button.current.focus();setOpen(false);}};
+    document.addEventListener('pointerdown',outside);document.addEventListener('keydown',key);
+    return()=>{document.removeEventListener('pointerdown',outside);document.removeEventListener('keydown',key);};
+  },[]);
+  return <nav ref={root} className={'circle-navigation'+(open?' is-open':'')} aria-label="Main navigation"
+    onPointerEnter={e=>{if(e.pointerType==='mouse')setOpen(true);}}
+    onPointerLeave={()=>{if(!root.current.contains(document.activeElement))setOpen(false);}}
+    onBlur={e=>{if(!e.currentTarget.contains(e.relatedTarget))setOpen(false);}}>
+    <button ref={button} className="circle-menu-trigger" aria-label={open?'Close navigation':'Open navigation'} aria-expanded={open} aria-controls="circle-menu-links" onClick={()=>setOpen(value=>!value)} onFocus={e=>{if(e.currentTarget.matches(':focus-visible'))setOpen(true);}}>
+      <span aria-hidden="true"><i/><i/><i/></span>
+    </button>
+    <div id="circle-menu-links" className="circle-menu-links" inert={!open?true:undefined}>
+      {links.map(([label,url],index)=><a key={url} href={url} style={{'--menu-order':index}} aria-current={pathname===url?'page':undefined}><span>{label}</span><i aria-hidden="true"/></a>)}
+    </div>
+  </nav>;
 }
