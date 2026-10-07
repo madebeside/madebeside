@@ -40,7 +40,7 @@ export default function EditingShowcase({paused,pieces}){
   },[paused,projects]);
   const project=projects[active]||projects[0];
   if(paused)return <section className="showcase-stacked" id="selected-work" tabIndex={-1} aria-label="Selected work">
-    {projects.map(item=><article key={item.id} id={item.id}><h2>{item.title}</h2><ShowcaseFilm project={item} active={false} paused/><p>{item.format}{item.placeholder?' · Placeholder project':''}</p></article>)}
+    {projects.map(item=><article key={item.id} id={item.id}><h2>{item.title}</h2><ShowcaseFilm project={item} active paused/><p>{item.format}{item.placeholder?' · Placeholder project':''}</p></article>)}
   </section>;
   return <section ref={root} className="editing-showcase" id="selected-work" tabIndex={-1} aria-labelledby="showcase-title" style={{'--project-count':projects.length}}>
     <RiverSurface/>
@@ -57,7 +57,7 @@ export default function EditingShowcase({paused,pieces}){
           <div className="bin-project-copy"><h3>{project.title}</h3><p>{project.description}</p>{project.placeholder&&<span className="placeholder-disclosure">Placeholder project</span>}</div>
         </aside>
         <div className="workspace-program">
-          <div className="workspace-panel-title">Program<span>{project.format}</span></div>
+          <div className="workspace-panel-title">Program<span>{project.format}{project.placeholder?' · Placeholder project':''}</span></div>
           <div className="program-screen">{projects.map((item,index)=><ShowcaseFilm key={item.id} project={item} active={index===active} paused={paused} onTime={setTime}/>)}</div>
           <div className="program-readout"><span>{timecode(time)}</span><span aria-hidden="true" className="readout-meter"><i/><i/><i/><i/><i/><i/><i/></span><span>1920 × 1080</span></div>
         </div>

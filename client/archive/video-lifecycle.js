@@ -24,3 +24,18 @@ export function createProjectPlayback(video,initial){
     dispose(){disposed=true;video.pause();}
   };
 }
+
+export function createShowcasePlayback(video,surface,initial,onFailure){
+  let failed=false;
+  const player=createProjectPlayback(video,{...initial,visible:false,hidden:document.hidden});
+  const fail=()=>{failed=true;player.update({active:false,visible:false});onFailure?.();};
+  const observer=new IntersectionObserver(([entry])=>player.update({visible:!failed&&entry.isIntersecting}),{threshold:.15});
+  const visibility=()=>player.update({hidden:document.hidden});
+  video.addEventListener('error',fail);document.addEventListener('visibilitychange',visibility);
+  observer.observe(surface);
+  if(video.error)fail();
+  return {
+    update(next){player.update(failed?{...next,active:false,visible:false}:next);},
+    dispose(){observer.disconnect();video.removeEventListener('error',fail);document.removeEventListener('visibilitychange',visibility);player.dispose();}
+  };
+}

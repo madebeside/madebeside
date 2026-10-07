@@ -6,7 +6,7 @@
     "build": "node scripts/build-client.mjs && node scripts/build.mjs",
     "dev": "node serve.mjs",
     "db:generate": "drizzle-kit generate",
-    "test": "node --test tests/contact.test.mjs tests/portfolio.test.mjs tests/seo.test.mjs tests/archive.test.mjs tests/timeline.test.mjs tests/atmosphere.test.mjs tests/scroll-scenes.test.mjs",
+    "test": "node --test tests/contact.test.mjs tests/portfolio.test.mjs tests/seo.test.mjs tests/archive.test.mjs tests/timeline.test.mjs tests/atmosphere.test.mjs tests/scroll-scenes.test.mjs tests/home-render.test.mjs",
     "dev:client": "vite"
   },
   "devDependencies": {

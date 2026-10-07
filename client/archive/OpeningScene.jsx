@@ -40,7 +40,7 @@ export default function OpeningScene({paused}){
       <div ref={gradient} className="opening-gradient" aria-hidden="true"/>
       <div ref={headline} className="opening-scale">
         <h1 id="home-title" className="elastic-headline">
-          <span className="headline-line"><span style={{'--word':0}}>The</span>{' '}<span style={{'--word':1}}>best</span>{' '}<span style={{'--word':2}}>things,</span></span>
+          <span className="headline-line"><span style={{'--word':0}}>The</span>{' '}<span style={{'--word':1}}>best</span>{' '}<span style={{'--word':2}}>things,</span></span>{' '}
           <span className="headline-line"><span style={{'--word':3}}>are</span>{' '}<span style={{'--word':4}}>made</span>{' '}<span style={{'--word':5}}>beside</span>{' '}<span style={{'--word':6}}>you.</span></span>
         </h1>
       </div>

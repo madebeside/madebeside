@@ -14,7 +14,7 @@ export default function useSmoothScroll(disabled){
       const target=document.getElementById(anchor.hash.slice(1));if(!target)return;
       event.preventDefault();
       if(location.hash!==anchor.hash)history.pushState(null,'',anchor.hash);
-      lenis.scrollTo(target,{offset:-90,onComplete:()=>target.focus({preventScroll:true})});
+      lenis.scrollTo(target,{offset:0,onComplete:()=>target.focus({preventScroll:true})});
     };
     document.addEventListener('click',anchorClick);
     const clock=subscribe(time=>lenis.raf(time),true,()=>lenis.destroy(),-10);

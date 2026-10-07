@@ -8,6 +8,22 @@ import * as motion from '../client/archive/motion.js';
 import * as work from '../client/archive/work-data.js';
 import * as media from '../client/archive/video-lifecycle.js';
 
+test('showcase playback reports pre-hydration failures and cleans up before a new source',t=>{
+  assert.equal(typeof media.createShowcasePlayback,'function');
+  const saved={document:globalThis.document,IntersectionObserver:globalThis.IntersectionObserver};
+  const doc=new EventTarget();doc.hidden=false;globalThis.document=doc;let observe;
+  globalThis.IntersectionObserver=class{constructor(callback){observe=callback;}observe(){}disconnect(){}};
+  t.after(()=>Object.assign(globalThis,saved));
+  const film=error=>Object.assign(new EventTarget(),{error,paused:true,play(){this.paused=false;return Promise.resolve();},pause(){this.paused=true;}});
+  const broken=film({code:4});let failures=0;
+  const old=media.createShowcasePlayback(broken,{}, {active:true,paused:false},()=>failures++);
+  assert.equal(failures,1);observe([{isIntersecting:true}]);assert.equal(broken.paused,true);
+  old.dispose();broken.dispatchEvent(new Event('error'));assert.equal(failures,1);
+  const fresh=film(null),next=media.createShowcasePlayback(fresh,{}, {active:true,paused:false},()=>failures++);
+  observe([{isIntersecting:true}]);assert.equal(fresh.paused,false);assert.equal(failures,1);
+  fresh.dispatchEvent(new Event('error'));assert.equal(failures,2);assert.equal(fresh.paused,true);next.dispose();
+});
+
 test('scroll showcase selection owns automatic film playback across visibility and reduced motion',()=>{
   const video={paused:true,play(){this.paused=false;return Promise.resolve();},pause(){this.paused=true;}};
   const player=media.createProjectPlayback(video,{active:true,paused:false,visible:true,hidden:false});
