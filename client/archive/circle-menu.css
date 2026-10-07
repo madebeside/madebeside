@@ -35,3 +35,7 @@
 @media(max-width:700px){.circle-navigation{height:220px}}
 .circle-navigation{width:min(660px,calc(100% - 210px - var(--gutter)));height:52px}.circle-navigation .circle-menu-links{flex-wrap:nowrap;gap:0 22px;padding:0 20px}
 @media(max-width:700px){.circle-navigation{width:calc(100% - var(--gutter)*2);height:112px}.circle-navigation .circle-menu-links{flex-wrap:wrap;gap:0 18px;padding:10px 16px}}
+/* A compact five-link bar with the type centered on the dots' baseline. */
+.circle-navigation{width:min(530px,calc(100% - 210px - var(--gutter)));height:48px}.circle-navigation .circle-menu-links{gap:0 24px;padding:0 20px;align-items:center;align-content:center}.circle-menu-links a{padding:0;line-height:1.2}
+.circle-navigation::before{inset:0;clip-path:inset(0 0 0 calc(100% - 70px) round 24px)}.circle-navigation.is-open::before{clip-path:inset(0 round 24px)}
+@media(max-width:700px){.circle-navigation{width:calc(100% - var(--gutter)*2);height:96px}.circle-navigation .circle-menu-links{gap:18px 20px;padding:16px}.circle-navigation::before{clip-path:inset(0 0 calc(100% - 48px) calc(100% - 70px) round 24px)}.circle-navigation.is-open::before{clip-path:inset(0 round 24px)}}

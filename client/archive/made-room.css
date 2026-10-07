@@ -75,3 +75,4 @@
 .world-still .world-answers details{transform:none}.world-still .answer-content{animation:none!important}
 @media(max-width:800px){.world-answers summary{font-size:19px}.chapter-service-link{font-size:14px}}
 @media(prefers-reduced-motion:reduce){.world-answers details{transform:none}.world-answers .answer-content{animation:none!important}.world-answers summary span{transition:none}}
+.chapter-number{-webkit-text-stroke:0;paint-order:normal;text-shadow:0 4px 14px #00000028,0 12px 38px #00000020}
