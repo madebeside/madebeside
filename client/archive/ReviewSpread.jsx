@@ -1,5 +1,6 @@
-import React,{useState} from 'react';
+import React,{useEffect,useRef,useState} from 'react';
 import './review-spread.css';
+import RiverSurface from './RiverSurface';
 
 // These are editorial placeholders, never attributed client endorsements.
 const notes=[
@@ -9,28 +10,30 @@ const notes=[
 ];
 
 export default function ReviewSpread({paused}){
-  const [pinned,setPinned]=useState([]);
-  function tilt(event){
-    if(paused||event.pointerType!=='mouse'||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
-    const box=event.currentTarget.getBoundingClientRect();
-    event.currentTarget.style.setProperty('--note-x',((event.clientY-box.top)/box.height-.5)*-4+'deg');
-    event.currentTarget.style.setProperty('--note-y',((event.clientX-box.left)/box.width-.5)*4+'deg');
-  }
-  function settle(event){event.currentTarget.style.setProperty('--note-x','0deg');event.currentTarget.style.setProperty('--note-y','0deg');}
+  const [active,setActive]=useState(0),[mobile,setMobile]=useState(false),panels=useRef();
+  useEffect(()=>{
+    const media=matchMedia('(max-width:1000px)');
+    const change=()=>{setMobile(media.matches);setActive(media.matches?-1:0);};
+    change();media.addEventListener('change',change);return()=>media.removeEventListener('change',change);
+  },[]);
+  const hover=(event,index)=>{
+    if(mobile||event.pointerType!=='mouse')return;
+    const focused=panels.current.querySelector(':focus-visible');
+    if(!focused||event.currentTarget.contains(focused))setActive(index);
+  };
   return <section className={'review-spread'+(paused?' is-still':'')} id="reviews" tabIndex={-1} aria-labelledby="review-title">
-    <div className="review-spread-heading"><h2 id="review-title">Their side<br/>of the story.</h2><p>Good things are made together.<br/>The people beside us get the last word.</p></div>
-    <ol className="review-notes">{notes.map((note,index)=>{
-      const number=String(index+1).padStart(2,'0'),isPinned=pinned.includes(index);
-      return <li key={number} className={'review-note note-'+note.style+(isPinned?' is-pinned':'')} onPointerMove={tilt} onPointerLeave={settle}>
-        <article aria-label={'Review placeholder '+number}>
-          <div className="note-top"><span>Review placeholder {number}</span><button className="note-pin" onClick={()=>setPinned(current=>current.includes(index)?current.filter(value=>value!==index):[...current,index])} aria-label={'Pin review placeholder '+number} aria-pressed={isPinned} data-interactive data-cursor={isPinned?'Unpin':'Pin'}><span aria-hidden="true">{isPinned?'●':'↗'}</span></button></div>
-          <span className="note-quote" aria-hidden="true">“</span>
-          <blockquote><p>{note.text}</p></blockquote>
-          <div className="note-bottom"><p>{note.context}</p><span className="note-number" aria-hidden="true">{number}</span></div>
-          <span className="note-pin-status" aria-live="polite">{isPinned?'Pinned here':''}</span>
-        </article>
+    <RiverSurface/>
+    <div className="review-spread-heading"><h2 id="review-title">Beside<br/>us.</h2><span>Client perspectives.<br/>Placeholder reviews for now.</span></div>
+    <ol className="bookmark-panels" ref={panels} onPointerLeave={()=>{if(!mobile&&!panels.current.contains(document.activeElement))setActive(0);}}>{notes.map((note,index)=>{
+      const number=String(index+1).padStart(2,'0'),expanded=active===index;
+      return <li key={number} className={'review-bookmark bookmark-'+index+(expanded?' is-expanded':'')} onPointerEnter={event=>hover(event,index)}>
+        <button className="bookmark-spine" aria-expanded={expanded} aria-controls={'review-body-'+number} onClick={()=>setActive(value=>mobile&&value===index?-1:index)} onFocus={e=>{if(e.currentTarget.matches(':focus-visible'))setActive(index);}}>
+          <span>Review {number}</span><span className="bookmark-number" aria-hidden="true">{number}</span><i aria-hidden="true">↗</i>
+        </button>
+        <div className="bookmark-body" id={'review-body-'+number} aria-hidden={!expanded} inert={!expanded?true:undefined}>
+          <h3>Review placeholder {number}</h3><p className="bookmark-quote">{note.text}</p><span className="bookmark-context">{note.context}</span>
+        </div>
       </li>;
     })}</ol>
-    <div className="review-spread-foot"><span>Different perspectives. Shared ground.</span><span aria-hidden="true">↖ &nbsp; A few words worth keeping.</span></div>
   </section>;
 }

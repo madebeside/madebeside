@@ -3,6 +3,7 @@ import {subscribe} from './scheduler';
 import {showcaseState} from './scroll-scenes';
 import {selectEditorialWork} from './work-data';
 import ShowcaseFilm from './ShowcaseFilm';
+import RiverSurface from './RiverSurface';
 import './editing-showcase.css';
 
 const timecode=seconds=>{const n=Math.floor(Math.max(0,seconds||0)*30);return [Math.floor(n/108000),Math.floor(n/1800)%60,Math.floor(n/30)%60,n%30].map(v=>String(v).padStart(2,'0')).join(':');};
@@ -42,6 +43,7 @@ export default function EditingShowcase({paused,pieces}){
     {projects.map(item=><article key={item.id} id={item.id}><h2>{item.title}</h2><ShowcaseFilm project={item} active={false} paused/><p>{item.format}{item.placeholder?' · Placeholder project':''}</p></article>)}
   </section>;
   return <section ref={root} className="editing-showcase" id="selected-work" tabIndex={-1} aria-labelledby="showcase-title" style={{'--project-count':projects.length}}>
+    <RiverSurface/>
     <div className="showcase-anchors" aria-hidden="true">{projects.map(item=><div id={item.id} key={item.id} tabIndex={-1}/>)}</div>
     <div className="showcase-stage" ref={stage}>
       <div className="showcase-title-row"><h2 id="showcase-title">Selected work.</h2><span aria-live="polite">{number(active)}<span> / {number(projects.length-1)}</span></span></div>

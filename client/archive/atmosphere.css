@@ -3,3 +3,4 @@
 .river-atmosphere{position:absolute;inset:0;z-index:-1;pointer-events:none;overflow:clip;isolation:isolate}
 .river-current{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
 .river-atmosphere .intro-atmosphere{z-index:1}
+.river-surface{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}

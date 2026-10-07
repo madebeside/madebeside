@@ -22,7 +22,7 @@ export default function RiverAtmosphere(){
       <defs><linearGradient id="river-colours" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2={size.width*.22} y2="2900" spreadMethod="reflect">
         <stop offset="0" stopColor="#86efac"/><stop offset=".28" stopColor="#bcc6ff"/><stop offset=".56" stopColor="#ffd5bb"/><stop offset=".82" stopColor="#86efac"/><stop offset="1" stopColor="#bcc6ff"/>
       </linearGradient></defs>
-      {ribbons.map((path,index)=><path key={index} d={path} fill="url(#river-colours)" opacity=".0093"/>)}
+      <g id="river-artwork">{ribbons.map((path,index)=><path key={index} d={path} fill="url(#river-colours)" opacity=".0093"/>)}</g>
     </svg>
   </div>;
 }

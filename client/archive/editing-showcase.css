@@ -19,3 +19,4 @@
 @media(prefers-reduced-motion:reduce){.showcase-film{transition:none;transform:none}.editing-workspace{transform:none!important;will-change:auto}}
 .workspace-program{min-height:0}.program-screen{min-height:0;flex-shrink:1}
 @media(max-width:800px){.showcase-stage{min-height:0;gap:16px;padding:58px var(--gutter) 20px}.editing-workspace{grid-template-rows:32px 54px minmax(130px,1fr) 112px 23px;max-height:calc(100svh - 130px)}.workspace-sequence{grid-template-rows:none}.sequence-grid,.sequence-labels{grid-template-rows:22px repeat(3,24px) 18px}.sequence-clip{top:3px;bottom:3px}.sequence-labels{font-size:9px}.sequence-waveform{margin-top:3px;margin-bottom:3px}.workspace-bin ol{padding:7px 8px}.workspace-topbar{font-size:9px}.workspace-program>.workspace-panel-title{height:25px}.program-readout{height:24px}.showcase-title-row h2{font-size:34px}}
+.editing-showcase{background:#fff}
