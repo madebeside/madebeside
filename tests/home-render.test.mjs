@@ -63,7 +63,8 @@ test('supporting routes retain useful content while using distinct page worlds',
  for(const service of services){
   const html=renderToStaticMarkup(React.createElement(pages.ServicePage,{service,paused:true}));
   assert.match(html,new RegExp('world-'+service.slug));
-  assert.match(html,/data-kinetic/);assert.match(html,/Placeholder image/);
+  assert.match(html,/data-kinetic/);assert.match(html,/brand-diagram/);
+  assert.doesNotMatch(html,/creative-hands\.webp|reference-wide-image|Placeholder image/);
   const visibleText=html.replace(/<[^>]*>/g,'');
   for(const [name] of [...service.deliverables,...service.steps,...service.faqs])assert.ok(visibleText.includes(name));
   assert.equal((html.match(/<h1/g)||[]).length,1);

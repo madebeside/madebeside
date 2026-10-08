@@ -1,18 +1,10 @@
-import React,{useEffect,useRef} from 'react';
-import {subscribe} from './scheduler';
+import React from 'react';
 import {Kinetic} from './PageWorld';
+import {GrainField} from './AspenGeometry';
 import './made-room.css';
+import './aspen-pages.css';
+const descriptions={WORK:'A shared point of view, from the first conversation to the final frame.',CAPABILITIES:'Strategy, creative and production. Connected around your business.',APPROACH:'Your knowledge. Our perspective. We make the work together.',CONTACT:'Tell us where you are and what you have in mind. We’ll find the next step together.',CONTENT:'Photography, film and social content, from the shared brief to the final edit.',SOCIAL:'A social presence that feels like your business. Planned, made and managed beside you.',STRATEGY:'A clear direction for what to say, where to say it and what to make first.',CAMPAIGNS:'Campaign strategy and creative. One story, brought together across the right formats.'};
+const titles={WORK:'Work',CAPABILITIES:'What we do',APPROACH:'Our approach',CONTACT:'Get in touch',CONTENT:'Content production',SOCIAL:'Social media',STRATEGY:'Content strategy',CAMPAIGNS:'Digital marketing'};
 export default function MadeRoom({word,paused}){
- const host=useRef(),type=useRef();
- useEffect(()=>{
-  if(paused||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
-  const root=host.current,visual=type.current;
-  let top=0,current=0,alive=true;
-  const measure=()=>{top=root.parentElement.getBoundingClientRect().top+scrollY;};
-  const clock=subscribe((time,dt)=>{const target=Math.max(0,Math.min(1,(scrollY-top)/innerHeight));current+=(target-current)*(1-Math.exp(-dt*10));visual.style.transform=`translateY(${-current*100}px) rotate(${-current*3}deg)`;visual.style.opacity=1-current*.65;},false);
-  const observer=new IntersectionObserver(([e])=>clock.setActive(e.isIntersecting)),size=new ResizeObserver(measure);
-  measure();observer.observe(root);size.observe(root);window.addEventListener('resize',measure);document.fonts?.ready.then(()=>{if(alive)measure();});
-  return()=>{alive=false;clock.remove();observer.disconnect();size.disconnect();window.removeEventListener('resize',measure);visual.style.removeProperty('transform');visual.style.removeProperty('opacity');};
- },[paused]);
- return <header className="reference-masthead made-room" ref={host}><div className="made-room-stage"><div className="page-title-art" ref={type} style={{'--title-size':word.length>10?'11vw':word.length>7?'13vw':word.length>5?'17vw':'25vw'}}><Kinetic text={word}/><span className="page-title-accent">made beside</span></div></div></header>;
+ return <header className="aspen-opening reference-masthead"><div className="aspen-title-cell"><Kinetic text={titles[word]||word}/></div><div className="aspen-grain-top"><GrainField paused={paused}/></div><div className="aspen-grain-bottom"><GrainField paused={paused} variant={2}/></div><div className="aspen-intro-cell"><p>{descriptions[word]}</p><a href="/contact/">Start a conversation <span aria-hidden="true">↗</span></a></div><div className="aspen-brand-cell"><span>made</span><span>beside.</span><div className="aspen-joined-bars" aria-hidden="true"><i/><i/></div></div></header>;
 }
