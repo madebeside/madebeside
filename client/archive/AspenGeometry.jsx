@@ -19,7 +19,7 @@ export function GrainField({paused,variant=0,shape='arch'}){
    }
    ctx.fillStyle='#121111';ctx.fill(ink);ctx.fillStyle=accent;ctx.fill(lit);
   };
-  const measure=()=>{width=Math.max(1,Math.min(900,host.clientWidth));height=Math.max(1,Math.round(width*host.clientHeight/Math.max(1,host.clientWidth)));if(el.width!==width)el.width=width;if(el.height!==height)el.height=height;accent=getComputedStyle(host).getPropertyValue('--route-accent').trim()||'#16db65';if(still)draw();};
+  const measure=()=>{width=Math.max(1,Math.min(900,host.clientWidth));height=Math.max(1,Math.round(width*host.clientHeight/Math.max(1,host.clientWidth)));if(el.width!==width)el.width=width;if(el.height!==height)el.height=height;accent=getComputedStyle(host).getPropertyValue('--route-accent').trim()||'#16db65';draw();};
   const position=e=>{const r=host.getBoundingClientRect(),c=el.getBoundingClientRect();return {x:(e.clientX-c.left)*width/c.width,y:(e.clientY-c.top)*height/c.height,cssX:(e.clientX-r.left)*host.clientWidth/r.width,cssY:(e.clientY-r.top)*host.clientHeight/r.height};};
   const move=e=>{if(still||e.pointerType==='touch')return;pointer={...position(e),clientX:e.clientX,clientY:e.clientY};host.classList.add('has-pointer');cursor.current.style.transform=`translate(${pointer.cssX}px,${pointer.cssY}px)`;if(phase-lastWave>.09){waves.push({x:pointer.x,y:pointer.y,time:phase});waves=waves.slice(-5);lastWave=phase;}};
   const leave=()=>{pointer=null;host.classList.remove('has-pointer');};

@@ -24,6 +24,7 @@ body.policy-dark .archive-footer.editorial-footer{background:#ededed!important;c
 `);
 for(const route of ['privacy','terms','cookies','refunds','accessibility']){
  const file='web/'+route+'/index.html';let html=await readFile(file,'utf8');
+ html=html.replace(/<link rel="preload" as="image" href="\/identity\/wordmark-source\.png"\/>/g,'');
  html=html.replace(/<footer[\s\S]*?<\/footer>/,()=>renderFooter()).replace(/<button class="motion-toggle"[^>]*>[^<]*<\/button>/g,'').replace(/<link rel="stylesheet" href="\/(?:footer-links|footer-socials)\.css[^"]*">/g,'');
  if(!html.includes('href="/archive-footer.css"'))html=html.replace('</head>','<link rel="stylesheet" href="/archive-footer.css"></head>');
  await writeFile(file,html);
