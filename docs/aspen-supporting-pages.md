@@ -24,3 +24,11 @@ The implementation uses original Made Beside copy and geometry, existing DM Sans
 Production build and the 75-test suite passed. The obsolete placeholder-image assertion now checks for branded geometry and absence of the removed image while preserving all service copy. Browser checks cover desktop/mobile overflow, heading count, sticky behavior, service navigation, FAQ interaction and reduced-motion treatment. Code review found a dark-row keyboard focus contrast issue; a white focus outline was added. Existing Lenis scroll remains deliberately active, consistent with the reference.
 
 Local preview only; no deployment or push.
+
+## Page-specific composition and interaction refinement
+
+Each of the eight supporting routes now has a stable, distinct desktop and phone tile arrangement. Stability is intentional: the composition does not change on reload. Social and digital marketing also reverse the playbook columns; content production and strategy use different column proportions.
+
+The dot fields emit bounded, fading cursor/tap ripples in the route accent color, with a centered local cursor. Canvas scaling uses axis-aligned pointer mapping. Fields render only near the viewport and pause for reduced motion. Scroll drives hero parallax, word reveals, chapter text and geometry entrances, and accent progress rules. Original connected blocks, windows and joining paths replace the reference-like circular orbit diagrams. Geometry loops pause offscreen.
+
+Validation: production build and77 automated checks pass; all eight routes checked at desktop and390px, with no horizontal overflow. Homepage components were not changed.
