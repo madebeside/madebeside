@@ -1,14 +1,21 @@
-import React,{useMemo,useRef,useState} from 'react';
+import React,{useEffect,useMemo,useRef,useState} from 'react';
 import {selectEditorialWork} from './work-data';
 import ShowcaseFilm from './ShowcaseFilm';
 import {timelineIndex,timelineStep,sampleProjectMetrics} from './timeline-selection';
 import './editing-showcase.css';
 const timecode=seconds=>{const n=Math.floor(Math.max(0,seconds||0)*30);return [Math.floor(n/1800),Math.floor(n/30)%60,n%30].map(v=>String(v).padStart(2,'0')).join(':');};
 export default function EditingShowcase({paused,pieces}){
+ const section=useRef();
  const projects=useMemo(()=>selectEditorialWork(pieces,true).slice(0,3),[pieces]);
  const [selection,setActive]=useState(-1),[time,setTime]=useState(0);
  const active=timelineIndex(selection,projects.length),total=String(projects.length).padStart(2,'0');
  const rail=useRef(),buttons=useRef([]),lastPointer=useRef({x:null,y:null}),hoverUntil=useRef(0);
+ useEffect(()=>{
+  const el=section.current;if(paused||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
+  el.classList.add('showcase-motion-ready');
+  const observer=new IntersectionObserver(([entry])=>{if(entry.isIntersecting){el.classList.add('showcase-arrived');observer.disconnect();}},{threshold:.12});observer.observe(el);
+  return()=>{observer.disconnect();el.classList.remove('showcase-motion-ready','showcase-arrived');};
+ },[paused]);
  const select=index=>{if(index!==active){if(document.activeElement===buttons.current[index])rail.current.focus({preventScroll:true});hoverUntil.current=performance.now()+650;setActive(index);setTime(0);}};
  const key=event=>{
   if(event.key==='Escape'){setActive(-1);rail.current.focus();return;}
@@ -18,7 +25,7 @@ export default function EditingShowcase({paused,pieces}){
   buttons.current[index]?.focus();
   select(index);
  };
- return <section className="editing-showcase" id="selected-work" aria-labelledby="showcase-title" tabIndex={-1}>
+ return <section ref={section} className="editing-showcase" id="selected-work" aria-labelledby="showcase-title" tabIndex={-1}>
   <div className="timeline-heading"><h2 id="showcase-title">Selected work.</h2><span>{projects.some(p=>p.placeholder)?'Placeholder projects':''}</span></div>
   <div className={'hover-timeline'+(active>=0?' has-expanded':'')} ref={rail} tabIndex={-1} onKeyDown={key}>
    <div className="timeline-meta"><span className="timeline-signature"><i aria-hidden="true"/><span>made beside</span></span><span className="timeline-time">{timecode(time)} <span>/ 00:08:00</span></span><span className="timeline-status">{active>=0?projects[active].format:total+' films'}</span></div>

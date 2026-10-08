@@ -48,3 +48,7 @@ Tile containers remain untransformed and opaque at every scroll position. The sh
 Capabilities and Content Production now join Social Media and Digital Marketing with chapter tiles on the left; Approach and Content Strategy keep them on the right. Mobile restores heading-first ordering. Scroll interpolation is gentler, and tile extension now eases between positions. The dot fields render every display frame instead of30fps and batch dots into two canvas paths instead of filling each dot separately. Resizing no longer performs a redundant animated draw.
 
 Browser measurement with visible fields:45 display frames sampled, median16.7ms and maximum18.1ms on the current local preview. This is a local observation rather than a device-wide performance guarantee. Mobile has no horizontal overflow;19 relevant automated checks pass.
+
+## Homepage editor expansion
+
+Selected Work now uses a full-width shell with a taller680px desktop stage cap and710px mobile stage. Each element has a distinct entrance: heading lift, shell rise, metadata slide, ruler draw, selector drop, staggered film reveal, project copy reveal and staggered metrics. The existing stable selection controls and video masking remain intact. Entrance observer is cleaned up and skipped when paused or reduced motion is enabled. Production build and14 relevant checks passed; runtime confirmed edge-to-edge1560px shell, selected Project02, and zero opacity for the two masked layers. Mobile has no horizontal overflow.
