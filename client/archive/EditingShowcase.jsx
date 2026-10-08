@@ -28,7 +28,7 @@ export default function EditingShowcase({paused,pieces}){
  return <section ref={section} className="editing-showcase" id="selected-work" aria-labelledby="showcase-title" tabIndex={-1}>
   <div className="timeline-heading"><h2 id="showcase-title">Selected work.</h2><span>{projects.some(p=>p.placeholder)?'Placeholder projects':''}</span></div>
   <div className={'hover-timeline'+(active>=0?' has-expanded':'')} ref={rail} tabIndex={-1} onKeyDown={key}>
-   <div className="timeline-meta"><span className="timeline-signature"><i aria-hidden="true"/><span>made beside</span></span><span className="timeline-time">{timecode(time)} <span>/ 00:08:00</span></span><span className="timeline-status">{active>=0?projects[active].format:total+' films'}</span></div>
+   <div className="timeline-meta"><span className="timeline-signature"><span className="timeline-mb"><img src="/identity/made-beside-symbol.webp" alt=""/></span><span>made beside</span></span><span className="timeline-time">{timecode(time)} <span>/ 00:08:00</span></span><span className="timeline-status">{active>=0?projects[active].format:total+' films'}</span></div>
    <div className="timeline-stage" data-hover-motion onPointerMove={event=>{
     if(active>=0||event.pointerType!=='mouse')return;
     const rect=event.currentTarget.getBoundingClientRect(),x=event.clientX-rect.left,y=event.clientY-rect.top;

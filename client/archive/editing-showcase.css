@@ -63,3 +63,5 @@
 @keyframes showcase-metric-reveal{from{opacity:0;transform:translateY(30px) rotate(-3deg)}to{opacity:1;transform:none}}
 @media(max-width:800px){.editing-showcase{padding-left:0;padding-right:0}.hover-timeline{padding:24px 18px;border-radius:25px}.timeline-stage,.has-expanded .timeline-stage{height:710px}.timeline-clip{height:260px}.timeline-clip.is-expanded{height:270px}.project-details{top:385px}}
 @media(prefers-reduced-motion:reduce){.editing-showcase *{animation:none!important}.showcase-motion-ready:not(.showcase-arrived) .timeline-heading,.showcase-motion-ready:not(.showcase-arrived) .hover-timeline{opacity:1}}
+.timeline-signature .timeline-mb{position:relative;display:block;width:40px;height:24px;flex:0 0 40px;overflow:hidden}.timeline-mb img{position:absolute;width:56px;height:56px;max-width:none;left:-8px;top:-16px;mix-blend-mode:lighten}
+@media(max-width:800px){.timeline-signature .timeline-mb{width:34px;height:22px;flex-basis:34px}.timeline-mb img{width:48px;height:48px;left:-7px;top:-12px}}
