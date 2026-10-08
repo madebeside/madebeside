@@ -46,3 +46,7 @@
 .circle-menu-links a>span{transition:transform .7s var(--menu-ease),color .6s var(--menu-ease),text-shadow .75s var(--menu-ease);transition-delay:0s}
 .circle-menu-links a:hover>span,.circle-menu-links a:focus-visible>span{color:#65a87d;text-shadow:0 0 5px #e3ffeef2,0 0 13px #c2f8d9cc,0 0 25px #a7ecc18c;transition-delay:.12s}
 @media(prefers-reduced-motion:reduce){.circle-menu-links a>span{transition:none}}
+.circle-navigation.is-open::before{transition-duration:.9s}
+.circle-navigation.is-open .circle-menu-trigger i{transition:transform .85s var(--menu-ease),opacity .5s var(--menu-ease),filter .7s var(--menu-ease)}
+.circle-navigation.is-open .circle-menu-links a{transition:transform .9s var(--menu-ease),opacity .6s var(--menu-ease),filter .8s var(--menu-ease);transition-delay:calc(.08s + var(--menu-order)*.04s)}
+@media(prefers-reduced-motion:reduce){.circle-navigation.is-open::before,.circle-navigation.is-open .circle-menu-trigger i,.circle-navigation.is-open .circle-menu-links a{transition:none}}
