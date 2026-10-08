@@ -38,3 +38,7 @@ Validation: production build and77 automated checks pass; all eight routes check
 Supporting-page diagrams now use relevant hand-drawn film, camera, conversation, compass, calendar, chart, editing, sharing, handshake, search and channel icons. Hero fields use eight distinct softened brand-form masks with route-specific pairs. Tile rows and columns have unequal proportions; scroll offsets are individually staggered, reversible, and static with reduced motion. Pointer mapping accounts for the moving/scaling tile. Short desktop headings and brand icons scale with viewport height to preserve readability.
 
 Validation:79 tests pass. All eight desktop and390px routes have no horizontal overflow. Reduced-motion and1366x600 clipping checked; native nav and homepage remain unchanged.
+
+## Connected stagger correction
+
+Tile containers remain untransformed and opaque at every scroll position. The shared first-row boundary extends by up to260px during the opening scroll, holding the title in place while other content moves at different rates. The lower row remains attached to the growing upper row. Mobile keeps a continuous static grid. This replaces the separated translate/scale tile treatment. Browser checks confirm continuous area coverage across all eight supporting routes and a fixed title position during the hold.

@@ -1,6 +1,6 @@
 /* Aspen-inspired grid, composed from Made Beside's type and connected forms. */
 .page-world{background:#fff}.world-content-cover{border-radius:0;box-shadow:none;overflow:clip}
-.aspen-opening.reference-masthead{position:relative;min-height:0;height:auto;padding:70px 0 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:42svh 42svh;gap:0;background:#fff;color:#121111;isolation:isolate}
+.aspen-opening.reference-masthead{position:relative;min-height:0;height:auto;padding:70px 0 0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-template-rows:calc(42svh + var(--tile-hold,0px)) 42svh;gap:0;background:#fff;color:#121111;isolation:isolate}
 .aspen-opening>div{border-right:1px solid #12111155;border-bottom:1px solid #12111155;min-width:0;overflow:hidden}
 .aspen-title-cell{grid-column:1/3;padding:25px;display:flex;align-items:flex-end}.aspen-title-cell .kinetic-type{font-size:clamp(75px,9.5vw,160px);line-height:.9;font-weight:600;letter-spacing:-.075em;text-transform:none;margin:0;overflow-wrap:normal}
 .aspen-title-cell .word-window{padding-bottom:.14em;margin-bottom:-.14em}.aspen-title-cell .word-window>span{animation:aspen-type-in 1.1s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(var(--word)*.09s)}
@@ -65,14 +65,14 @@
 .aspen-opening[data-composition="campaigns"]{grid-template-areas:"brand intro" "fieldtop fieldtop" "title title"}
 }
 /* Unequal editorial tiles; each route keeps its own silhouette. */
-.aspen-opening[data-composition="work"]{grid-template-columns:1.1fr .8fr 1.35fr .75fr;grid-template-rows:48svh 34svh}
-.aspen-opening[data-composition="capabilities"]{grid-template-columns:1.35fr .85fr .85fr .95fr;grid-template-rows:36svh 49svh}
-.aspen-opening[data-composition="approach"]{grid-template-columns:.85fr 1.25fr 1.15fr .75fr;grid-template-rows:46svh 38svh}
-.aspen-opening[data-composition="contact"]{grid-template-columns:1.3fr 1.1fr .8fr .8fr;grid-template-rows:47svh 33svh}
-.aspen-opening[data-composition="content"]{grid-template-columns:1.05fr .7fr 1.45fr .8fr;grid-template-rows:39svh 48svh}
-.aspen-opening[data-composition="social"]{grid-template-columns:.8fr 1.05fr 1.25fr .9fr;grid-template-rows:45svh 35svh}
-.aspen-opening[data-composition="strategy"]{grid-template-columns:.85fr 1.4fr .75fr 1fr;grid-template-rows:38svh 48svh}
-.aspen-opening[data-composition="campaigns"]{grid-template-columns:1fr 1.3fr .9fr .8fr;grid-template-rows:40svh 43svh}
+.aspen-opening[data-composition="work"]{grid-template-columns:1.1fr .8fr 1.35fr .75fr;grid-template-rows:calc(48svh + var(--tile-hold,0px)) 34svh}
+.aspen-opening[data-composition="capabilities"]{grid-template-columns:1.35fr .85fr .85fr .95fr;grid-template-rows:calc(36svh + var(--tile-hold,0px)) 49svh}
+.aspen-opening[data-composition="approach"]{grid-template-columns:.85fr 1.25fr 1.15fr .75fr;grid-template-rows:calc(46svh + var(--tile-hold,0px)) 38svh}
+.aspen-opening[data-composition="contact"]{grid-template-columns:1.3fr 1.1fr .8fr .8fr;grid-template-rows:calc(47svh + var(--tile-hold,0px)) 33svh}
+.aspen-opening[data-composition="content"]{grid-template-columns:1.05fr .7fr 1.45fr .8fr;grid-template-rows:calc(39svh + var(--tile-hold,0px)) 48svh}
+.aspen-opening[data-composition="social"]{grid-template-columns:.8fr 1.05fr 1.25fr .9fr;grid-template-rows:calc(45svh + var(--tile-hold,0px)) 35svh}
+.aspen-opening[data-composition="strategy"]{grid-template-columns:.85fr 1.4fr .75fr 1fr;grid-template-rows:calc(38svh + var(--tile-hold,0px)) 48svh}
+.aspen-opening[data-composition="campaigns"]{grid-template-columns:1fr 1.3fr .9fr .8fr;grid-template-rows:calc(40svh + var(--tile-hold,0px)) 43svh}
 .aspen-opening>div{--tile-x:0px;transform:translate(calc(var(--tile-exit,0)*var(--tile-x)),calc((1 - var(--tile-arrival,1))*100px - var(--tile-exit,0)*190px)) scale(calc(.92 + var(--tile-arrival,1)*.08 - var(--tile-exit,0)*.055));transform-origin:center;opacity:calc(.5 + var(--tile-arrival,1)*.5);will-change:transform}
 .aspen-grain-top{--tile-x:65px!important}.aspen-grain-bottom{--tile-x:-70px!important}.aspen-brand-cell{--tile-x:35px!important}.aspen-intro-cell{--tile-x:-35px!important}
 .aspen-title-cell .kinetic-type{transform:translateY(calc(var(--hero-progress,0)*-115px)) skewY(calc(var(--hero-progress,0)*-3deg))}
@@ -89,3 +89,13 @@
 .world-still .aspen-opening>div,.world-still .scribble-icon,.world-still .reference-statement>h2,.world-still .world-process article{transform:none!important;opacity:1}.world-still .scribble-strokes{animation:none}.world-still .scribble-strokes path{stroke-dashoffset:0}
 @media(prefers-reduced-motion:reduce){.aspen-opening>div,.scribble-icon,.reference-statement>h2,.world-process article{transform:none!important;opacity:1}.scribble-strokes{animation:none!important}.scribble-strokes path{stroke-dashoffset:0}}
 @media(min-width:801px){.aspen-title-cell .kinetic-type{font-size:clamp(70px,min(9.5vw,14svh),160px)}.aspen-brand-cell{padding:clamp(16px,3svh,28px) 22px}.aspen-brand-cell>span{font-size:clamp(35px,min(5.5vw,8svh),90px)}.aspen-brand-cell>.scribble-icon{height:min(100px,12svh);flex-shrink:1}}
+/* Scroll stagger changes the shared boundary, never separates the tiles. */
+.aspen-opening>div{transform:none!important;opacity:1!important;will-change:auto}
+.aspen-title-cell .kinetic-type{transform:none}
+.aspen-brand-cell>span{transform:translateY(calc(var(--tile-hold,0px)*.4))}
+.aspen-intro-cell p{transform:translateY(calc(var(--tile-hold,0px)*.2))}
+.aspen-brand-cell>.scribble-icon{transform:translateY(calc(var(--tile-hold,0px)*.4))}
+.world-process article{transform:none!important}
+@media(max-width:800px){.aspen-opening[data-composition]{grid-template-rows:auto}.aspen-title-cell .kinetic-type,.aspen-brand-cell>span,.aspen-intro-cell p,.aspen-brand-cell>.scribble-icon{transform:none}}
+.world-still .aspen-title-cell .kinetic-type,.world-still .aspen-brand-cell>span,.world-still .aspen-intro-cell p,.world-still .aspen-brand-cell>.scribble-icon{transform:none}
+@media(prefers-reduced-motion:reduce){.aspen-title-cell .kinetic-type,.aspen-brand-cell>span,.aspen-intro-cell p,.aspen-brand-cell>.scribble-icon{transform:none}}
