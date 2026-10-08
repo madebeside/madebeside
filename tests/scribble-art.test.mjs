@@ -1,0 +1,5 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {blobKinds,blobDensity,iconForTopic,scribblePaths} from '../client/archive/scribble-art.js';
+test('brand blob variants are distinct, finite and bounded across motion',()=>{const signatures=[];for(const kind of blobKinds){let values=[];for(let u=-.6;u<=.6;u+=.1)for(let v=-.6;v<=.6;v+=.1){let n=blobDensity(u,v,1.4,kind);assert.ok(Number.isFinite(n)&&n>=0&&n<=1);values.push(n.toFixed(3));}signatures.push(values.join(','));}assert.equal(new Set(signatures).size,8);});
+test('scribble topics resolve to relevant artwork',()=>{for(const [topic,icon] of [['Content Production','film'],['Brand photography','camera'],['First, we listen.','conversation'],['Editing and cutdowns','edit'],['Reporting and review','chart'],['Planning and content calendars','calendar'],['Find a direction.','compass'],['Make it together.','hands'],['Campaign assets','megaphone']]){assert.equal(iconForTopic(topic),icon);assert.ok(scribblePaths[icon].length>0);}});

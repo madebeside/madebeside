@@ -64,3 +64,28 @@
 .aspen-opening[data-composition="strategy"]{grid-template-areas:"title title" "brand intro" "fieldtop fieldtop"}
 .aspen-opening[data-composition="campaigns"]{grid-template-areas:"brand intro" "fieldtop fieldtop" "title title"}
 }
+/* Unequal editorial tiles; each route keeps its own silhouette. */
+.aspen-opening[data-composition="work"]{grid-template-columns:1.1fr .8fr 1.35fr .75fr;grid-template-rows:48svh 34svh}
+.aspen-opening[data-composition="capabilities"]{grid-template-columns:1.35fr .85fr .85fr .95fr;grid-template-rows:36svh 49svh}
+.aspen-opening[data-composition="approach"]{grid-template-columns:.85fr 1.25fr 1.15fr .75fr;grid-template-rows:46svh 38svh}
+.aspen-opening[data-composition="contact"]{grid-template-columns:1.3fr 1.1fr .8fr .8fr;grid-template-rows:47svh 33svh}
+.aspen-opening[data-composition="content"]{grid-template-columns:1.05fr .7fr 1.45fr .8fr;grid-template-rows:39svh 48svh}
+.aspen-opening[data-composition="social"]{grid-template-columns:.8fr 1.05fr 1.25fr .9fr;grid-template-rows:45svh 35svh}
+.aspen-opening[data-composition="strategy"]{grid-template-columns:.85fr 1.4fr .75fr 1fr;grid-template-rows:38svh 48svh}
+.aspen-opening[data-composition="campaigns"]{grid-template-columns:1fr 1.3fr .9fr .8fr;grid-template-rows:40svh 43svh}
+.aspen-opening>div{--tile-x:0px;transform:translate(calc(var(--tile-exit,0)*var(--tile-x)),calc((1 - var(--tile-arrival,1))*100px - var(--tile-exit,0)*190px)) scale(calc(.92 + var(--tile-arrival,1)*.08 - var(--tile-exit,0)*.055));transform-origin:center;opacity:calc(.5 + var(--tile-arrival,1)*.5);will-change:transform}
+.aspen-grain-top{--tile-x:65px!important}.aspen-grain-bottom{--tile-x:-70px!important}.aspen-brand-cell{--tile-x:35px!important}.aspen-intro-cell{--tile-x:-35px!important}
+.aspen-title-cell .kinetic-type{transform:translateY(calc(var(--hero-progress,0)*-115px)) skewY(calc(var(--hero-progress,0)*-3deg))}
+.aspen-grain-top canvas{transform:scale(calc(1 + var(--hero-progress,0)*.32))}.aspen-grain-bottom canvas{transform:scale(calc(1 + var(--hero-progress,0)*.24))}
+.aspen-brand-cell>.scribble-icon{color:#121111;height:100px;max-width:135px;margin:20px 0 0}
+.scribble-icon{transform:translateY(calc((1 - var(--arrival,1))*115px)) rotate(calc((1 - var(--arrival,1))*-14deg));overflow:visible}
+.scribble-strokes path{stroke-dasharray:1;stroke-dashoffset:clamp(0,calc(1 - (var(--arrival,1) - var(--stroke)*.07)*1.4),1)}
+.chapter-visible .scribble-strokes{animation:scribble-sway 5s ease-in-out infinite alternate;transform-origin:center}
+@keyframes scribble-sway{from{transform:rotate(-3deg) translateY(3px)}to{transform:rotate(3deg) translateY(-5px)}}
+.chapter-copy p{transform:translate(calc((1 - var(--arrival,1))*60px),calc((1 - var(--arrival,1))*90px))}
+.world-process .scribble-icon{height:110px;width:130px;margin:0 0 25px;color:var(--route-accent);--arrival:var(--section-progress,1)}
+.reference-statement>h2{transform:translateY(calc((1 - var(--section-progress,1))*90px))!important}.world-process article:nth-child(2){transform:translateY(calc((1 - var(--section-progress,1))*65px))}.world-process article:nth-child(3){transform:translateY(calc((1 - var(--section-progress,1))*110px))}
+@media(max-width:800px){.aspen-opening[data-composition]{grid-template-columns:1fr 1fr;grid-template-rows:auto}.aspen-opening>div{--tile-x:0px!important;transform:translateY(calc((1 - var(--tile-arrival,1))*45px - var(--tile-exit,0)*60px))}.aspen-title-cell .kinetic-type{font-size:16vw}.aspen-brand-cell>.scribble-icon{height:75px;margin-top:15px}}
+.world-still .aspen-opening>div,.world-still .scribble-icon,.world-still .reference-statement>h2,.world-still .world-process article{transform:none!important;opacity:1}.world-still .scribble-strokes{animation:none}.world-still .scribble-strokes path{stroke-dashoffset:0}
+@media(prefers-reduced-motion:reduce){.aspen-opening>div,.scribble-icon,.reference-statement>h2,.world-process article{transform:none!important;opacity:1}.scribble-strokes{animation:none!important}.scribble-strokes path{stroke-dashoffset:0}}
+@media(min-width:801px){.aspen-title-cell .kinetic-type{font-size:clamp(70px,min(9.5vw,14svh),160px)}.aspen-brand-cell{padding:clamp(16px,3svh,28px) 22px}.aspen-brand-cell>span{font-size:clamp(35px,min(5.5vw,8svh),90px)}.aspen-brand-cell>.scribble-icon{height:min(100px,12svh);flex-shrink:1}}

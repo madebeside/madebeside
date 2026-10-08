@@ -32,3 +32,9 @@ Each of the eight supporting routes now has a stable, distinct desktop and phone
 The dot fields emit bounded, fading cursor/tap ripples in the route accent color, with a centered local cursor. Canvas scaling uses axis-aligned pointer mapping. Fields render only near the viewport and pause for reduced motion. Scroll drives hero parallax, word reveals, chapter text and geometry entrances, and accent progress rules. Original connected blocks, windows and joining paths replace the reference-like circular orbit diagrams. Geometry loops pause offscreen.
 
 Validation: production build and77 automated checks pass; all eight routes checked at desktop and390px, with no horizontal overflow. Homepage components were not changed.
+
+## Scribble artwork and exaggerated tile motion
+
+Supporting-page diagrams now use relevant hand-drawn film, camera, conversation, compass, calendar, chart, editing, sharing, handshake, search and channel icons. Hero fields use eight distinct softened brand-form masks with route-specific pairs. Tile rows and columns have unequal proportions; scroll offsets are individually staggered, reversible, and static with reduced motion. Pointer mapping accounts for the moving/scaling tile. Short desktop headings and brand icons scale with viewport height to preserve readability.
+
+Validation:79 tests pass. All eight desktop and390px routes have no horizontal overflow. Reduced-motion and1366x600 clipping checked; native nav and homepage remain unchanged.

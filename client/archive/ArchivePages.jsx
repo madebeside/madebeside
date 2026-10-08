@@ -1,5 +1,6 @@
 import React from 'react';
 import {services} from '../services';
+import {BrandDiagram} from './AspenGeometry';
 import Contact from '../components/Contact';
 import ProjectSequence from './ProjectSequence';
 import {World,WorldLink} from './PageWorld';
@@ -20,5 +21,5 @@ export function ContactPage({paused}){
 }
 const words={'content-production':'CONTENT','social-media-management':'SOCIAL','content-strategy':'STRATEGY','digital-marketing':'CAMPAIGNS'};
 export function ServicePage({service,paused}){
- return <World name={service.slug} paused={paused}><ReferenceHero paused={paused} word={words[service.slug]}/><ReferenceStatement>{service.intro}</ReferenceStatement><section className="reference-audience" data-reveal><h2>{service.name}.</h2><p>{service.audience}</p><WorldLink>Discuss your project</WorldLink></section><ReferencePlaybook paused={paused} items={service.deliverables} title="What we can make." prefix="deliverable"/><section className="world-process">{service.steps.map(([name,body],i)=><article key={name} data-reveal><span>0{i+1}</span><h2>{name}</h2><p>{body}</p></article>)}</section><section className="world-answers"><h2>A few questions.</h2><div>{service.faqs.map(([q,a])=><details className="plain-answer" key={q}><summary>{q}<span aria-hidden="true">+</span></summary><div className="answer-content"><p>{a}</p></div></details>)}</div></section></World>;
+ return <World name={service.slug} paused={paused}><ReferenceHero paused={paused} word={words[service.slug]}/><ReferenceStatement>{service.intro}</ReferenceStatement><section className="reference-audience" data-reveal><h2>{service.name}.</h2><p>{service.audience}</p><WorldLink>Discuss your project</WorldLink></section><ReferencePlaybook paused={paused} items={service.deliverables} title="What we can make." prefix="deliverable"/><section className="world-process">{service.steps.map(([name,body],i)=><article key={name} data-reveal><span>0{i+1}</span><h2>{name}</h2><BrandDiagram topic={name} index={i}/><p>{body}</p></article>)}</section><section className="world-answers"><h2>A few questions.</h2><div>{service.faqs.map(([q,a])=><details className="plain-answer" key={q}><summary>{q}<span aria-hidden="true">+</span></summary><div className="answer-content"><p>{a}</p></div></details>)}</div></section></World>;
 }
