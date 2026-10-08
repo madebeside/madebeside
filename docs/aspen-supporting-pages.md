@@ -42,3 +42,9 @@ Validation:79 tests pass. All eight desktop and390px routes have no horizontal o
 ## Connected stagger correction
 
 Tile containers remain untransformed and opaque at every scroll position. The shared first-row boundary extends by up to260px during the opening scroll, holding the title in place while other content moves at different rates. The lower row remains attached to the growing upper row. Mobile keeps a continuous static grid. This replaces the separated translate/scale tile treatment. Browser checks confirm continuous area coverage across all eight supporting routes and a fixed title position during the hold.
+
+## Scroll cadence and side variation
+
+Capabilities and Content Production now join Social Media and Digital Marketing with chapter tiles on the left; Approach and Content Strategy keep them on the right. Mobile restores heading-first ordering. Scroll interpolation is gentler, and tile extension now eases between positions. The dot fields render every display frame instead of30fps and batch dots into two canvas paths instead of filling each dot separately. Resizing no longer performs a redundant animated draw.
+
+Browser measurement with visible fields:45 display frames sampled, median16.7ms and maximum18.1ms on the current local preview. This is a local observation rather than a device-wide performance guarantee. Mobile has no horizontal overflow;19 relevant automated checks pass.

@@ -11,9 +11,9 @@ export default function MadeRoom({word,paused}){
  const root=useRef();
  useEffect(()=>{
   if(paused||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
-  const el=root.current;let top=0,value=0;
+  const el=root.current;let top=0,value=0,hold=0;
   const measure=()=>{top=el.getBoundingClientRect().top+scrollY;};
-  const clock=subscribe((time,dt)=>{const target=Math.max(0,Math.min(1,(scrollY-top)/el.offsetHeight));value+=(target-value)*(1-Math.exp(-dt*9));el.style.setProperty('--hero-progress',value);el.style.setProperty('--tile-hold',Math.max(0,Math.min(260,scrollY-top))+'px');},false);
+  const clock=subscribe((time,dt)=>{const target=Math.max(0,Math.min(1,(scrollY-top)/el.offsetHeight));value+=(target-value)*(1-Math.exp(-dt*9));el.style.setProperty('--hero-progress',value);hold+=(Math.max(0,Math.min(260,scrollY-top))-hold)*(1-Math.exp(-dt*18));el.style.setProperty('--tile-hold',hold+'px');},false);
   const observer=new IntersectionObserver(([e])=>clock.setActive(e.isIntersecting),{rootMargin:'150px'}),size=new ResizeObserver(measure);measure();size.observe(el);observer.observe(el);
   return()=>{clock.remove();size.disconnect();observer.disconnect();el.style.removeProperty('--hero-progress');el.style.removeProperty('--tile-hold');};
  },[paused]);

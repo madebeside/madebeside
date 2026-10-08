@@ -6,7 +6,7 @@ import {subscribe} from './scheduler';
 export default function useSmoothScroll(disabled){
   useEffect(()=>{
     if(disabled||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
-    const lenis=new Lenis({autoRaf:false,lerp:.165,wheelMultiplier:1,syncTouch:false,anchors:false});
+    const lenis=new Lenis({autoRaf:false,lerp:.1,wheelMultiplier:1,syncTouch:false,anchors:false});
     const anchorClick=event=>{
       if(event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
       const anchor=event.target.closest?.('a[href^="#"]');
