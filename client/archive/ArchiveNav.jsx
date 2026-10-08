@@ -1,5 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
 import './circle-menu.css';
+import {isMouseHover} from './navigation-events';
 const links=[['Home','/'],['Work','/portfolio/'],['What we do','/capabilities/'],['Our approach','/approach/'],['Get in touch','/contact/']];
 export default function ArchiveNav({pathname}){
   const [open,setOpen]=useState(false),root=useRef(),button=useRef();
@@ -10,10 +11,10 @@ export default function ArchiveNav({pathname}){
     return()=>{document.removeEventListener('pointerdown',outside);document.removeEventListener('keydown',key);};
   },[]);
   return <><a className="corner-brand" href="/" aria-label="Made Beside home"><img src="/identity/wordmark-source.png" alt="Made Beside"/></a><nav ref={root} data-hover-motion className={'circle-navigation'+(open?' is-open':'')} aria-label="Main navigation"
-    onPointerEnter={e=>{if(e.pointerType==='mouse')setOpen(true);}}
-    onPointerLeave={()=>{if(!root.current.contains(document.activeElement))setOpen(false);}}
+    onPointerEnter={e=>{if(isMouseHover(e.pointerType,matchMedia('(hover:hover)').matches))setOpen(true);}}
+    onPointerLeave={e=>{if(isMouseHover(e.pointerType,matchMedia('(hover:hover)').matches)&&!root.current.contains(document.activeElement))setOpen(false);}}
     onBlur={e=>{if(!e.currentTarget.contains(e.relatedTarget))setOpen(false);}}>
-    <button ref={button} className="circle-menu-trigger" aria-label={open?'Close navigation':'Open navigation'} aria-expanded={open} aria-controls="circle-menu-links" onClick={()=>setOpen(value=>!value)} onFocus={e=>{if(e.currentTarget.matches(':focus-visible'))setOpen(true);}}>
+    <button ref={button} className="circle-menu-trigger" aria-label={open?'Close navigation':'Open navigation'} aria-expanded={open} aria-controls="circle-menu-links" onClick={()=>setOpen(value=>!value)}>
       <span aria-hidden="true"><i/><i/><i/></span>
     </button>
     <div id="circle-menu-links" className="circle-menu-links" inert={!open?true:undefined}>

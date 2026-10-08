@@ -11,7 +11,7 @@ export default function ArchiveFooter({paused,invite=true}){
         <a className="footer-email" href="mailto:hello@madebeside.com">hello@madebeside.com</a>
       </section>
       <nav className="footer-column" aria-label="Footer navigation"><h3>Explore</h3>{[['Home','/'],['Work','/portfolio/'],['What we do','/capabilities/'],['Our approach','/approach/'],['Get in touch','/contact/']].map(([label,href])=><a href={href} key={href}>{label}</a>)}</nav>
-      <nav className="footer-column" aria-label="Social profiles"><h3>Find us</h3><a href="https://www.instagram.com/MadeBeside/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="https://www.linkedin.com/company/made-beside" target="_blank" rel="noreferrer">LinkedIn ↗</a><a href="https://www.tiktok.com/@MadeBeside" target="_blank" rel="noreferrer">TikTok ↗</a></nav>
+      <nav className="footer-column" aria-label="Social profiles"><h3>Find us</h3><a href="https://www.instagram.com/MadeBeside/" target="_blank" rel="noreferrer">Instagram ↗</a><a href="https://www.linkedin.com/company/made-beside" target="_blank" rel="noreferrer">LinkedIn ↗</a><a href="https://www.tiktok.com/@MadeBeside" target="_blank" rel="noreferrer">TikTok ↗</a><a href="https://www.facebook.com/MadeBeside/" target="_blank" rel="noreferrer">Facebook ↗</a></nav>
     </div>
     <a className="footer-logo" href="/" aria-label="Made Beside home"><ElasticWordmark paused={paused}/></a>
     <div className="footer-bottom"><a className="back-top" href="#main">Back to top ↑</a><span>© {new Date().getFullYear()} Made Beside</span><div>{[['Privacy','privacy'],['Terms','terms'],['Cookies','cookies'],['Refunds','refunds'],['Accessibility','accessibility']].map(([title,slug])=><a href={'/'+slug+'/'} key={slug}>{title}</a>)}</div></div>

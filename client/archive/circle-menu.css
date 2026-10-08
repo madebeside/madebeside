@@ -50,3 +50,24 @@
 .circle-navigation.is-open .circle-menu-trigger i{transition:transform .85s var(--menu-ease),opacity .5s var(--menu-ease),filter .7s var(--menu-ease)}
 .circle-navigation.is-open .circle-menu-links a{transition:transform .9s var(--menu-ease),opacity .6s var(--menu-ease),filter .8s var(--menu-ease);transition-delay:calc(.08s + var(--menu-order)*.04s)}
 @media(prefers-reduced-motion:reduce){.circle-navigation.is-open::before,.circle-navigation.is-open .circle-menu-trigger i,.circle-navigation.is-open .circle-menu-links a{transition:none}}
+
+/* Keep the mobile trigger in place, with a reachable close control and full tap targets. */
+@media(max-width:700px){
+ .circle-navigation{height:244px}
+ .circle-navigation .circle-menu-links{display:grid;grid-template-columns:1fr;gap:0;padding:12px 20px;align-content:start;justify-items:stretch}
+ .circle-menu-links a{display:flex;align-items:center;min-height:44px;font-size:15px;line-height:1.2;padding:8px 0}
+ .circle-navigation.is-open .circle-menu-trigger{right:0;left:auto;top:-60px;min-width:70px;padding:15px 0 15px 15px;pointer-events:auto;z-index:2;background:transparent}
+ .circle-navigation.is-open .circle-menu-trigger i{width:18px;height:2px;filter:none;opacity:1;transform:none}
+ .circle-navigation.is-open .circle-menu-trigger>span{position:relative;display:block;width:18px;height:18px;margin-left:auto}
+ .circle-navigation.is-open .circle-menu-trigger i{position:absolute;top:8px;right:0;transform:rotate(45deg)}
+ .circle-navigation.is-open .circle-menu-trigger i:nth-child(2){opacity:0}
+ .circle-navigation.is-open .circle-menu-trigger i:nth-child(3){transform:rotate(-45deg)}
+ .circle-navigation.is-open .circle-menu-trigger:focus-visible{outline-offset:2px;background:transparent}
+}
+
+@media(max-width:700px){
+ .circle-navigation.is-open .circle-menu-trigger:focus-visible{left:auto;right:0;min-width:70px;padding:15px 0 15px 15px}
+ .circle-navigation.is-open .circle-menu-trigger:focus-visible i{opacity:1;filter:none;transform:rotate(45deg)}
+ .circle-navigation.is-open .circle-menu-trigger:focus-visible i:nth-child(2){opacity:0}
+ .circle-navigation.is-open .circle-menu-trigger:focus-visible i:nth-child(3){transform:rotate(-45deg)}
+}

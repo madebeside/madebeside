@@ -74,3 +74,14 @@ test('native static asset delivery preserves bytes and HEAD avoids reading asset
  assert.equal(unavailable.status,503);
  assert.ok(unavailable.headers.get('Content-Security-Policy'));
 });
+
+test('policy pages use the shared editorial footer with all site destinations',async()=>{
+ for(const route of ['/privacy/','/terms/','/cookies/','/refunds/','/accessibility/']){
+  const html=await(await worker.fetch(new Request(origin+route),{})).text();
+  const footer=html.match(/<footer[\s\S]*?<\/footer>/)?.[0];
+  assert.ok(footer,'footer on '+route);
+  assert.match(footer,/archive-footer editorial-footer/);
+  for(const href of ['/','/portfolio/','/capabilities/','/approach/','/contact/','/privacy/','/terms/','/cookies/','/refunds/','/accessibility/'])assert.ok(footer.includes('href="'+href+'"'),route+' footer links to '+href);
+  assert.match(footer,/elastic-wordmark[^\"]*is-still/);
+ }
+});

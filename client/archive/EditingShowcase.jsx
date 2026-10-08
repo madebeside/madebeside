@@ -9,14 +9,14 @@ export default function EditingShowcase({paused,pieces}){
  const projects=useMemo(()=>selectEditorialWork(pieces,true).slice(0,3),[pieces]);
  const [selection,setActive]=useState(-1),[time,setTime]=useState(0);
  const active=timelineIndex(selection,projects.length),total=String(projects.length).padStart(2,'0');
- const rail=useRef(),buttons=useRef([]),lastPointer=useRef({x:null,y:null}),hoverUntil=useRef(0);
+ const rail=useRef(),buttons=useRef([]);
  useEffect(()=>{
   const el=section.current;if(paused||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
   el.classList.add('showcase-motion-ready');
   const observer=new IntersectionObserver(([entry])=>{if(entry.isIntersecting){el.classList.add('showcase-arrived');observer.disconnect();}},{threshold:.12});observer.observe(el);
   return()=>{observer.disconnect();el.classList.remove('showcase-motion-ready','showcase-arrived');};
  },[paused]);
- const select=index=>{if(index!==active){if(document.activeElement===buttons.current[index])rail.current.focus({preventScroll:true});hoverUntil.current=performance.now()+650;setActive(index);setTime(0);}};
+ const select=index=>{if(index!==active){if(document.activeElement===buttons.current[index])rail.current.focus({preventScroll:true});setActive(index);setTime(0);}};
  const key=event=>{
   if(event.key==='Escape'){setActive(-1);rail.current.focus();return;}
   if(!['ArrowLeft','ArrowRight'].includes(event.key))return;
@@ -29,15 +29,10 @@ export default function EditingShowcase({paused,pieces}){
   <div className="timeline-heading"><h2 id="showcase-title">Selected work.</h2><span>{projects.some(p=>p.placeholder)?'Placeholder projects':''}</span></div>
   <div className={'hover-timeline'+(active>=0?' has-expanded':'')} ref={rail} tabIndex={-1} onKeyDown={key}>
    <div className="timeline-meta"><span className="timeline-signature"><span className="timeline-mb"><img src="/identity/made-beside-symbol.webp" alt=""/></span><span>made beside</span></span><span className="timeline-time">{timecode(time)} <span>/ 00:08:00</span></span><span className="timeline-status">{active>=0?projects[active].format:total+' films'}</span></div>
-   <div className="timeline-stage" data-hover-motion onPointerMove={event=>{
-    if(active>=0||event.pointerType!=='mouse')return;
-    const rect=event.currentTarget.getBoundingClientRect(),x=event.clientX-rect.left,y=event.clientY-rect.top;
-    const small=innerWidth<=800,width=rect.width*(small?1:.64);
-    if(y>=(small?85:80)&&y<(small?305:rect.height)&&x>=0&&x<width)select(Math.min(projects.length-1,Math.floor(x/width*projects.length)));
-   }}>
+   <div className="timeline-stage">
     <div className="timeline-ruler" aria-hidden="true">{Array.from({length:9},(_,index)=><span key={index}>{index}s</span>)}</div>
     <div className="timeline-selectors" style={{'--count':projects.length,'--active':active}}>
-     {projects.map((project,index)=><button key={project.id} className={'timeline-selector'+(active===index?' is-selected':'')} ref={node=>buttons.current[index]=node} aria-label={'Expand '+project.title} disabled={active===index} aria-hidden={active===index?true:undefined} tabIndex={active===index?-1:0} aria-expanded={active===index} aria-controls={project.id+'-preview'} onPointerMove={event=>{if(event.pointerType!=='mouse')return;const p=lastPointer.current,moved=p.x!==event.clientX||p.y!==event.clientY;lastPointer.current={x:event.clientX,y:event.clientY};if(moved&&performance.now()>=hoverUntil.current)select(index);}} onClick={()=>select(index)}>
+     {projects.map((project,index)=><button key={project.id} className={'timeline-selector'+(active===index?' is-selected':'')} ref={node=>buttons.current[index]=node} aria-label={'Expand '+project.title} disabled={active===index} aria-hidden={active===index?true:undefined} tabIndex={active===index?-1:0} aria-expanded={active===index} aria-controls={project.id+'-preview'} onClick={()=>select(index)}>
       <img src={project.poster||project.src} alt=""/><span>{project.title}</span><i aria-hidden="true">↗</i>
      </button>)}
     </div>
