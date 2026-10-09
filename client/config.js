@@ -1,3 +1,4 @@
+import {cravinSimGolf} from './archive/cravin-sim-golf';
 export const config={
  name:'Made Beside',year:'2026',email:'hello@madebeside.com',accent:'#16db65',paper:'#f5f5f0',ink:'#121111',bookingUrl:'',
  services:[
@@ -12,6 +13,7 @@ export const config={
   {title:'Beside you through delivery.',body:'Work directly with the team making your content. From planning to final files, you know what is happening, what comes next and where your input matters.'}
  ],
  workPlaceholders:[
+  cravinSimGolf,
   {id:'sabrina-and-chris',title:'Videography',kind:'video',featured:true,vimeoId:'1232712180',src:'https://vimeo.com/1232712180',description:'Videography'},
   {id:'photography',title:'Photography',kind:'photo',featured:true,gallery:true,description:''},
   {id:'social',title:'Social & campaigns',format:'Social & campaigns',placeholder:true}

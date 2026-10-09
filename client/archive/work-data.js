@@ -19,5 +19,13 @@ export function selectFeaturedWork(items,limit=2){return selectWork(items).filte
 import {projectPlaceholders} from './project-placeholders.js';
 export function selectEditorialWork(items=[],featuredOnly=false){
   const projects=selectWork(items).filter(p=>!p.gallery&&!p.vimeoId&&(!featuredOnly||p.featured));
-  return projects.length?projects.map(p=>({...p,placeholder:false,format:p.kind==='photo'?'Photography':'Film'})):projectPlaceholders;
+  return projects.length?projects.map(p=>({...p,placeholder:false,format:p.format||(p.kind==='photo'?'Photography':'Film')})):projectPlaceholders;
+}
+export function selectShowcaseWork(items=[]){
+ const projects=selectEditorialWork(items,true);
+ const groups=projects.filter(p=>p.clips?.length);
+ if(!groups.length)return projects.slice(0,3);
+ const ordered=[...groups,...projects.filter(p=>!p.clips?.length)];
+ const ids=new Set(ordered.map(p=>p.id));
+ return [...ordered,...projectPlaceholders.slice(1).filter(p=>!ids.has(p.id))].slice(0,3);
 }

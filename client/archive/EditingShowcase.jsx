@@ -1,14 +1,16 @@
 import React,{useEffect,useMemo,useRef,useState} from 'react';
-import {selectEditorialWork} from './work-data';
+import {selectShowcaseWork} from './work-data';
 import ShowcaseFilm from './ShowcaseFilm';
+import ProjectVideoReel from './ProjectVideoReel';
 import {timelineIndex,timelineStep,sampleProjectMetrics} from './timeline-selection';
 import './editing-showcase.css';
 const timecode=seconds=>{const n=Math.floor(Math.max(0,seconds||0)*30);return [Math.floor(n/1800),Math.floor(n/30)%60,n%30].map(v=>String(v).padStart(2,'0')).join(':');};
 export default function EditingShowcase({paused,pieces}){
  const section=useRef();
- const projects=useMemo(()=>selectEditorialWork(pieces,true).slice(0,3),[pieces]);
- const [selection,setActive]=useState(-1),[time,setTime]=useState(0);
+ const projects=useMemo(()=>selectShowcaseWork(pieces),[pieces]);
+ const [selection,setActive]=useState(-1),[time,setTime]=useState(0),[duration,setDuration]=useState(8);
  const active=timelineIndex(selection,projects.length),total=String(projects.length).padStart(2,'0');
+ const placeholders=projects.map((p,i)=>p.placeholder?String(i+1).padStart(2,'0'):null).filter(Boolean);
  const rail=useRef(),buttons=useRef([]);
  useEffect(()=>{
   const el=section.current;if(paused||matchMedia('(prefers-reduced-motion:reduce)').matches)return;
@@ -16,35 +18,37 @@ export default function EditingShowcase({paused,pieces}){
   const observer=new IntersectionObserver(([entry])=>{if(entry.isIntersecting){el.classList.add('showcase-arrived');observer.disconnect();}},{threshold:.12});observer.observe(el);
   return()=>{observer.disconnect();el.classList.remove('showcase-motion-ready','showcase-arrived');};
  },[paused]);
- const select=index=>{if(index!==active){if(document.activeElement===buttons.current[index])rail.current.focus({preventScroll:true});setActive(index);setTime(0);}};
+ const select=index=>{if(index!==active){if(document.activeElement===buttons.current[index])rail.current.focus({preventScroll:true});setActive(index);setTime(0);setDuration(projects[index].clips?.[0]?.duration||8);}};
+ const updateTime=(value,length)=>{setTime(value);if(Number.isFinite(length))setDuration(length);};
  const key=event=>{
   if(event.key==='Escape'){setActive(-1);rail.current.focus();return;}
   if(!['ArrowLeft','ArrowRight'].includes(event.key))return;
+  if(event.target.closest('.project-video-reel'))return;
   event.preventDefault();
   const index=timelineStep(active,buttons.current.indexOf(document.activeElement),projects.length,event.key==='ArrowRight'?1:-1);
   buttons.current[index]?.focus();
   select(index);
  };
  return <section ref={section} className="editing-showcase" id="selected-work" aria-labelledby="showcase-title" tabIndex={-1}>
-  <div className="timeline-heading"><h2 id="showcase-title">Selected work.</h2><span>{projects.some(p=>p.placeholder)?'Placeholder projects':''}</span></div>
+  <div className="timeline-heading"><h2 id="showcase-title">Selected work.</h2><span>{placeholders.length?(placeholders.length===projects.length?'Placeholder projects':'Placeholder projects: '+placeholders.join(', ')):''}</span></div>
   <div className={'hover-timeline'+(active>=0?' has-expanded':'')} ref={rail} tabIndex={-1} onKeyDown={key}>
-   <div className="timeline-meta"><span className="timeline-signature"><span className="timeline-mb"><img src="/identity/made-beside-symbol.webp" alt=""/></span><span>made beside</span></span><span className="timeline-time">{timecode(time)} <span>/ 00:08:00</span></span><span className="timeline-status">{active>=0?projects[active].format:total+' films'}</span></div>
+   <div className="timeline-meta"><span className="timeline-signature"><span className="timeline-mb"><img src="/identity/made-beside-symbol.webp" alt=""/></span><span>made beside</span></span><span className="timeline-time">{timecode(time)} <span>/ {timecode(duration)}</span></span><span className="timeline-status">{active>=0?projects[active].format:total+' projects'}</span></div>
    <div className="timeline-stage">
-    <div className="timeline-ruler" aria-hidden="true">{Array.from({length:9},(_,index)=><span key={index}>{index}s</span>)}</div>
+    <div className="timeline-ruler" aria-hidden="true">{Array.from({length:9},(_,index)=><span key={index}>{Math.round(duration*index/8)}s</span>)}</div>
     <div className="timeline-selectors" style={{'--count':projects.length,'--active':active}}>
      {projects.map((project,index)=><button key={project.id} className={'timeline-selector'+(active===index?' is-selected':'')} ref={node=>buttons.current[index]=node} aria-label={'Expand '+project.title} disabled={active===index} aria-hidden={active===index?true:undefined} tabIndex={active===index?-1:0} aria-expanded={active===index} aria-controls={project.id+'-preview'} onClick={()=>select(index)}>
       <img src={project.poster||project.src} alt=""/><span>{project.title}</span><i aria-hidden="true">↗</i>
      </button>)}
     </div>
-    {projects.map((project,index)=><article id={project.id} key={project.id} style={{'--slot':index,'--count':projects.length}} className={'timeline-clip'+(active===index?' is-expanded':'')+(active>=0&&active!==index?' is-masked':'')}>
+    {projects.map((project,index)=><article id={project.id} key={project.id} style={{'--slot':index,'--count':projects.length}} className={'timeline-clip'+(project.clips?' has-video-group':'')+(active===index?' is-expanded':'')+(active>=0&&active!==index?' is-masked':'')}>
      <img className="timeline-thumbnail" src={project.poster||project.src} alt=""/>
-     <div id={project.id+'-preview'} className="timeline-preview"><ShowcaseFilm project={project} active={active===index} paused={paused} exposed onTime={active===index?setTime:undefined}/></div>
+     <div id={project.id+'-preview'} className="timeline-preview">{project.clips?(active===index&&<ProjectVideoReel project={project} active paused={paused} onTime={updateTime}/>):<ShowcaseFilm project={project} active={active===index} paused={paused} exposed onTime={active===index?setTime:undefined}/>}</div>
      <span className="clip-caption" aria-hidden="true"><span>{project.title}</span></span>
     </article>)}
     <div className="project-details" aria-live="polite">
      {projects.map((project,index)=><div key={project.id} className={'project-detail'+(active===index||(active<0&&index===0)?' is-current':'')} hidden={active>=0&&active!==index}>
       <span className="project-format">{project.format}</span><h3 tabIndex={0}>{project.title}</h3><p tabIndex={0}>{project.description||'A shared idea, brought to life.'}</p>
-      <div className="metric-label">Sample metrics · illustrative only</div><dl>{sampleProjectMetrics(index).map(([label,value])=><div tabIndex={0} key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
+      {project.placeholder?<><div className="metric-label">Sample metrics · illustrative only</div><dl>{sampleProjectMetrics(index).map(([label,value])=><div tabIndex={0} key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl></>:project.clips&&<dl className="project-facts"><div><dt>Collection</dt><dd>{project.clips.length} videos</dd></div><div><dt>Format</dt><dd>9:16</dd></div></dl>}
      </div>)}
     </div>
    </div>

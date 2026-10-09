@@ -3,6 +3,7 @@ import {subscribe} from './scheduler';
 import {projectVisual} from './motion';
 import {selectEditorialWork} from './work-data';
 import ProjectFilm from './ProjectFilm';
+import ProjectVideoReel from './ProjectVideoReel';
 
 export default function ProjectSequence({paused,pieces,featuredOnly=false}){
   const projects=useMemo(()=>selectEditorialWork(pieces,featuredOnly),[pieces,featuredOnly]);
@@ -45,7 +46,7 @@ export default function ProjectSequence({paused,pieces,featuredOnly=false}){
   return <section className="project-sequence" aria-label="Selected projects" id="selected-work" ref={container} tabIndex={-1}>
     {projects.map((project,i)=><article className="project-row" data-project-row key={project.id} id={project.id} aria-labelledby={project.id+'-title'} tabIndex={-1}>
       <div className="project-copy"><h2 id={project.id+'-title'}>{project.title}</h2><p>{project.description}</p><a className="project-next" href={'#'+(projects[i+1]?.id||'project-invitation')}>{i<projects.length-1?'Next project':'Make something together'}<span aria-hidden="true">↘</span></a></div>
-      <ProjectFilm key={project.src} project={project} active={active===i} paused={paused}/>
+      {project.clips?<div className="project-visual project-reel-portfolio" data-project-visual><ProjectVideoReel project={project} active={active===i} paused={paused}/></div>:<ProjectFilm key={project.src} project={project} active={active===i} paused={paused}/>}
     </article>)}
   </section>;
 }

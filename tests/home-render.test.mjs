@@ -12,6 +12,26 @@ after(()=>server.close());
 const {default:Home}=await server.ssrLoadModule('/client/archive/ArchiveHome.jsx');
 const render=paused=>renderToStaticMarkup(React.createElement(Home,{paused,pieces:[]}));
 
+test('Cravin has truthful project details and stays separate from illustrative placeholder results',async()=>{
+ const {cravinSimGolf}=await server.ssrLoadModule('/client/archive/cravin-sim-golf.js');
+ const html=renderToStaticMarkup(React.createElement(Home,{paused:true,pieces:[cravinSimGolf]}));
+ assert.match(html,/Expand Cravin Sim Golf/);assert.match(html,/Social Media Content/);
+ assert.equal((html.match(/class="timeline-selector/g)||[]).length,4);
+ const start=html.indexOf('<div class="project-detail is-current"');
+ const detail=html.slice(start,html.indexOf('<div class="project-detail"',start+1));
+ assert.match(detail,/3 videos/);assert.match(detail,/9:16/);
+ assert.doesNotMatch(detail,/Sample metrics|Leads generated|128K|240K/);
+});
+test('the selected video collection exposes three native videos with only custom play-pause controls',async()=>{
+ const {default:Reel}=await server.ssrLoadModule('/client/archive/ProjectVideoReel.jsx');
+ const {cravinSimGolf}=await server.ssrLoadModule('/client/archive/cravin-sim-golf.js');
+ const html=renderToStaticMarkup(React.createElement(Reel,{project:cravinSimGolf,active:true,paused:true}));
+ assert.equal((html.match(/<video\b/g)||[]).length,3);
+ assert.equal((html.match(/class="reel-play-control"/g)||[]).length,3);
+ assert.doesNotMatch(html,/\bcontrols(?:=|\s|>)|<iframe|type="range"|\bautoPlay|\bmuted/);
+ assert.ok(cravinSimGolf.clips.every(clip=>html.includes(clip.src)));
+});
+
 test('the visible opening headline preserves the exact sentence across line breaks',()=>{
   const html=render(false),text=html.match(/<h1[^>]*id="home-title"[^>]*>([\s\S]*?)<\/h1>/)[1].replace(/<[^>]*>/g,'');
   assert.equal(text,'The best things, are made beside you.');
