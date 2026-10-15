@@ -68,3 +68,9 @@
 
 /* The fitted film sits directly on the editor, without an extra grey card. */
 .editing-showcase .timeline-clip.is-expanded{background:transparent;border:0;box-shadow:none}
+
+/* Give the work and its controls more room, with direct preview selection. */
+.hover-timeline .timeline-stage{height:clamp(560px,51vw,790px)}
+.timeline-preview-select{position:absolute;inset:0;z-index:4;border:0;border-radius:inherit;background:transparent;pointer-events:auto;cursor:pointer}
+.timeline-preview-select:focus-visible{outline:2px solid #16db65;outline-offset:-4px}
+@media(max-width:800px){.hover-timeline .timeline-stage{height:790px}.hover-timeline .timeline-clip.is-expanded{height:340px}.hover-timeline .project-details{top:470px}}

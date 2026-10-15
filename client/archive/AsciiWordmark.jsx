@@ -14,7 +14,8 @@ export default function AsciiWordmark({paused,className='',text}){
     const renderer={
       resize({width,height,dpr}){
         element.width=Math.round(width*dpr);element.height=Math.round(height*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);
-        mask.width=base.width=Math.round(width);mask.height=base.height=Math.round(height);
+        mask.width=base.width=Math.round(width*dpr);mask.height=base.height=Math.round(height*dpr);
+        maskCtx.setTransform(dpr,0,0,dpr,0,0);baseCtx.setTransform(dpr,0,0,dpr,0,0);
         if(!loaded)return;
         maskCtx.clearRect(0,0,width,height);
         if(text){
@@ -32,10 +33,10 @@ export default function AsciiWordmark({paused,className='',text}){
         const pixels=maskCtx.getImageData(0,0,mask.width,mask.height).data;
         cell=text?2:Math.max(5,Math.round(width/172));points=[];
         baseCtx.clearRect(0,0,width,height);
-        if(text)baseCtx.drawImage(mask,0,0);
+        if(text)baseCtx.drawImage(mask,0,0,width,height);
         baseCtx.font='600 '+(cell*1.25)+'px DM';baseCtx.textAlign='center';baseCtx.textBaseline='middle';
         for(let y=cell/2;y<height;y+=cell)for(let x=cell/2;x<width;x+=cell){
-          const index=(Math.floor(y)*mask.width+Math.floor(x))*4;
+          const index=(Math.floor(y*dpr)*mask.width+Math.floor(x*dpr))*4;
           if(pixels[index+3]<100)continue;
           const seed=(Math.floor(x)*13+Math.floor(y)*7)%glyphs.length;
           const point={x,y,char:glyphs[seed],seed};points.push(point);

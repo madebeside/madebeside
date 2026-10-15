@@ -82,6 +82,9 @@ test('policy pages use the shared editorial footer with all site destinations',a
   assert.ok(footer,'footer on '+route);
   assert.match(footer,/archive-footer editorial-footer/);
   for(const href of ['/','/portfolio/','/capabilities/','/approach/','/contact/','/privacy/','/terms/','/cookies/','/refunds/','/accessibility/'])assert.ok(footer.includes('href="'+href+'"'),route+' footer links to '+href);
-  assert.match(footer,/elastic-wordmark[^\"]*is-still/);
+  assert.match(footer,/elastic-wordmark/);
+  assert.match(html,/aria-label="Open navigation"/);
+  assert.match(html,/class="editorial-policy"/);
+  assert.doesNotMatch(html,/Send a hello|policy-dark-v3\.css/);
  }
 });

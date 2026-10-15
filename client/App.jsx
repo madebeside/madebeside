@@ -2,6 +2,7 @@ import React,{useState,useEffect} from 'react';
 import {config} from './config';
 import {services} from './services';
 import ArchiveNav from './archive/ArchiveNav';
+import PolicyPage,{policies} from './archive/PolicyPage';
 import ArchiveHome from './archive/ArchiveHome';
 import ArchiveFooter from './archive/ArchiveFooter';
 import SceneCursor from './archive/SceneCursor';
@@ -35,7 +36,7 @@ export default function App({pathname='/',initialPieces=config.workPlaceholders}
   },[paused,pieces]);
   const route=pathname.replace(/\/$/,''),service=services.find(s=>route==='/services/'+s.slug);
   const Page=({'/portfolio':PortfolioPage,'/capabilities':CapabilitiesPage,'/approach':ApproachPage,'/contact':ContactPage})[route];
-  const content=<><a className="skip" href="#main">Skip to content</a><ArchiveNav pathname={pathname}/><main id="main" tabIndex="-1">{service?<ServicePage service={service} paused={paused}/>:Page?<Page paused={paused} pieces={pieces} collectionError={collectionError}/>:<ArchiveHome paused={paused} pieces={pieces} collectionError={collectionError}/>}</main><ArchiveFooter paused={paused} invite={route!=='/contact'}/><SceneCursor paused={paused}/></>;
+  const content=<><a className="skip" href="#main">Skip to content</a><ArchiveNav pathname={pathname}/><main id="main" tabIndex="-1">{policies[route]?<PolicyPage route={route}/>:service?<ServicePage service={service} paused={paused}/>:Page?<Page paused={paused} pieces={pieces} collectionError={collectionError}/>:<ArchiveHome paused={paused} pieces={pieces} collectionError={collectionError}/>}</main><ArchiveFooter paused={paused} invite={route!=='/contact'}/><SceneCursor paused={paused}/></>;
   const accent=routeAccents[route];
   return accent?<div className="route-world" style={{'--green':accent,'--route-accent':accent}}>{content}</div>:content;
 }

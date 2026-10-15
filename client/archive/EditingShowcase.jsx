@@ -43,6 +43,7 @@ export default function EditingShowcase({paused,pieces}){
     {projects.map((project,index)=><article id={project.id} key={project.id} style={{'--slot':index,'--count':projects.length}} className={'timeline-clip'+(project.clips?' has-video-group':'')+(active===index?' is-expanded':'')+(active>=0&&active!==index?' is-masked':'')}>
      <img className="timeline-thumbnail" src={project.poster||project.src} alt=""/>
      <div id={project.id+'-preview'} className="timeline-preview">{project.clips?(active===index&&<ProjectVideoReel project={project} active paused={paused} onTime={updateTime}/>):<ShowcaseFilm project={project} active={active===index} paused={paused} exposed onTime={active===index?setTime:undefined}/>}</div>
+     {active!==index&&<button className="timeline-preview-select" aria-label={"Select "+project.title} onClick={()=>select(index)}/> }
      <span className="clip-caption" aria-hidden="true"><span>{project.title}</span></span>
     </article>)}
     <div className="project-details" aria-live="polite">

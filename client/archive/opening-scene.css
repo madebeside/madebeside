@@ -3,3 +3,4 @@
 .opening-scene .ascii-wordmark.intro-headline{position:relative;width:min(610px,100%);height:200px}
 .opening-scroll-hint{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);font-size:12px;letter-spacing:-.02em;display:flex;align-items:center;gap:23px}.opening-scroll-hint>span{font-size:22px;transition:transform .5s cubic-bezier(.2,.8,.2,1)}.opening-scroll-hint:hover>span{transform:translateY(5px)}
 @media(max-width:600px){.opening-scene .ascii-wordmark.intro-headline{height:170px}.opening-scroll-hint{bottom:28px}}
+@media(max-width:600px),(hover:none){.opening-scene .intro-headline canvas{visibility:hidden}.opening-scene .intro-headline .headline-fallback{opacity:1;font-size:28px}}

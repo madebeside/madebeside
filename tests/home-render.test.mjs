@@ -70,10 +70,10 @@ test('each stationary review identifies its placeholder author and company',()=>
 });
 
 
-test('project selection targets remain outside the animated video layers',()=>{
+test('project previews and the top rail both provide explicit project selection',()=>{
  const html=render(false),articles=[...html.matchAll(/<article id="project-0[123]"[\s\S]*?<\/article>/g)];
  assert.equal(articles.length,3);
- for(const article of articles)assert.doesNotMatch(article[0],/<button/);
+ for(const article of articles)assert.match(article[0],/class="timeline-preview-select" aria-label="Select Project/);
  assert.match(html,/class="timeline-selectors"/);
 });
 test('supporting routes retain useful content while using distinct page worlds',async()=>{
