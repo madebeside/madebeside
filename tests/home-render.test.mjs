@@ -102,3 +102,17 @@ test('supporting pages retain each deliverable in the new layered playbook and c
  assert.doesNotMatch(html,/reference-image-wall|room-place|room-brand|room-explore|Good ideas\. Great company\./);
  assert.doesNotMatch(html,/social-posters|class="world-deliverables"/);
 });
+
+ test('Never gets old is project two with factual numeric details and no invented results',async()=>{
+ const {config}=await server.ssrLoadModule('/client/config.js');
+ const {selectShowcaseWork}=await server.ssrLoadModule('/client/archive/work-data.js');
+ const projects=selectShowcaseWork(config.workPlaceholders);
+ assert.deepEqual(projects.map(p=>p.id),['cravin-sim-golf','never-gets-old','project-03']);
+ assert.equal(projects[1].vimeoId,'1238227568');assert.equal(projects[1].duration,65);
+ assert.equal(projects[1].description,'Spec Commercial Ad made for St. Andrews Valley Golf Course.');
+ assert.ok(projects[1].facts.every(([,value])=>/\d/.test(value)));
+ const {default:Showcase}=await server.ssrLoadModule('/client/archive/EditingShowcase.jsx');
+ const html=renderToStaticMarkup(React.createElement(Showcase,{pieces:config.workPlaceholders,paused:true}));
+ assert.match(html,/Select Never gets old/);assert.match(html,/65 seconds/);
+ assert.doesNotMatch(html,/Placeholder projects: 02/);
+ });

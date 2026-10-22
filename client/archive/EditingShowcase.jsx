@@ -18,7 +18,7 @@ export default function EditingShowcase({paused,pieces}){
   const observer=new IntersectionObserver(([entry])=>{if(entry.isIntersecting){el.classList.add('showcase-arrived');observer.disconnect();}},{threshold:.12});observer.observe(el);
   return()=>{observer.disconnect();el.classList.remove('showcase-motion-ready','showcase-arrived');};
  },[paused]);
- const select=index=>{if(index!==active){if(document.activeElement===buttons.current[index])rail.current.focus({preventScroll:true});setActive(index);setTime(0);setDuration(projects[index].clips?.[0]?.duration||8);}};
+ const select=index=>{if(index!==active){if(document.activeElement===buttons.current[index])rail.current.focus({preventScroll:true});setActive(index);setTime(0);setDuration(projects[index].clips?.[0]?.duration||projects[index].duration||8);}};
  const updateTime=(value,length)=>{setTime(value);if(Number.isFinite(length))setDuration(length);};
  const key=event=>{
   if(event.key==='Escape'){setActive(-1);rail.current.focus();return;}
@@ -40,16 +40,16 @@ export default function EditingShowcase({paused,pieces}){
       <img src={project.poster||project.src} alt=""/><span>{project.title}</span><i aria-hidden="true">↗</i>
      </button>)}
     </div>
-    {projects.map((project,index)=><article id={project.id} key={project.id} style={{'--slot':index,'--count':projects.length}} className={'timeline-clip'+(project.clips?' has-video-group':'')+(active===index?' is-expanded':'')+(active>=0&&active!==index?' is-masked':'')}>
+    {projects.map((project,index)=><article id={project.id} key={project.id} style={{'--slot':index,'--count':projects.length}} className={'timeline-clip'+(project.clips?' has-video-group':'')+(project.vimeoId?' has-vimeo':'')+(active===index?' is-expanded':'')+(active>=0&&active!==index?' is-masked':'')}>
      <img className="timeline-thumbnail" src={project.poster||project.src} alt=""/>
-     <div id={project.id+'-preview'} className="timeline-preview">{project.clips?(active===index&&<ProjectVideoReel project={project} active paused={paused} onTime={updateTime}/>):<ShowcaseFilm project={project} active={active===index} paused={paused} exposed onTime={active===index?setTime:undefined}/>}</div>
+     <div id={project.id+'-preview'} className="timeline-preview">{project.clips?(active===index&&<ProjectVideoReel project={project} active paused={paused} onTime={updateTime}/>):<ShowcaseFilm project={project} active={active===index} paused={paused} exposed onTime={active===index?updateTime:undefined}/>}</div>
      {active!==index&&<button className="timeline-preview-select" aria-label={"Select "+project.title} onClick={()=>select(index)}/> }
      <span className="clip-caption" aria-hidden="true"><span>{project.title}</span></span>
     </article>)}
     <div className="project-details" aria-live="polite">
      {projects.map((project,index)=><div key={project.id} className={'project-detail'+(active===index||(active<0&&index===0)?' is-current':'')} hidden={active>=0&&active!==index}>
       <span className="project-format">{project.format}</span><h3 tabIndex={0}>{project.title}</h3><p tabIndex={0}>{project.description||'A shared idea, brought to life.'}</p>
-      {project.placeholder?<><div className="metric-label">Sample metrics · illustrative only</div><dl>{sampleProjectMetrics(index).map(([label,value])=><div tabIndex={0} key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl></>:project.clips&&<dl className="project-facts"><div><dt>Collection</dt><dd>{project.clips.length} videos</dd></div><div><dt>Format</dt><dd>9:16</dd></div></dl>}
+      {project.placeholder?<><div className="metric-label">Sample metrics · illustrative only</div><dl>{sampleProjectMetrics(index).map(([label,value])=><div tabIndex={0} key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl></>:project.facts?<dl className="project-facts">{project.facts.map(([label,value])=><div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>:project.clips&&<dl className="project-facts"><div><dt>Collection</dt><dd>{project.clips.length} videos</dd></div><div><dt>Format</dt><dd>9:16</dd></div></dl>}
      </div>)}
     </div>
    </div>

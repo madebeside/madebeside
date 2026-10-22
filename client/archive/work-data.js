@@ -18,7 +18,7 @@ export function selectWork(items=[]){
 export function selectFeaturedWork(items,limit=2){return selectWork(items).filter(p=>p.featured&&!p.gallery&&!p.vimeoId).slice(0,limit);}
 import {projectPlaceholders} from './project-placeholders.js';
 export function selectEditorialWork(items=[],featuredOnly=false){
-  const projects=selectWork(items).filter(p=>!p.gallery&&!p.vimeoId&&(!featuredOnly||p.featured));
+  const projects=selectWork(items).filter(p=>!p.gallery&&(!p.vimeoId||p.editorial===true)&&(!featuredOnly||p.featured));
   return projects.length?projects.map(p=>({...p,placeholder:false,format:p.format||(p.kind==='photo'?'Photography':'Film')})):projectPlaceholders;
 }
 export function selectShowcaseWork(items=[]){
@@ -27,5 +27,5 @@ export function selectShowcaseWork(items=[]){
  if(!groups.length)return projects.slice(0,3);
  const ordered=[...groups,...projects.filter(p=>!p.clips?.length)];
  const ids=new Set(ordered.map(p=>p.id));
- return [...ordered,...projectPlaceholders.slice(1).filter(p=>!ids.has(p.id))].slice(0,3);
+ return [...ordered,...projectPlaceholders.slice(ordered.length).filter(p=>!ids.has(p.id))].slice(0,3);
 }

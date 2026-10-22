@@ -14,6 +14,7 @@ export const config={
  ],
  workPlaceholders:[
   cravinSimGolf,
+  {id:'never-gets-old',title:'Never gets old',kind:'video',featured:true,editorial:true,vimeoId:'1238227568',src:'https://vimeo.com/1238227568',poster:'/projects/never-gets-old/poster.jpg',duration:65,format:'Spec Commercial Ad',description:'Spec Commercial Ad made for St. Andrews Valley Golf Course.',facts:[['Runtime','65 seconds'],['Spec commercial','1 film'],['Golf course','1 course']]},
   {id:'sabrina-and-chris',title:'Videography',kind:'video',featured:true,vimeoId:'1232712180',src:'https://vimeo.com/1232712180',description:'Videography'},
   {id:'photography',title:'Photography',kind:'photo',featured:true,gallery:true,description:''},
   {id:'social',title:'Social & campaigns',format:'Social & campaigns',placeholder:true}

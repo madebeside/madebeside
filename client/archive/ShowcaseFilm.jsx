@@ -1,17 +1,19 @@
 import React,{useEffect,useRef,useState} from 'react';
+import VimeoShowcase from './VimeoShowcase';
 import {createShowcasePlayback} from './video-lifecycle';
 
 export default function ShowcaseFilm({project,active,paused,onTime,exposed=false}){
   const video=useRef(),surface=useRef(),player=useRef();
   const [failed,setFailed]=useState(false);
   useEffect(()=>{
-    if(project.kind==='photo')return;
+    if(project.kind==='photo'||project.vimeoId)return;
     setFailed(false);
     const playback=createShowcasePlayback(video.current,surface.current,{active,paused},()=>setFailed(true));
     player.current=playback;
     return()=>{playback.dispose();player.current=null;};
   },[project.src]);
   useEffect(()=>{player.current?.update({active,paused});},[active,paused]);
+  if(project.vimeoId)return <VimeoShowcase project={project} active={active} paused={paused} onTime={onTime}/>;
   return <figure ref={surface} className={'showcase-film'+(active?' is-active':'')} aria-hidden={!exposed&&!active}>
     {project.kind==='photo'?<img src={project.src} alt={project.alt||project.title}/>:<>
       {project.poster&&<img className="showcase-poster" src={project.poster} alt=""/>}

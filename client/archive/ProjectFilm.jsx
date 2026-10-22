@@ -1,5 +1,6 @@
 import React,{useEffect,useRef,useState} from 'react';
 import {createProjectPlayback} from './video-lifecycle';
+import VimeoShowcase from './VimeoShowcase';
 import ProjectMediaFailure from './ProjectMediaFailure';
 
 export default function ProjectFilm({project,active,paused}){
@@ -21,6 +22,7 @@ export default function ProjectFilm({project,active,paused}){
   function toggle(){
     playback.current?.toggle();
   }
+  if(project.vimeoId)return <figure className="project-film"><div className="project-visual" data-project-visual><VimeoShowcase project={project} active={active} paused={paused}/></div><figcaption><span>{project.format}</span><span>{project.title}</span></figcaption></figure>;
   return <figure className="project-film">
     <div className="project-visual" data-project-visual>
       {(project.poster||project.kind==='photo')&&<img className="project-poster" src={project.kind==='photo'?project.src:project.poster} alt={project.alt||'Geometric motion placeholder for '+project.format.toLowerCase()} width="960" height="540" loading="lazy"/>}
