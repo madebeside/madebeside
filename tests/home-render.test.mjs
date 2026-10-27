@@ -63,10 +63,14 @@ test('project descriptions and sample metrics accompany the preview without the 
  assert.match(html,/Sample metrics/);assert.match(html,/Leads generated/);
  assert.doesNotMatch(html,/Hover to watch|tap on mobile/i);
 });
-test('each stationary review identifies its placeholder author and company',()=>{
+test('Peter leads the reviews and the remaining placeholders stay labelled',()=>{
  const html=render(false);
  assert.equal([...html.matchAll(/class="review-attribution"/g)].length,3);
- assert.match(html,/Name placeholder/);assert.match(html,/Company placeholder/);
+ assert.match(html,/Review by Peter A Jaciw/);assert.match(html,/Talent &amp; Executive Producer/);
+ assert.match(html,/Working with Spencer and Danny @ Made Beside/);
+ assert.match(html,/came in UNDER!!!/);
+ assert.equal((html.match(/Name placeholder/g)||[]).length,2);
+ assert.doesNotMatch(html,/auditioning for ME|Lil secret|boards I/);
 });
 
 
