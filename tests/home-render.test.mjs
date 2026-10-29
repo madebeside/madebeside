@@ -123,6 +123,7 @@ test('supporting pages retain each deliverable in the new layered playbook and c
 
 test('Altree collection includes all supplied Vimeo IDs and exact supplied results',async()=>{
  const {altreeDevelopments:p}=await server.ssrLoadModule('/client/archive/altree-developments.js');
+ assert.equal(p.clips[2].duration,48);assert.equal(p.clips[2].poster,'/projects/altree-developments/video-3.jpg');
  assert.equal(p.title,'Altree Developments');assert.deepEqual(p.clips.map(c=>c.vimeoId),['1240534189','1240563241','1240565683']);
  assert.deepEqual(p.facts,[['INCREASE IN IMPRESSIONS','82.3%'],['INCREASE IN REACTIONS','29.2%']]);
  const {default:Reel}=await server.ssrLoadModule('/client/archive/ProjectVideoReel.jsx');
