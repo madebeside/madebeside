@@ -111,7 +111,7 @@ test('supporting pages retain each deliverable in the new layered playbook and c
  const {config}=await server.ssrLoadModule('/client/config.js');
  const {selectShowcaseWork}=await server.ssrLoadModule('/client/archive/work-data.js');
  const projects=selectShowcaseWork(config.workPlaceholders);
- assert.deepEqual(projects.map(p=>p.id),['cravin-sim-golf','never-gets-old','project-03']);
+ assert.deepEqual(projects.map(p=>p.id),['cravin-sim-golf','never-gets-old','altree-developments']);
  assert.equal(projects[1].vimeoId,'1238227568');assert.equal(projects[1].duration,65);
  assert.equal(projects[1].description,'Spec Commercial Ad made for St. Andrews Valley Golf Course.');
  assert.ok(projects[1].facts.every(([,value])=>/\d/.test(value)));
@@ -120,3 +120,12 @@ test('supporting pages retain each deliverable in the new layered playbook and c
  assert.match(html,/Select Never gets old/);assert.match(html,/65 seconds/);
  assert.doesNotMatch(html,/Placeholder projects: 02/);
  });
+
+test('Altree collection includes all supplied Vimeo IDs and exact supplied results',async()=>{
+ const {altreeDevelopments:p}=await server.ssrLoadModule('/client/archive/altree-developments.js');
+ assert.equal(p.title,'Altree Developments');assert.deepEqual(p.clips.map(c=>c.vimeoId),['1240534189','1240563241','1240565683']);
+ assert.deepEqual(p.facts,[['INCREASE IN IMPRESSIONS','82.3%'],['INCREASE IN REACTIONS','29.2%']]);
+ const {default:Reel}=await server.ssrLoadModule('/client/archive/ProjectVideoReel.jsx');
+ const html=renderToStaticMarkup(React.createElement(Reel,{project:p,active:true,paused:true}));
+ assert.equal((html.match(/class="reel-card/g)||[]).length,3);assert.doesNotMatch(html,/<video/);
+});

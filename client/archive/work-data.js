@@ -25,7 +25,7 @@ export function selectShowcaseWork(items=[]){
  const projects=selectEditorialWork(items,true);
  const groups=projects.filter(p=>p.clips?.length);
  if(!groups.length)return projects.slice(0,3);
- const ordered=[...groups,...projects.filter(p=>!p.clips?.length)];
+ const ordered=projects;
  const ids=new Set(ordered.map(p=>p.id));
  return [...ordered,...projectPlaceholders.slice(ordered.length).filter(p=>!ids.has(p.id))].slice(0,3);
 }
